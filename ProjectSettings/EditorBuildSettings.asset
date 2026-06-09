@@ -6,8 +6,10 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/Virtual Archaeology.unity
     guid: 99c9720ab356a0642a771bea13969a05
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: d5466e83335b5854188316e26dd5558d, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: f5abdd3c633c3cd4dac819796478052c, type: 2}
   m_UseUCBPForAssetBundles: 0
