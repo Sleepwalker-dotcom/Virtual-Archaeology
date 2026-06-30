@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7196933822835705145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Tower Hamlet's March.bank
+  m_EditorClassIdentifier: 
+  Path: E:/Goldsmiths/Virtual Archaeology/Music/Build/Desktop/Tower Hamlet's March.bank
+  Name: Tower Hamlet's March
+  StudioPath: bank:/Tower Hamlet's March
+  lastModified: 639184617422213000
+  FileSizes:
+  - Name: Desktop
+    Value: 481920
+  Exists: 1
+--- !u!114 &-4421951627360110463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: E:/Goldsmiths/Virtual Archaeology/Music/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639184617422272104
+  FileSizes:
+  - Name: Desktop
+    Value: 1036
+  Exists: 1
+--- !u!114 &-3647730996084729286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Playing Horn/DistanceToHead
+  m_EditorClassIdentifier: 
+  Name: DistanceToHead
+  StudioPath: 
+  Min: 0
+  Max: 1.2
+  Default: 1.2
+  ID:
+    data1: 4000911173
+    data2: 3278710
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d32cf7c32a3ed8347bac48ef5ed56d82, type: 3}
+  m_Name: FMODStudioCache
+  m_EditorClassIdentifier: 
+  EditorBanks:
+  - {fileID: 4663307348187378754}
+  - {fileID: -4421951627360110463}
+  - {fileID: -7196933822835705145}
+  EditorEvents:
+  - {fileID: 660687440264649169}
+  EditorParameters: []
+  MasterBanks:
+  - {fileID: -4421951627360110463}
+  StringsBanks:
+  - {fileID: 4663307348187378754}
+  cacheTime: 639184617422282195
+  cacheVersion: 131636
+--- !u!114 &660687440264649169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Playing Horn
+  m_EditorClassIdentifier: 
+  Path: event:/Playing Horn
+  Guid:
+    Data1: -716770751
+    Data2: 1127344592
+    Data3: -809684067
+    Data4: 2114306701
+  Banks:
+  - {fileID: -7196933822835705145}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 8690331488106979483}
+  - {fileID: -3647730996084729286}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 39338
+--- !u!114 &4663307348187378754
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: E:/Goldsmiths/Virtual Archaeology/Music/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 639184617422282195
+  FileSizes:
+  - Name: Desktop
+    Value: 932
+  Exists: 1
+--- !u!114 &8690331488106979483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Playing Horn/HornAngle
+  m_EditorClassIdentifier: 
+  Name: HornAngle
+  StudioPath: 
+  Min: -90
+  Max: 90
+  Default: 0
+  ID:
+    data1: 3635642876
+    data2: 748419306
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
