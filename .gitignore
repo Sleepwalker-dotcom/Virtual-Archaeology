@@ -108,3 +108,6 @@ Assets/Model/PLY/
 Assets/Model/PLY/ 
 Assets/Plugin/gsplat-unity-vfx/Samples/*.ply 
 Assets/Plugin/gsplat-unity-vfx/Samples/*.ply.meta 
+
+# Local Unity automation output
+/TestResults/
