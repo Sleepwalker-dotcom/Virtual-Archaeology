@@ -56,6 +56,10 @@ Shader "Gsplat/Standard"
             float _GlitterDensity =0.3f;
             float _DissolveDriftSpeed = 0.3f;
             float _burnDuration = 2.0f;
+            int _UseSplitMask;
+            float3 _SplitPlaneNormal;
+            float _SplitPlaneOffset;
+            int _KeepPositiveSide;
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -135,6 +139,17 @@ Shader "Gsplat/Standard"
                 }
 
                 float3 modelCenter = _PositionBuffer[source.id];
+
+                if (_UseSplitMask != 0)
+                {
+                    float side = dot(modelCenter, normalize(_SplitPlaneNormal)) - _SplitPlaneOffset;
+                    bool keep = _KeepPositiveSide != 0 ? side >= 0.0f : side < 0.0f;
+                    if (!keep)
+                    {
+                        o.vertex = discardVec;
+                        return o;
+                    }
+                }
 
                 float3 localCenter = modelCenter;
                 float3 localScales = _ScaleBuffer[source.id];

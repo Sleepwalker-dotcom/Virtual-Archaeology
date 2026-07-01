@@ -51,6 +51,10 @@ namespace Gsplat
         static readonly int k_dissolveDriftSpeed = Shader.PropertyToID("_DissolveDriftSpeed");
 
         static readonly int k_burnDuration = Shader.PropertyToID("_burnDuration");
+        static readonly int k_useSplitMask = Shader.PropertyToID("_UseSplitMask");
+        static readonly int k_splitPlaneNormal = Shader.PropertyToID("_SplitPlaneNormal");
+        static readonly int k_splitPlaneOffset = Shader.PropertyToID("_SplitPlaneOffset");
+        static readonly int k_keepPositiveSide = Shader.PropertyToID("_KeepPositiveSide");
 
         public GsplatRendererImpl(uint splatCount, byte shBands)
         {
@@ -122,7 +126,9 @@ namespace Gsplat
         public void SetEffectParameters(int type, float intensity, float time, Vector3 windDir, float waveAmplitude,
                                         float waveFrequency, float waveSpeed, float blendScale = 1.0f,
                                         float lightWaveAmplitude = -2.0f, float lightWaveFrequency = 2.0f, float lightWaveSpeed = 2.0f,
-                                        float glitterDensity = 0.3f, float dissolveDriftSpeed =0.3f, float burnDuration =2.0f)
+                                        float glitterDensity = 0.3f, float dissolveDriftSpeed =0.3f, float burnDuration =2.0f,
+                                        bool useSplitMask = false, Vector3 splitPlaneNormal = default,
+                                        float splitPlaneOffset = 0.0f, bool keepPositiveSide = true)
         {
             if (m_propertyBlock == null)
                 m_propertyBlock = new MaterialPropertyBlock();
@@ -140,6 +146,11 @@ namespace Gsplat
             m_propertyBlock.SetFloat(k_glitterDensity, glitterDensity);
             m_propertyBlock.SetFloat(k_dissolveDriftSpeed, dissolveDriftSpeed);
             m_propertyBlock.SetFloat(k_burnDuration, burnDuration);
+            m_propertyBlock.SetInt(k_useSplitMask, useSplitMask ? 1 : 0);
+            m_propertyBlock.SetVector(k_splitPlaneNormal,
+                splitPlaneNormal.sqrMagnitude > 0.0001f ? splitPlaneNormal.normalized : Vector3.forward);
+            m_propertyBlock.SetFloat(k_splitPlaneOffset, splitPlaneOffset);
+            m_propertyBlock.SetInt(k_keepPositiveSide, keepPositiveSide ? 1 : 0);
         }
         /// <summary>
         /// Render the splats.

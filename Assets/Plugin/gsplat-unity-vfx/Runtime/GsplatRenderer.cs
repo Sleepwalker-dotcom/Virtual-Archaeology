@@ -58,6 +58,12 @@ namespace Gsplat
         [Range(0.0f, 1.0f)] public float glitterDensity = 0.2f;
         [Range(0.1f, 3.0f)] public float burnDuration = 0.5f;
 
+        [Header("Optional Spatial Split")]
+        public bool useSplitMask;
+        public Vector3 splitPlaneNormal = Vector3.forward;
+        public float splitPlaneOffset;
+        public bool keepPositiveSide = true;
+
         float baseTime = 0;
 
         void SetBufferData()
@@ -121,7 +127,11 @@ namespace Gsplat
                     lightWaveSpeed,
                     glitterDensity,
                     0.3f,
-                    burnDuration
+                    burnDuration,
+                    useSplitMask,
+                    splitPlaneNormal,
+                    splitPlaneOffset,
+                    keepPositiveSide
                 );
 
                 m_renderer.Render(GsplatAsset.SplatCount, transform, GsplatAsset.Bounds, gameObject.layer,
