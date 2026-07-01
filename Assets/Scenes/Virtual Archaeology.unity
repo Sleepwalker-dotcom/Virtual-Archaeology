@@ -798,62 +798,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &759111091
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 759111093}
-  - component: {fileID: 759111092}
-  m_Layer: 0
-  m_Name: HornAudioController
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &759111092
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 759111091}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7908641ac03188f40954b020ab08cc36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hornEvent:
-    Guid:
-      Data1: -716770751
-      Data2: 1127344592
-      Data3: -809684067
-      Data4: 2114306701
-    Path: event:/Playing Horn
-  playerHead: {fileID: 2035904336}
-  hornObject: {fileID: 1789952280}
-  maxDistance: 1.2
-  distanceSmoothing: 8
-  angleSmoothing: 8
---- !u!4 &759111093
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 759111091}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.27594715, y: -0.23246592, z: -0.20368232}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,11 +925,105 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 472661839996650736, guid: 82ba8fa12c028034e8dc8fe678c0b477, type: 3}
   m_PrefabInstance: {fileID: 888289489}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &958682354
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 958682356}
+  - component: {fileID: 958682355}
+  - component: {fileID: 958682357}
+  m_Layer: 0
+  m_Name: HornActivationZone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &958682355
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958682354}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 0.41965705, z: 3.0487952}
+  m_Center: {x: 0, y: 0.13, z: 1.0243976}
+--- !u!4 &958682356
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958682354}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.514, y: 0.06496095, z: -1.0156317}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &958682357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 958682354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea9df35fd5c2d614ea6021faff4f4ddb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hornController: {fileID: 1789952281}
+  triggerOnce: 1
 --- !u!1 &1286080623 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1767192433, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
   m_PrefabInstance: {fileID: 2035904335}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1388466636 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2649158668447579862, guid: de3247b953f190a418462ccfe54e029d, type: 3}
+  m_PrefabInstance: {fileID: 2121907649}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &1388466638
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388466636}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 21.880152, y: 0.7245151, z: 20.929361}
+  m_Center: {x: 0.21182035, y: -0.13774277, z: 0.0005450548}
 --- !u!114 &1399240381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1009,7 +1047,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -1124,6 +1162,7 @@ GameObject:
   - component: {fileID: 1789952277}
   - component: {fileID: 1789952276}
   - component: {fileID: 1789952275}
+  - component: {fileID: 1789952281}
   m_Layer: 0
   m_Name: Horn_model
   m_TagString: Untagged
@@ -1363,12 +1402,41 @@ Transform:
   m_GameObject: {fileID: 1789952274}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.28231817, y: 0.69, z: -0.04425394}
-  m_LocalScale: {x: 0.27596, y: 0.27507, z: 1}
+  m_LocalPosition: {x: 0.28231817, y: 0.69, z: -0.044254}
+  m_LocalScale: {x: 0.27596, y: 0.09766911, z: 0.39957}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1789952281
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789952274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7908641ac03188f40954b020ab08cc36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hornEvent:
+    Guid:
+      Data1: -716770751
+      Data2: 1127344592
+      Data3: -809684067
+      Data4: 2114306701
+    Path: event:/Playing Horn
+  playerHead: {fileID: 2035904336}
+  hornObject: {fileID: 1789952280}
+  playDistance: 0.45
+  pauseDistance: 0.55
+  maxDistance: 1.2
+  distanceSmoothing: 8
+  angleSmoothing: 8
+  hornRenderers: []
+  glowColor: {r: 1, g: 0.75, b: 0.2, a: 1}
+  glowIntensity: 3
 --- !u!1001 &2035904335
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1380,6 +1448,10 @@ PrefabInstance:
     - target: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_Name
       value: XR Origin (XR Rig)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1717954561962503725, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 1717954561962503726, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_RootOrder
@@ -1425,6 +1497,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1883230248363655243, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_EnableFarCasting
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1883230248363655243, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_FarInteractionCaster
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5895826684305351068, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1436,6 +1516,14 @@ PrefabInstance:
     - target: {fileID: 6501755809687671949, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8877177980677234388, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_EnableFarCasting
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8877177980677234388, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_FarInteractionCaster
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 9173983156334026967, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_IsActive
@@ -1610,7 +1698,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2649158668447579862, guid: de3247b953f190a418462ccfe54e029d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1388466638}
   m_SourcePrefab: {fileID: 100100000, guid: de3247b953f190a418462ccfe54e029d, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -1623,5 +1714,5 @@ SceneRoots:
   - {fileID: 1421641592}
   - {fileID: 599836271}
   - {fileID: 2121907649}
-  - {fileID: 759111093}
   - {fileID: 1789952280}
+  - {fileID: 958682356}
