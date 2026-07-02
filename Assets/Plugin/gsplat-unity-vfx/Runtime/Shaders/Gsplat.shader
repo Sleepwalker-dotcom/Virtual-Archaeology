@@ -60,6 +60,9 @@ Shader "Gsplat/Standard"
             float3 _SplitPlaneNormal;
             float _SplitPlaneOffset;
             int _KeepPositiveSide;
+            int _UseBoxMask;
+            float4x4 _ModelToBox;
+            int _KeepInsideBox;
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -145,6 +148,21 @@ Shader "Gsplat/Standard"
                     float side = dot(modelCenter, normalize(_SplitPlaneNormal)) - _SplitPlaneOffset;
                     bool keep = _KeepPositiveSide != 0 ? side >= 0.0f : side < 0.0f;
                     if (!keep)
+                    {
+                        o.vertex = discardVec;
+                        return o;
+                    }
+                }
+
+                if (_UseBoxMask != 0)
+                {
+                    float3 boxPosition = mul(_ModelToBox, float4(modelCenter, 1.0f)).xyz;
+                    bool insideBox =
+                        abs(boxPosition.x) <= 0.5f &&
+                        abs(boxPosition.y) <= 0.5f &&
+                        abs(boxPosition.z) <= 0.5f;
+                    bool keepBox = _KeepInsideBox != 0 ? insideBox : !insideBox;
+                    if (!keepBox)
                     {
                         o.vertex = discardVec;
                         return o;

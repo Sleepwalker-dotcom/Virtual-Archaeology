@@ -28,4 +28,17 @@ public class GsplatRevealTrigger : MonoBehaviour
         hasTriggered = true;
         revealController?.RevealIndoor();
     }
+
+    private void OnDrawGizmos()
+    {
+        BoxCollider box = GetComponent<BoxCollider>();
+        if (box == null)
+            return;
+
+        Gizmos.matrix = transform.localToWorldMatrix;
+        Gizmos.color = new Color(0.15f, 0.85f, 1f, 0.9f);
+        Gizmos.DrawWireCube(box.center, box.size);
+        Gizmos.color = new Color(0.15f, 0.85f, 1f, 0.08f);
+        Gizmos.DrawCube(box.center, box.size);
+    }
 }

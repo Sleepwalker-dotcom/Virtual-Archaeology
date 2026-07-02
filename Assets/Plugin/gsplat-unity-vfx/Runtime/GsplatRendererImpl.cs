@@ -55,6 +55,9 @@ namespace Gsplat
         static readonly int k_splitPlaneNormal = Shader.PropertyToID("_SplitPlaneNormal");
         static readonly int k_splitPlaneOffset = Shader.PropertyToID("_SplitPlaneOffset");
         static readonly int k_keepPositiveSide = Shader.PropertyToID("_KeepPositiveSide");
+        static readonly int k_useBoxMask = Shader.PropertyToID("_UseBoxMask");
+        static readonly int k_modelToBox = Shader.PropertyToID("_ModelToBox");
+        static readonly int k_keepInsideBox = Shader.PropertyToID("_KeepInsideBox");
 
         public GsplatRendererImpl(uint splatCount, byte shBands)
         {
@@ -151,6 +154,16 @@ namespace Gsplat
                 splitPlaneNormal.sqrMagnitude > 0.0001f ? splitPlaneNormal.normalized : Vector3.forward);
             m_propertyBlock.SetFloat(k_splitPlaneOffset, splitPlaneOffset);
             m_propertyBlock.SetInt(k_keepPositiveSide, keepPositiveSide ? 1 : 0);
+        }
+
+        public void SetBoxMaskParameters(bool useBoxMask, Matrix4x4 modelToBox, bool keepInsideBox)
+        {
+            if (m_propertyBlock == null)
+                m_propertyBlock = new MaterialPropertyBlock();
+
+            m_propertyBlock.SetInt(k_useBoxMask, useBoxMask ? 1 : 0);
+            m_propertyBlock.SetMatrix(k_modelToBox, modelToBox);
+            m_propertyBlock.SetInt(k_keepInsideBox, keepInsideBox ? 1 : 0);
         }
         /// <summary>
         /// Render the splats.

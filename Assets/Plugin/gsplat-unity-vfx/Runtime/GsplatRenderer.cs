@@ -64,6 +64,11 @@ namespace Gsplat
         public float splitPlaneOffset;
         public bool keepPositiveSide = true;
 
+        [Header("Optional Box Region")]
+        public bool useBoxMask;
+        public Transform boxMaskTransform;
+        public bool keepInsideBox = true;
+
         float baseTime = 0;
 
         void SetBufferData()
@@ -133,6 +138,13 @@ namespace Gsplat
                     splitPlaneOffset,
                     keepPositiveSide
                 );
+                Matrix4x4 modelToBox = boxMaskTransform != null
+                    ? boxMaskTransform.worldToLocalMatrix * transform.localToWorldMatrix
+                    : Matrix4x4.identity;
+                m_renderer.SetBoxMaskParameters(
+                    useBoxMask && boxMaskTransform != null,
+                    modelToBox,
+                    keepInsideBox);
 
                 m_renderer.Render(GsplatAsset.SplatCount, transform, GsplatAsset.Bounds, gameObject.layer,
                     GammaToLinear, SHDegree);

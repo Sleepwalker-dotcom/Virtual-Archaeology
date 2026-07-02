@@ -7,6 +7,7 @@ public class GsplatSegmentRevealController : MonoBehaviour
     [Header("Scene Segments")]
     [SerializeField] private GsplatRenderer outdoorRenderer;
     [SerializeField] private GsplatRenderer indoorRenderer;
+    [SerializeField] private Transform indoorRegionVolume;
 
     [Header("Reveal")]
     [SerializeField] private GsplatEffectType outdoorRevealEffect = GsplatEffectType.Rain;
@@ -45,6 +46,37 @@ public class GsplatSegmentRevealController : MonoBehaviour
         if (hornAudio == null)
             hornAudio = FindFirstObjectByType<HornTransitionAudio>(
                 FindObjectsInactive.Include);
+
+        if (indoorRegionVolume == null)
+        {
+            GameObject region = GameObject.Find("Indoor Reveal Trigger (Move Me)");
+            if (region != null)
+                indoorRegionVolume = region.transform;
+        }
+
+        ConfigureRegionMasks();
+    }
+
+    private void ConfigureRegionMasks()
+    {
+        if (indoorRegionVolume == null)
+            return;
+
+        if (outdoorRenderer != null)
+        {
+            outdoorRenderer.useSplitMask = false;
+            outdoorRenderer.useBoxMask = true;
+            outdoorRenderer.boxMaskTransform = indoorRegionVolume;
+            outdoorRenderer.keepInsideBox = false;
+        }
+
+        if (indoorRenderer != null)
+        {
+            indoorRenderer.useSplitMask = false;
+            indoorRenderer.useBoxMask = true;
+            indoorRenderer.boxMaskTransform = indoorRegionVolume;
+            indoorRenderer.keepInsideBox = true;
+        }
     }
 
     private void Start()
