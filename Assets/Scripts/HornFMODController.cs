@@ -2,6 +2,8 @@ using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 [System.Serializable]
 public class HornMusicSegment
@@ -9,8 +11,6 @@ public class HornMusicSegment
     public string segmentName = "Phrase";
     public int startTimeMs;
     public int endTimeMs = 6000;
-    public float minDistance = 0.2f;
-    public float maxDistance = 0.45f;
     public float minAngle = -10f;
     public float maxAngle = 20f;
 }
@@ -20,9 +20,22 @@ public class HornFMODController : MonoBehaviour
     [Header("FMOD Event")]
     public EventReference hornEvent;
 
+    [Header("FMOD Compatibility")]
+    public bool sendLegacyDistanceToHead = true;
+    public float legacyDistanceToHeadValue = 0.3f;
+
     [Header("VR References")]
     public Transform playerHead;
     public Transform hornObject;
+
+    [Header("Mouthpiece Pose")]
+    public Transform mouthpieceTransform;
+    public Transform instrumentTipTransform;
+    public bool lockMouthpieceToHead = true;
+    public Vector3 mouthpieceHeadLocalOffset = new Vector3(0f, -0.08f, 0.12f);
+    public bool requireGrabBeforeMouthpieceLock = true;
+    public float mouthpieceSnapDistance = 0.18f;
+    public XRGrabInteractable hornGrabInteractable;
 
     [Header("Segments")]
     public HornMusicSegment[] segments =
@@ -32,8 +45,6 @@ public class HornFMODController : MonoBehaviour
             segmentName = "Phrase 1",
             startTimeMs = 0,
             endTimeMs = 6000,
-            minDistance = 0.2f,
-            maxDistance = 0.45f,
             minAngle = -10f,
             maxAngle = 20f
         },
@@ -42,8 +53,6 @@ public class HornFMODController : MonoBehaviour
             segmentName = "Phrase 2",
             startTimeMs = 6000,
             endTimeMs = 12000,
-            minDistance = 0.35f,
-            maxDistance = 0.6f,
             minAngle = 20f,
             maxAngle = 55f
         },
@@ -52,8 +61,6 @@ public class HornFMODController : MonoBehaviour
             segmentName = "Phrase 3",
             startTimeMs = 12000,
             endTimeMs = 18000,
-            minDistance = 0.2f,
-            maxDistance = 0.4f,
             minAngle = -55f,
             maxAngle = -20f
         },
@@ -62,8 +69,6 @@ public class HornFMODController : MonoBehaviour
             segmentName = "Phrase 4",
             startTimeMs = 18000,
             endTimeMs = 26000,
-            minDistance = 0.45f,
-            maxDistance = 0.75f,
             minAngle = 35f,
             maxAngle = 80f
         }
@@ -71,11 +76,9 @@ public class HornFMODController : MonoBehaviour
     public int startSegmentIndex;
 
     [Header("Tracking")]
-    public float maxDistance = 1.2f;
     public bool invertAngle;
 
     [Header("Smoothing")]
-    public float distanceSmoothing = 8f;
     public float angleSmoothing = 8f;
 
     [Header("Horn Glow")]
@@ -87,14 +90,11 @@ public class HornFMODController : MonoBehaviour
     public bool autoCreateGuideUI = true;
     public GameObject guidePanel;
     public Text segmentText;
-    public Text distanceRangeText;
+    public Text mouthpieceStatusText;
     public Text angleRangeText;
     public Text statusText;
-    public Slider distanceSlider;
     public Slider angleSlider;
-    public Image distanceFillImage;
     public Image angleFillImage;
-    public RectTransform distanceTargetBand;
     public RectTransform angleTargetBand;
     public Color inRangeColor = new Color(0.2f, 0.8f, 0.35f);
     public Color outOfRangeColor = new Color(0.95f, 0.25f, 0.2f);
@@ -110,9 +110,10 @@ public class HornFMODController : MonoBehaviour
     private bool isPlaying;
     private bool isComplete;
     private int currentSegmentIndex;
-    private float smoothedDistance = 1.2f;
     private float smoothedAngle;
     private float debugTimer;
+    private bool isHornHeld;
+    private bool isMouthpieceSnapped;
 
     private HornMusicSegment CurrentSegment
     {
@@ -122,6 +123,32 @@ public class HornFMODController : MonoBehaviour
                 return null;
 
             return segments[currentSegmentIndex];
+        }
+    }
+
+    private void Awake()
+    {
+        CacheGrabInteractableIfNeeded();
+    }
+
+    private void OnEnable()
+    {
+        CacheGrabInteractableIfNeeded();
+
+        if (hornGrabInteractable != null)
+        {
+            hornGrabInteractable.selectEntered.AddListener(OnHornSelectEntered);
+            hornGrabInteractable.selectExited.AddListener(OnHornSelectExited);
+            SyncGrabState();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (hornGrabInteractable != null)
+        {
+            hornGrabInteractable.selectEntered.RemoveListener(OnHornSelectEntered);
+            hornGrabInteractable.selectExited.RemoveListener(OnHornSelectExited);
         }
     }
 
@@ -139,11 +166,20 @@ public class HornFMODController : MonoBehaviour
         if (hornObject == null)
             Debug.LogWarning("[HornFMODController] Horn Object is not assigned.");
 
+        if (lockMouthpieceToHead && mouthpieceTransform == null)
+            Debug.LogWarning("[HornFMODController] Mouthpiece Transform is not assigned. Horn Object pivot will be used as the mouthpiece fallback.");
+
+        if (instrumentTipTransform == null)
+            Debug.LogWarning("[HornFMODController] Instrument Tip Transform is not assigned. Horn Object forward will be used for angle fallback.");
+
+        if (requireGrabBeforeMouthpieceLock && hornGrabInteractable == null)
+            Debug.LogWarning("[HornFMODController] Horn Grab Interactable is not assigned. Mouthpiece lock will wait forever unless this is assigned.");
+
         CacheHornRenderersIfNeeded();
         SetGuideVisible(false);
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         if (!isActivated || isComplete || !eventCreated)
             return;
@@ -151,23 +187,30 @@ public class HornFMODController : MonoBehaviour
         if (playerHead == null || hornObject == null || CurrentSegment == null)
             return;
 
-        UpdateDistanceAndAngle();
+        ApplyMouthpieceLock();
+        UpdateAngle();
         SendParametersToFMOD();
         Update3DPosition();
 
-        bool distanceOK = IsDistanceInRange(CurrentSegment);
         bool angleOK = IsAngleInRange(CurrentSegment);
+        bool mouthpieceOK = isMouthpieceSnapped;
 
-        HandlePlayPause(distanceOK && angleOK);
+        HandlePlayPause(mouthpieceOK && angleOK);
         CheckSegmentEnd();
-        UpdateGuideUI(distanceOK, angleOK);
-        DebugRuntimeValues(distanceOK, angleOK);
+        UpdateGuideUI(mouthpieceOK, angleOK);
+        DebugRuntimeValues(mouthpieceOK, angleOK);
     }
 
     public void ActivateHorn()
     {
         Log("ActivateHorn() called.");
         EnsureSegments();
+
+        if (isComplete)
+        {
+            Log("Horn interaction is already complete. Ignoring ActivateHorn().");
+            return;
+        }
 
         if (isActivated)
         {
@@ -182,7 +225,6 @@ public class HornFMODController : MonoBehaviour
         }
 
         isActivated = true;
-        isComplete = false;
         isPlaying = false;
         currentSegmentIndex = Mathf.Clamp(startSegmentIndex, 0, segments.Length - 1);
 
@@ -214,8 +256,6 @@ public class HornFMODController : MonoBehaviour
                 segmentName = "Phrase 1",
                 startTimeMs = 0,
                 endTimeMs = 6000,
-                minDistance = 0.2f,
-                maxDistance = 0.45f,
                 minAngle = -10f,
                 maxAngle = 20f
             },
@@ -224,8 +264,6 @@ public class HornFMODController : MonoBehaviour
                 segmentName = "Phrase 2",
                 startTimeMs = 6000,
                 endTimeMs = 12000,
-                minDistance = 0.35f,
-                maxDistance = 0.6f,
                 minAngle = 20f,
                 maxAngle = 55f
             },
@@ -234,8 +272,6 @@ public class HornFMODController : MonoBehaviour
                 segmentName = "Phrase 3",
                 startTimeMs = 12000,
                 endTimeMs = 18000,
-                minDistance = 0.2f,
-                maxDistance = 0.4f,
                 minAngle = -55f,
                 maxAngle = -20f
             },
@@ -244,8 +280,6 @@ public class HornFMODController : MonoBehaviour
                 segmentName = "Phrase 4",
                 startTimeMs = 18000,
                 endTimeMs = 26000,
-                minDistance = 0.45f,
-                maxDistance = 0.75f,
                 minAngle = 35f,
                 maxAngle = 80f
             }
@@ -281,26 +315,121 @@ public class HornFMODController : MonoBehaviour
         Log("Jumped to segment " + (currentSegmentIndex + 1) + ": " + CurrentSegment.segmentName + ", start = " + CurrentSegment.startTimeMs + " ms");
     }
 
-    private void UpdateDistanceAndAngle()
+    private void UpdateAngle()
     {
-        float rawDistance = Vector3.Distance(hornObject.position, playerHead.position);
-        rawDistance = Mathf.Clamp(rawDistance, 0f, maxDistance);
-
-        Vector3 forward = hornObject.forward.normalized;
-        float rawAngle = Mathf.Asin(Vector3.Dot(forward, Vector3.up)) * Mathf.Rad2Deg;
+        Vector3 instrumentAxis = GetInstrumentAxis();
+        float horizontalLength = new Vector2(instrumentAxis.x, instrumentAxis.z).magnitude;
+        float rawAngle = Mathf.Atan2(instrumentAxis.y, horizontalLength) * Mathf.Rad2Deg;
 
         if (invertAngle)
             rawAngle = -rawAngle;
 
         rawAngle = Mathf.Clamp(rawAngle, -90f, 90f);
 
-        smoothedDistance = Mathf.Lerp(smoothedDistance, rawDistance, Time.deltaTime * distanceSmoothing);
         smoothedAngle = Mathf.Lerp(smoothedAngle, rawAngle, Time.deltaTime * angleSmoothing);
+    }
+
+    private void ApplyMouthpieceLock()
+    {
+        if (!lockMouthpieceToHead || hornObject == null || playerHead == null)
+            return;
+
+        if (requireGrabBeforeMouthpieceLock && !isHornHeld)
+        {
+            isMouthpieceSnapped = false;
+            return;
+        }
+
+        Vector3 targetPosition = GetMouthpieceAnchorPosition();
+        Vector3 currentMouthpiecePosition = GetMouthpiecePosition();
+
+        if (!isMouthpieceSnapped)
+        {
+            float distanceToAnchor = Vector3.Distance(currentMouthpiecePosition, targetPosition);
+            if (distanceToAnchor > mouthpieceSnapDistance)
+                return;
+
+            isMouthpieceSnapped = true;
+            Log("Mouthpiece snapped to head anchor.");
+        }
+
+        hornObject.position += targetPosition - currentMouthpiecePosition;
+    }
+
+    private void CacheGrabInteractableIfNeeded()
+    {
+        if (hornGrabInteractable != null)
+            return;
+
+        hornGrabInteractable = GetComponent<XRGrabInteractable>();
+
+        if (hornGrabInteractable == null && hornObject != null)
+            hornGrabInteractable = hornObject.GetComponentInParent<XRGrabInteractable>();
+    }
+
+    private void SyncGrabState()
+    {
+        isHornHeld = hornGrabInteractable != null && hornGrabInteractable.isSelected;
+
+        if (!isHornHeld)
+            isMouthpieceSnapped = false;
+    }
+
+    private void OnHornSelectEntered(SelectEnterEventArgs args)
+    {
+        if (isComplete)
+            return;
+
+        isHornHeld = true;
+        isMouthpieceSnapped = false;
+        Log("Horn picked up. Mouthpiece snap is now enabled.");
+    }
+
+    private void OnHornSelectExited(SelectExitEventArgs args)
+    {
+        SyncGrabState();
+        Log("Horn released. Mouthpiece snap is disabled.");
+    }
+
+    private Vector3 GetMouthpieceAnchorPosition()
+    {
+        if (playerHead == null)
+            return Vector3.zero;
+
+        return playerHead.TransformPoint(mouthpieceHeadLocalOffset);
+    }
+
+    private Vector3 GetMouthpiecePosition()
+    {
+        if (mouthpieceTransform != null)
+            return mouthpieceTransform.position;
+
+        if (hornObject != null)
+            return hornObject.position;
+
+        return Vector3.zero;
+    }
+
+    private Vector3 GetInstrumentAxis()
+    {
+        if (mouthpieceTransform != null && instrumentTipTransform != null)
+        {
+            Vector3 axis = instrumentTipTransform.position - mouthpieceTransform.position;
+            if (axis.sqrMagnitude > 0.0001f)
+                return axis.normalized;
+        }
+
+        if (hornObject != null)
+            return hornObject.forward.normalized;
+
+        return Vector3.forward;
     }
 
     private void SendParametersToFMOD()
     {
-        CheckFMODResult(hornInstance.setParameterByName("DistanceToHead", smoothedDistance), "setParameterByName DistanceToHead");
+        if (sendLegacyDistanceToHead)
+            CheckFMODResult(hornInstance.setParameterByName("DistanceToHead", legacyDistanceToHeadValue), "setParameterByName DistanceToHead");
+
         CheckFMODResult(hornInstance.setParameterByName("HornAngle", smoothedAngle), "setParameterByName HornAngle");
     }
 
@@ -310,11 +439,6 @@ public class HornFMODController : MonoBehaviour
             return;
 
         CheckFMODResult(hornInstance.set3DAttributes(RuntimeUtils.To3DAttributes(hornObject)), "set3DAttributes");
-    }
-
-    private bool IsDistanceInRange(HornMusicSegment segment)
-    {
-        return smoothedDistance >= segment.minDistance && smoothedDistance <= segment.maxDistance;
     }
 
     private bool IsAngleInRange(HornMusicSegment segment)
@@ -382,11 +506,16 @@ public class HornFMODController : MonoBehaviour
     private void CompleteExperience()
     {
         isComplete = true;
+        isActivated = false;
         isPlaying = false;
-        CheckFMODResult(hornInstance.setPaused(true), "final pause");
+        isHornHeld = false;
+        isMouthpieceSnapped = false;
 
         if (statusText != null)
             statusText.text = "Complete";
+
+        SetGuideVisible(false);
+        StopAndReleaseEvent();
 
         Log("All segments complete.");
     }
@@ -468,8 +597,7 @@ public class HornFMODController : MonoBehaviour
         guidePanel.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.Unconstrained;
 
         segmentText = CreateText(guidePanel.transform, "SegmentText", 28, FontStyle.Bold);
-        distanceRangeText = CreateText(guidePanel.transform, "DistanceRangeText", 22, FontStyle.Normal);
-        distanceSlider = CreateSlider(guidePanel.transform, "DistanceSlider", 0f, maxDistance, out distanceFillImage, out distanceTargetBand);
+        mouthpieceStatusText = CreateText(guidePanel.transform, "MouthpieceStatusText", 22, FontStyle.Bold);
         angleRangeText = CreateText(guidePanel.transform, "AngleRangeText", 22, FontStyle.Normal);
         angleSlider = CreateSlider(guidePanel.transform, "AngleSlider", -90f, 90f, out angleFillImage, out angleTargetBand);
         statusText = CreateText(guidePanel.transform, "StatusText", 24, FontStyle.Bold);
@@ -575,36 +703,32 @@ public class HornFMODController : MonoBehaviour
         if (segmentText != null)
             segmentText.text = "Segment " + (currentSegmentIndex + 1) + "/" + segments.Length + ": " + segment.segmentName;
 
-        if (distanceRangeText != null)
-            distanceRangeText.text = "Distance target: " + segment.minDistance.ToString("F2") + "m - " + segment.maxDistance.ToString("F2") + "m";
-
         if (angleRangeText != null)
             angleRangeText.text = "Angle target: " + segment.minAngle.ToString("F0") + "deg - " + segment.maxAngle.ToString("F0") + "deg";
 
-        UpdateTargetBand(distanceTargetBand, segment.minDistance, segment.maxDistance, 0f, maxDistance);
         UpdateTargetBand(angleTargetBand, segment.minAngle, segment.maxAngle, -90f, 90f);
     }
 
-    private void UpdateGuideUI(bool distanceOK, bool angleOK)
+    private void UpdateGuideUI(bool mouthpieceOK, bool angleOK)
     {
-        if (distanceSlider != null)
-            distanceSlider.value = smoothedDistance;
+        if (mouthpieceStatusText != null)
+        {
+            mouthpieceStatusText.text = mouthpieceOK ? "Mouthpiece: snapped" : "Mouthpiece: bring to mouth";
+            mouthpieceStatusText.color = mouthpieceOK ? inRangeColor : outOfRangeColor;
+        }
 
         if (angleSlider != null)
             angleSlider.value = smoothedAngle;
-
-        if (distanceFillImage != null)
-            distanceFillImage.color = distanceOK ? inRangeColor : outOfRangeColor;
 
         if (angleFillImage != null)
             angleFillImage.color = angleOK ? inRangeColor : outOfRangeColor;
 
         if (statusText != null)
         {
-            if (distanceOK && angleOK)
+            if (mouthpieceOK && angleOK)
                 statusText.text = isPlaying ? "Playing" : "Ready";
             else
-                statusText.text = "Adjust horn";
+                statusText.text = "Adjust mouthpiece and angle";
         }
     }
 
@@ -627,7 +751,7 @@ public class HornFMODController : MonoBehaviour
             bandImage.color = targetBandColor;
     }
 
-    private void DebugRuntimeValues(bool distanceOK, bool angleOK)
+    private void DebugRuntimeValues(bool mouthpieceOK, bool angleOK)
     {
         if (!showDebugLogs)
             return;
@@ -648,7 +772,7 @@ public class HornFMODController : MonoBehaviour
             "[HornFMODController] Segment: " + (currentSegmentIndex + 1) + "/" + segments.Length +
             " " + segmentName +
             " | Timeline: " + timelinePosition + " ms" +
-            " | Distance: " + smoothedDistance.ToString("F3") + " OK:" + distanceOK +
+            " | Mouthpiece OK:" + mouthpieceOK +
             " | Angle: " + smoothedAngle.ToString("F2") + " OK:" + angleOK +
             " | Playing: " + isPlaying
         );
