@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-3647730996084729286
+--- !u!114 &-5866406625093806194
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -24,7 +24,7 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
---- !u!114 &-2459098725695994351
+--- !u!114 &-4769211059013360259
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -34,15 +34,64 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Tower Hamlet's March.bank
+  m_Name: bank:/Master.strings.bank
   m_EditorClassIdentifier: 
-  Path: Assets/StreamingAssets/Tower Hamlet's March.bank
-  Name: Tower Hamlet's March
+  Path: Assets/StreamingAssets/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 639186907863064102
+  FileSizes:
+  - Name: Desktop
+    Value: 1072
+  Exists: 1
+--- !u!114 &-2543694835106596887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Taven BGM
+  m_EditorClassIdentifier: 
+  Path: event:/Taven BGM
+  Guid:
+    Data1: -1055413169
+    Data2: 1115565215
+    Data3: -358937208
+    Data4: -135144614
+  Banks:
+  - {fileID: -1922073698551682090}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 61000
+--- !u!114 &-1922073698551682090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Desktop/Tower Hamlet's March.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/StreamingAssets/Desktop/Tower Hamlet's March.bank
+  Name: Desktop/Tower Hamlet's March
   StudioPath: bank:/Tower Hamlet's March
-  lastModified: 639186663346454421
-  FileSizes: []
+  lastModified: 639186907863363400
+  FileSizes:
+  - Name: Desktop
+    Value: 2753088
   Exists: 1
---- !u!114 &-1582948347159660886
+--- !u!114 &-779018633514497230
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -51,15 +100,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.bank
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Museum BGM
   m_EditorClassIdentifier: 
-  Path: Assets/StreamingAssets/Master.bank
-  Name: Master
-  StudioPath: bank:/Master
-  lastModified: 639186663346389370
-  FileSizes: []
-  Exists: 1
+  Path: event:/Museum BGM
+  Guid:
+    Data1: 1163090460
+    Data2: 1272713666
+    Data3: 1024834749
+    Data4: 1122043950
+  Banks:
+  - {fileID: -1922073698551682090}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 116209
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -73,19 +131,23 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
   EditorBanks:
-  - {fileID: 4962707045258723545}
-  - {fileID: -1582948347159660886}
-  - {fileID: -2459098725695994351}
+  - {fileID: 3353117116400634388}
+  - {fileID: -4769211059013360259}
+  - {fileID: -1922073698551682090}
   EditorEvents:
-  - {fileID: 660687440264649169}
+  - {fileID: 7791222459457887334}
+  - {fileID: -779018633514497230}
+  - {fileID: 2596825182327220592}
+  - {fileID: 1452685879548947842}
+  - {fileID: -2543694835106596887}
   EditorParameters: []
   MasterBanks:
-  - {fileID: -1582948347159660886}
+  - {fileID: 3353117116400634388}
   StringsBanks:
-  - {fileID: 4962707045258723545}
-  cacheTime: 639186663346454421
+  - {fileID: -4769211059013360259}
+  cacheTime: 639186907863363400
   cacheVersion: 131636
---- !u!114 &660687440264649169
+--- !u!114 &1452685879548947842
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,17 +166,44 @@ MonoBehaviour:
     Data3: -809684067
     Data4: 2114306701
   Banks:
-  - {fileID: -2459098725695994351}
+  - {fileID: -1922073698551682090}
   IsStream: 1
   Is3D: 0
   IsOneShot: 1
   Parameters:
-  - {fileID: 8690331488106979483}
-  - {fileID: -3647730996084729286}
+  - {fileID: 6564338235112858606}
+  - {fileID: -5866406625093806194}
   MinDistance: 1
   MaxDistance: 20
   Length: 39338
---- !u!114 &4962707045258723545
+--- !u!114 &2596825182327220592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Scene Transition
+  m_EditorClassIdentifier: 
+  Path: event:/Scene Transition
+  Guid:
+    Data1: -782291936
+    Data2: 1239579580
+    Data3: -2117665616
+    Data4: -1942480931
+  Banks:
+  - {fileID: -1922073698551682090}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &3353117116400634388
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -124,17 +213,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.strings.bank
+  m_Name: bank:/Desktop/Master.bank
   m_EditorClassIdentifier: 
-  Path: Assets/StreamingAssets/Master.strings.bank
-  Name: Master.strings
-  StudioPath: bank:/Master.strings
-  lastModified: 639186663346404418
+  Path: Assets/StreamingAssets/Desktop/Master.bank
+  Name: Desktop/Master
+  StudioPath: bank:/Master
+  lastModified: 639186907863035378
   FileSizes:
-  - Name: 
-    Value: 932
+  - Name: Desktop
+    Value: 1036
   Exists: 1
---- !u!114 &8690331488106979483
+--- !u!114 &6564338235112858606
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,3 +247,31 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &7791222459457887334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Path: 
+  Guid:
+    Data1: -1055413169
+    Data2: 1115565215
+    Data3: -358937208
+    Data4: -135144614
+  Banks:
+  - {fileID: 0}
+  - {fileID: 0}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 61000

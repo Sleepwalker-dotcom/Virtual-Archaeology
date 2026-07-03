@@ -216,6 +216,78 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1767192434, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
   m_PrefabInstance: {fileID: 794687966}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &815039611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 815039613}
+  - component: {fileID: 815039612}
+  m_Layer: 0
+  m_Name: FMOD_Global_Audio_Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &815039612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815039611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1abd9bdce74b8641844022e26448c31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneMusicList:
+  - sceneName: Museum
+    bgmEvent:
+      Guid:
+        Data1: 1163090460
+        Data2: 1272713666
+        Data3: 1024834749
+        Data4: 1122043950
+      Path: event:/Museum BGM
+    fadeInTime: 0
+  - sceneName: Tavern
+    bgmEvent:
+      Guid:
+        Data1: -1055413169
+        Data2: 1115565215
+        Data3: -358937208
+        Data4: -135144614
+      Path: event:/Taven BGM
+    fadeInTime: 0
+  transitionSfx:
+    Guid:
+      Data1: -782291936
+      Data2: 1239579580
+      Data3: -2117665616
+      Data4: -1942480931
+    Path: event:/Scene Transition
+  transitionMinTime: 2
+  defaultFadeOutTime: 1
+--- !u!4 &815039613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 815039611}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.7259358, y: 0.6933889, z: -0.6530918}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &843229005
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,7 +844,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1855074912}
   - component: {fileID: 1855074911}
-  - component: {fileID: 1855074910}
+  - component: {fileID: 1855074913}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -780,14 +852,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!81 &1855074910
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1855074909}
-  m_Enabled: 1
 --- !u!20 &1855074911
 Camera:
   m_ObjectHideFlags: 0
@@ -854,6 +918,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1855074913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855074909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1001 &1904730013
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1293,3 +1371,4 @@ SceneRoots:
   - {fileID: 1716925442}
   - {fileID: 794687966}
   - {fileID: 1998442551}
+  - {fileID: 815039613}
