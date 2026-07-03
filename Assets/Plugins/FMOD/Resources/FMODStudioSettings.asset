@@ -476,9 +476,9 @@ MonoBehaviour:
   RealChannelSettings: []
   Plugins: []
   MasterBanks:
-  - Master
+  - Desktop/Master
   Banks:
-  - Tower Hamlet's March
+  - Desktop/Tower Hamlet's March
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0
