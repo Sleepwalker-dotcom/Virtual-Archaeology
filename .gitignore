@@ -105,9 +105,26 @@ InitTestScene*.unity*
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
 Assets/Model/PLY/ 
-Assets/Model/PLY/ 
-Assets/Plugin/gsplat-unity-vfx/Samples/*.ply 
-Assets/Plugin/gsplat-unity-vfx/Samples/*.ply.meta 
+Assets/Plugin/gsplat-unity-vfx/Samples/*.ply
+Assets/Plugin/gsplat-unity-vfx/Samples/*.ply.meta
 
 # Local Unity automation output
 /TestResults/
+
+# FMOD for Unity
+
+# Never ignore DLLs in the FMOD subfolder.
+!/[Aa]ssets/Plugins/FMOD/**/lib/*
+
+# Don't ignore images and gizmos used by FMOD in the Unity Editor.
+!/[Aa]ssets/Gizmos/FMOD/*
+!/[Aa]ssets/Editor Default Resources/FMOD/*
+
+# Ignore the FMOD Cache folder since it is updated locally.
+/[Aa]ssets/Plugins/FMOD/Cache/*
+
+# Do not ignore FMOD bank files in StreamingAssets.
+# They are needed so collaborators without FMOD Studio can hear audio in Unity.
+
+# Ignore FMOD editor log.
+fmod_editor.log
