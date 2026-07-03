@@ -382,6 +382,7 @@ public class HornFMODController : MonoBehaviour
 
         isHornHeld = true;
         isMouthpieceSnapped = false;
+        ActivateHorn();
         Log("Horn picked up. Mouthpiece snap is now enabled.");
     }
 

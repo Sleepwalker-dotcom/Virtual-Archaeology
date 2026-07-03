@@ -7,7 +7,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class LoadSceneOnGrab : MonoBehaviour
 {
     [SerializeField] private string targetSceneName = "Tavern";
-    [SerializeField, Min(0f)] private float loadDelay = 0.15f;
+    [SerializeField, Min(0f)] private float loadDelay = 2.5f;
+    [SerializeField] private GameObject transitionEffect;
 
     private UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable grabInteractable;
     private bool isLoading;
@@ -36,6 +37,7 @@ public class LoadSceneOnGrab : MonoBehaviour
     private IEnumerator LoadTargetScene()
     {
         isLoading = true;
+        transitionEffect?.SetActive(true);
 
         if (loadDelay > 0f)
             yield return new WaitForSeconds(loadDelay);
