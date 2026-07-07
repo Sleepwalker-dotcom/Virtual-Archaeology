@@ -75,6 +75,33 @@ public class HornFMODController : MonoBehaviour
     };
     public int startSegmentIndex;
 
+    [Header("Round Settings")]
+    public int totalRounds = 5;
+    public int currentRoundIndex;
+
+    [Header("Extra Layers")]
+    public ExtraLayerUnlock[] extraLayers =
+    {
+        new ExtraLayerUnlock
+        {
+            layerName = "Extra Layer 1",
+            unlockRoundIndex = 2,
+            fmodParameterName = "ExtraLayer1Active"
+        },
+        new ExtraLayerUnlock
+        {
+            layerName = "Extra Layer 2",
+            unlockRoundIndex = 3,
+            fmodParameterName = "ExtraLayer2Active"
+        },
+        new ExtraLayerUnlock
+        {
+            layerName = "Extra Layer 3",
+            unlockRoundIndex = 4,
+            fmodParameterName = "ExtraLayer3Active"
+        }
+    };
+
     [Header("Tracking")]
     public bool invertAngle;
 
@@ -226,6 +253,7 @@ public class HornFMODController : MonoBehaviour
 
         isActivated = true;
         isPlaying = false;
+        currentRoundIndex = 0;
         currentSegmentIndex = Mathf.Clamp(startSegmentIndex, 0, segments.Length - 1);
 
         CacheHornRenderersIfNeeded();
@@ -236,6 +264,8 @@ public class HornFMODController : MonoBehaviour
         if (!eventCreated)
             return;
 
+        ResetExtraLayers();
+        UpdateRoundState();
         SetGuideVisible(true);
         SetGuideSegment();
         JumpToCurrentSegmentStart();
@@ -304,6 +334,149 @@ public class HornFMODController : MonoBehaviour
         CheckFMODResult(hornInstance.setPaused(true), "initial setPaused(true)");
         Update3DPosition();
         Log("FMOD Event created and started in paused state.");
+    }
+
+    private void ResetExtraLayers()
+    {
+        if (extraLayers == null)
+            return;
+
+        for (int i = 0; i < extraLayers.Length; i++)
+        {
+            ExtraLayerUnlock layer = extraLayers[i];
+
+            if (layer == null)
+                continue;
+
+            layer.unlocked = false;
+            layer.activated = false;
+
+            if (layer.triggerObject != null)
+                layer.triggerObject.SetActive(false);
+
+            if (eventCreated)
+                SetExtraLayerParameter(layer, 0f, "Reset " + layer.fmodParameterName);
+        }
+
+        Log("All extra layers reset.");
+    }
+
+    private void UpdateRoundState()
+    {
+        Log("Current Round: " + (currentRoundIndex + 1) + " / " + totalRounds);
+
+        if (extraLayers == null)
+            return;
+
+        for (int i = 0; i < extraLayers.Length; i++)
+        {
+            ExtraLayerUnlock layer = extraLayers[i];
+
+            if (layer == null)
+                continue;
+
+            if (!layer.unlocked && currentRoundIndex >= layer.unlockRoundIndex)
+                UnlockExtraLayer(i);
+        }
+    }
+
+    private void UnlockExtraLayer(int layerIndex)
+    {
+        if (extraLayers == null || layerIndex < 0 || layerIndex >= extraLayers.Length)
+            return;
+
+        ExtraLayerUnlock layer = extraLayers[layerIndex];
+
+        if (layer == null)
+            return;
+
+        layer.unlocked = true;
+
+        if (layer.triggerObject != null)
+            layer.triggerObject.SetActive(true);
+
+        TurnOnExtraLayerGlow(layer);
+        Log("Unlocked extra layer: " + layer.layerName);
+    }
+
+    private void TurnOnExtraLayerGlow(ExtraLayerUnlock layer)
+    {
+        if (layer.glowRenderers == null || layer.glowRenderers.Length == 0)
+            return;
+
+        Color emission = layer.glowColor * layer.glowIntensity;
+
+        foreach (Renderer glowRenderer in layer.glowRenderers)
+        {
+            if (glowRenderer == null)
+                continue;
+
+            foreach (Material mat in glowRenderer.materials)
+            {
+                mat.EnableKeyword("_EMISSION");
+                mat.SetColor("_EmissionColor", emission);
+            }
+        }
+    }
+
+    public bool ActivateExtraLayer(int layerIndex)
+    {
+        if (extraLayers == null || layerIndex < 0 || layerIndex >= extraLayers.Length)
+        {
+            Debug.LogError("[HornFMODController] Invalid extra layer index: " + layerIndex);
+            return false;
+        }
+
+        ExtraLayerUnlock layer = extraLayers[layerIndex];
+
+        if (layer == null)
+        {
+            Debug.LogError("[HornFMODController] Extra layer is missing at index: " + layerIndex);
+            return false;
+        }
+
+        if (!layer.unlocked)
+        {
+            Log("Layer touched but not unlocked yet: " + layer.layerName);
+            return false;
+        }
+
+        if (layer.activated)
+        {
+            Log("Layer already activated: " + layer.layerName);
+            return false;
+        }
+
+        if (!eventCreated)
+        {
+            Debug.LogWarning("[HornFMODController] FMOD event not created. Cannot activate layer.");
+            return false;
+        }
+
+        if (!SetExtraLayerParameter(layer, 1f, "Activate " + layer.fmodParameterName))
+            return false;
+
+        layer.activated = true;
+
+        if (layer.triggerObject != null)
+            layer.triggerObject.SetActive(false);
+
+        Log("Activated extra audio layer: " + layer.layerName);
+        return true;
+    }
+
+    private bool SetExtraLayerParameter(ExtraLayerUnlock layer, float value, string operation)
+    {
+        if (string.IsNullOrEmpty(layer.fmodParameterName))
+        {
+            Debug.LogWarning("[HornFMODController] Extra layer FMOD parameter is empty for: " + layer.layerName);
+            return false;
+        }
+
+        FMOD.RESULT result = hornInstance.setParameterByName(layer.fmodParameterName, value);
+        CheckFMODResult(result, operation);
+
+        return result == FMOD.RESULT.OK;
     }
 
     private void JumpToCurrentSegmentStart()
@@ -495,13 +668,32 @@ public class HornFMODController : MonoBehaviour
 
         if (currentSegmentIndex >= segments.Length)
         {
-            CompleteExperience();
+            GoToNextRoundOrComplete();
             return;
         }
 
         JumpToCurrentSegmentStart();
         SetGuideSegment();
         Log("Moved to next segment: " + CurrentSegment.segmentName);
+    }
+
+    private void GoToNextRoundOrComplete()
+    {
+        currentRoundIndex++;
+
+        if (currentRoundIndex >= totalRounds)
+        {
+            CompleteExperience();
+            return;
+        }
+
+        currentSegmentIndex = 0;
+        JumpToCurrentSegmentStart();
+        PauseEvent();
+        UpdateRoundState();
+        SetGuideSegment();
+
+        Log("Started Round " + (currentRoundIndex + 1) + " / " + totalRounds);
     }
 
     private void CompleteExperience()
@@ -515,10 +707,23 @@ public class HornFMODController : MonoBehaviour
         if (statusText != null)
             statusText.text = "Complete";
 
+        HideExtraLayerTriggers();
         SetGuideVisible(false);
         StopAndReleaseEvent();
 
         Log("All segments complete.");
+    }
+
+    private void HideExtraLayerTriggers()
+    {
+        if (extraLayers == null)
+            return;
+
+        foreach (ExtraLayerUnlock layer in extraLayers)
+        {
+            if (layer != null && layer.triggerObject != null)
+                layer.triggerObject.SetActive(false);
+        }
     }
 
     private void CacheHornRenderersIfNeeded()
@@ -702,7 +907,7 @@ public class HornFMODController : MonoBehaviour
             return;
 
         if (segmentText != null)
-            segmentText.text = "Segment " + (currentSegmentIndex + 1) + "/" + segments.Length + ": " + segment.segmentName;
+            segmentText.text = "Round " + (currentRoundIndex + 1) + "/" + totalRounds + " - Segment " + (currentSegmentIndex + 1) + "/" + segments.Length + ": " + segment.segmentName;
 
         if (angleRangeText != null)
             angleRangeText.text = "Angle target: " + segment.minAngle.ToString("F0") + "deg - " + segment.maxAngle.ToString("F0") + "deg";
@@ -771,6 +976,7 @@ public class HornFMODController : MonoBehaviour
         string segmentName = CurrentSegment != null ? CurrentSegment.segmentName : "None";
         Debug.Log(
             "[HornFMODController] Segment: " + (currentSegmentIndex + 1) + "/" + segments.Length +
+            " | Round: " + (currentRoundIndex + 1) + "/" + totalRounds +
             " " + segmentName +
             " | Timeline: " + timelinePosition + " ms" +
             " | Mouthpiece OK:" + mouthpieceOK +
