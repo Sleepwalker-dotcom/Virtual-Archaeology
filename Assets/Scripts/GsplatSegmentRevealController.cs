@@ -5,13 +5,16 @@ using UnityEngine;
 public class GsplatSegmentRevealController : MonoBehaviour
 {
     [Header("Scene Segments")]
+    [SerializeField] private GsplatRenderer streetRenderer;
     [SerializeField] private GsplatRenderer outdoorRenderer;
     [SerializeField] private GsplatRenderer indoorRenderer;
     [SerializeField] private Transform indoorRegionVolume;
 
     [Header("Reveal")]
+    [SerializeField] private GsplatEffectType streetRevealEffect = GsplatEffectType.Rain;
     [SerializeField] private GsplatEffectType outdoorRevealEffect = GsplatEffectType.Rain;
     [SerializeField] private GsplatEffectType indoorRevealEffect = GsplatEffectType.Spread;
+    [SerializeField, Min(0.1f)] private float streetRevealDuration = 7f;
     [SerializeField, Min(0.1f)] private float outdoorRevealDuration = 10.5f;
     [SerializeField, Min(0.1f)] private float indoorRevealDuration = 10.5f;
 
@@ -28,7 +31,7 @@ public class GsplatSegmentRevealController : MonoBehaviour
 
     private void Awake()
     {
-        if (outdoorRenderer == null || indoorRenderer == null)
+        if (streetRenderer == null || outdoorRenderer == null || indoorRenderer == null)
         {
             GsplatRenderer[] renderers = FindObjectsByType<GsplatRenderer>(
                 FindObjectsInactive.Include,
@@ -36,7 +39,9 @@ public class GsplatSegmentRevealController : MonoBehaviour
 
             foreach (GsplatRenderer renderer in renderers)
             {
-                if (outdoorRenderer == null && renderer.name == "GSplat_Outdoor")
+                if (streetRenderer == null && renderer.name == "GSplat_Street")
+                    streetRenderer = renderer;
+                else if (outdoorRenderer == null && renderer.name == "GSplat_Outdoor")
                     outdoorRenderer = renderer;
                 else if (indoorRenderer == null && renderer.name == "GSplat_Indoor")
                     indoorRenderer = renderer;
@@ -83,6 +88,9 @@ public class GsplatSegmentRevealController : MonoBehaviour
     {
         if (indoorRenderer != null)
             indoorRenderer.gameObject.SetActive(false);
+
+        if (streetRenderer != null)
+            StartCoroutine(RevealSegment(streetRenderer, streetRevealEffect, streetRevealDuration));
 
         if (outdoorRenderer != null)
             StartCoroutine(RevealSegment(outdoorRenderer, outdoorRevealEffect, outdoorRevealDuration));
