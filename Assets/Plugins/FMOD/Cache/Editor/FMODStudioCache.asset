@@ -39,7 +39,7 @@ MonoBehaviour:
   Path: Assets/StreamingAssets/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639187081414616913
+  lastModified: 639194989408187763
   FileSizes:
   - Name: Desktop
     Value: 1072
@@ -86,7 +86,7 @@ MonoBehaviour:
   Path: Assets/StreamingAssets/Desktop/Tower Hamlet's March.bank
   Name: Desktop/Tower Hamlet's March
   StudioPath: bank:/Tower Hamlet's March
-  lastModified: 639191423193096921
+  lastModified: 639194989408497016
   FileSizes:
   - Name: Desktop
     Value: 2753920
@@ -145,7 +145,7 @@ MonoBehaviour:
   - {fileID: 3353117116400634388}
   StringsBanks:
   - {fileID: -4769211059013360259}
-  cacheTime: 639191423193096921
+  cacheTime: 639194989408497016
   cacheVersion: 131636
 --- !u!114 &1452685879548947842
 MonoBehaviour:
@@ -218,7 +218,7 @@ MonoBehaviour:
   Path: Assets/StreamingAssets/Desktop/Master.bank
   Name: Desktop/Master
   StudioPath: bank:/Master
-  lastModified: 639187081414596913
+  lastModified: 639191966675415134
   FileSizes:
   - Name: Desktop
     Value: 1036
