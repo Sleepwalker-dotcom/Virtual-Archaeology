@@ -56,6 +56,7 @@ Shader "Gsplat/Standard"
             float _GlitterDensity =0.3f;
             float _DissolveDriftSpeed = 0.3f;
             float _burnDuration = 2.0f;
+            float _RainDirection;
             int _UseSplitMask;
             float3 _SplitPlaneNormal;
             float _SplitPlaneOffset;
@@ -178,7 +179,7 @@ Shader "Gsplat/Standard"
                                   _EffectType, _EffectTime, _EffectIntensity, _EffectWindDir,
                                   _WaveAmplitude, _WaveFrequency,_waveSpeed, _blendScale,
                                   _lightWaveAmplitude, _lightWaveFrequency, _lightWaveSpeed, 
-                                  _GlitterDensity, _DissolveDriftSpeed, _burnDuration);
+                                  _GlitterDensity, _DissolveDriftSpeed, _burnDuration, _RainDirection);
 
                 SplatCenter modifiedCenter;
                 if (!InitCenter(localCenter, modifiedCenter))

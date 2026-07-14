@@ -51,6 +51,7 @@ namespace Gsplat
         static readonly int k_dissolveDriftSpeed = Shader.PropertyToID("_DissolveDriftSpeed");
 
         static readonly int k_burnDuration = Shader.PropertyToID("_burnDuration");
+        static readonly int k_rainDirection = Shader.PropertyToID("_RainDirection");
         static readonly int k_useSplitMask = Shader.PropertyToID("_UseSplitMask");
         static readonly int k_splitPlaneNormal = Shader.PropertyToID("_SplitPlaneNormal");
         static readonly int k_splitPlaneOffset = Shader.PropertyToID("_SplitPlaneOffset");
@@ -130,6 +131,7 @@ namespace Gsplat
                                         float waveFrequency, float waveSpeed, float blendScale = 1.0f,
                                         float lightWaveAmplitude = -2.0f, float lightWaveFrequency = 2.0f, float lightWaveSpeed = 2.0f,
                                         float glitterDensity = 0.3f, float dissolveDriftSpeed =0.3f, float burnDuration =2.0f,
+                                        float rainDirection = 1.0f,
                                         bool useSplitMask = false, Vector3 splitPlaneNormal = default,
                                         float splitPlaneOffset = 0.0f, bool keepPositiveSide = true)
         {
@@ -149,6 +151,7 @@ namespace Gsplat
             m_propertyBlock.SetFloat(k_glitterDensity, glitterDensity);
             m_propertyBlock.SetFloat(k_dissolveDriftSpeed, dissolveDriftSpeed);
             m_propertyBlock.SetFloat(k_burnDuration, burnDuration);
+            m_propertyBlock.SetFloat(k_rainDirection, Mathf.Sign(rainDirection));
             m_propertyBlock.SetInt(k_useSplitMask, useSplitMask ? 1 : 0);
             m_propertyBlock.SetVector(k_splitPlaneNormal,
                 splitPlaneNormal.sqrMagnitude > 0.0001f ? splitPlaneNormal.normalized : Vector3.forward);

@@ -57,6 +57,7 @@ namespace Gsplat
         [Range(0.1f, 10f)] public float lightWaveSpeed = 2.0f;
         [Range(0.0f, 1.0f)] public float glitterDensity = 0.2f;
         [Range(0.1f, 3.0f)] public float burnDuration = 0.5f;
+        [Range(-1f, 1f)] public float rainDirection = 1f;
 
         [Header("Optional Spatial Split")]
         public bool useSplitMask;
@@ -133,6 +134,7 @@ namespace Gsplat
                     glitterDensity,
                     0.3f,
                     burnDuration,
+                    rainDirection,
                     useSplitMask,
                     splitPlaneNormal,
                     splitPlaneOffset,

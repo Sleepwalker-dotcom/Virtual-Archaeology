@@ -1,4 +1,3 @@
-using System.Collections;
 using Gsplat;
 using UnityEngine;
 
@@ -8,26 +7,12 @@ public class GsplatSegmentRevealController : MonoBehaviour
     [SerializeField] private GsplatRenderer streetRenderer;
     [SerializeField] private GsplatRenderer outdoorRenderer;
     [SerializeField] private GsplatRenderer indoorRenderer;
-    [SerializeField] private Transform indoorRegionVolume;
-
-    [Header("Reveal")]
-    [SerializeField] private GsplatEffectType streetRevealEffect = GsplatEffectType.Rain;
-    [SerializeField] private GsplatEffectType outdoorRevealEffect = GsplatEffectType.Rain;
-    [SerializeField] private GsplatEffectType indoorRevealEffect = GsplatEffectType.Spread;
-    [SerializeField, Min(0.1f)] private float streetRevealDuration = 7f;
-    [SerializeField, Min(0.1f)] private float outdoorRevealDuration = 10.5f;
-    [SerializeField, Min(0.1f)] private float indoorRevealDuration = 10.5f;
 
     [Header("Persistent Effect")]
     [SerializeField] private GsplatEffectType persistentEffect = GsplatEffectType.PerlinWave;
     [SerializeField, Range(0f, 1f)] private float persistentIntensity = 0.18f;
     [SerializeField, Range(-0.2f, 0.2f)] private float persistentWaveAmplitude = 0.025f;
     [SerializeField, Range(0f, 2f)] private float persistentWaveSpeed = 0.22f;
-
-    [Header("Audio")]
-    [SerializeField] private HornTransitionAudio hornAudio;
-
-    private bool indoorRevealStarted;
 
     private void Awake()
     {
@@ -47,79 +32,23 @@ public class GsplatSegmentRevealController : MonoBehaviour
                     indoorRenderer = renderer;
             }
         }
-
-        if (hornAudio == null)
-            hornAudio = FindFirstObjectByType<HornTransitionAudio>(
-                FindObjectsInactive.Include);
-
-        if (indoorRegionVolume == null)
-        {
-            GameObject region = GameObject.Find("Indoor Reveal Trigger (Move Me)");
-            if (region != null)
-                indoorRegionVolume = region.transform;
-        }
-
-        ConfigureRegionMasks();
-    }
-
-    private void ConfigureRegionMasks()
-    {
-        if (indoorRegionVolume == null)
-            return;
-
-        if (outdoorRenderer != null)
-        {
-            outdoorRenderer.useSplitMask = false;
-            outdoorRenderer.useBoxMask = true;
-            outdoorRenderer.boxMaskTransform = indoorRegionVolume;
-            outdoorRenderer.keepInsideBox = false;
-        }
-
-        if (indoorRenderer != null)
-        {
-            indoorRenderer.useSplitMask = false;
-            indoorRenderer.useBoxMask = true;
-            indoorRenderer.boxMaskTransform = indoorRegionVolume;
-            indoorRenderer.keepInsideBox = true;
-        }
     }
 
     private void Start()
     {
-        if (indoorRenderer != null)
-            indoorRenderer.gameObject.SetActive(false);
-
-        if (streetRenderer != null)
-            StartCoroutine(RevealSegment(streetRenderer, streetRevealEffect, streetRevealDuration));
-
-        if (outdoorRenderer != null)
-            StartCoroutine(RevealSegment(outdoorRenderer, outdoorRevealEffect, outdoorRevealDuration));
-
-        hornAudio?.PlayQuietCue();
+        ShowSegment(streetRenderer);
+        ShowSegment(outdoorRenderer);
+        ShowSegment(indoorRenderer);
     }
 
-    public void RevealIndoor()
+    private void ShowSegment(GsplatRenderer renderer)
     {
-        if (indoorRevealStarted || indoorRenderer == null)
+        if (renderer == null)
             return;
 
-        indoorRevealStarted = true;
-        indoorRenderer.gameObject.SetActive(true);
-        hornAudio?.PlayRevealCue();
-        StartCoroutine(RevealSegment(indoorRenderer, indoorRevealEffect, indoorRevealDuration));
-    }
-
-    private IEnumerator RevealSegment(
-        GsplatRenderer renderer,
-        GsplatEffectType revealEffect,
-        float duration)
-    {
-        renderer.blendScale = 1f;
-        renderer.effectType = revealEffect;
-        renderer.resetAnimationTime();
-
-        yield return new WaitForSeconds(duration);
-
+        renderer.gameObject.SetActive(true);
+        renderer.useSplitMask = false;
+        renderer.useBoxMask = false;
         renderer.effectType = persistentEffect;
         renderer.intensity = persistentIntensity;
         renderer.waveAmplitude = persistentWaveAmplitude;

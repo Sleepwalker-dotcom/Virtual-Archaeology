@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce0eaa90dbf24670a230447dc3ec09f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GsplatAsset: {fileID: 1643680892594921121, guid: c495f54af9f6125408fe03999b59dd2b, type: 3}
+  GsplatAsset: {fileID: 1643680892594921121, guid: b80b70143e4ab464fbde0f2afb97417d, type: 3}
   SHDegree: 0
   GammaToLinear: 0
   effectType: 1
@@ -177,6 +177,13 @@ MonoBehaviour:
   lightWaveSpeed: 5.03
   glitterDensity: 0.345
   burnDuration: 0.65
+  useSplitMask: 0
+  splitPlaneNormal: {x: 0, y: 0, z: 1}
+  splitPlaneOffset: 0
+  keepPositiveSide: 1
+  useBoxMask: 0
+  boxMaskTransform: {fileID: 0}
+  keepInsideBox: 1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

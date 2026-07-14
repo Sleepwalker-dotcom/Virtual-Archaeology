@@ -124,14 +124,16 @@ inline float4 twister_effect(float3 pos, float3 scale, float t) {
     return float4(pos, s * s * s * s);
 }
 
-inline float4 rain_effect(float3 pos, float3 scale, float t) {
+inline float4 rain_effect(float3 pos, float3 scale, float t, float direction) {
     float3 h = hash2_3(pos);
     float s = pow(smoothstep(0.0f, 5.0f, t * t * 0.1f - length(pos.xz) * 2.0f + 1.0f), 0.5f + h.x);
     float y = pos.y;
-    pos.y = min(-10.0f + s * 15.0f, pos.y);
+    float sourceY = direction < 0.0f ? 10.0f - s * 15.0f : -10.0f + s * 15.0f;
+    pos.y = direction < 0.0f ? max(sourceY, pos.y) : min(sourceY, pos.y);
     pos.xz = lerp(pos.xz * 0.3f, pos.xz, s);
     //pos.xz = mul(pos.xz, rot2(t * 0.3f)); // uncomment this line if you want the scene to rotate automatically
-    return float4(pos, smoothstep(-10.0f, y, pos.y));
+    float alpha = direction < 0.0f ? smoothstep(10.0f, y, pos.y) : smoothstep(-10.0f, y, pos.y);
+    return float4(pos, alpha);
 }
 
 // Fractals (rough port)
@@ -212,7 +214,7 @@ inline void ApplyGsplatEffect(inout float3 center, inout float3 scales, inout fl
                               int effectType, float t, float intensity, float3 windDir,
                               float waveAmplitude, float waveFrequency, float waveSpeed, float blendScale,
                               float lightWaveAmplitude, float lightWaveFrequency, float lightWaveSpeed, 
-                              float glitterDensity, float dissolveDriftSpeed, float burnDuration)
+                              float glitterDensity, float dissolveDriftSpeed, float burnDuration, float rainDirection)
 {
     float3 localPos = center;
     float3 splatScales = scales;
@@ -327,7 +329,7 @@ inline void ApplyGsplatEffect(inout float3 center, inout float3 scales, inout fl
         
         float4 e = sin3D_light_effect(localPos, t, lightWaveAmplitude, lightWaveFrequency, lightWaveSpeed);
         rgba = lerp(splatColor, float4(splatColor.rgb * e.rgb, splatColor.a), intensity);
-        float4 effectResult = rain_effect(localPos, splatScales, t);
+        float4 effectResult = rain_effect(localPos, splatScales, t, rainDirection);
         center = effectResult.xyz;
         scales = lerp(float3(0.005f, 0.005f, 0.005f), splatScales, pow(effectResult.w, 30.0f));
         quaternion = float4(1.0f, 0.0f, 0.0f, 0.0f);
