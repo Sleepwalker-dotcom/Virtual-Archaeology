@@ -20,9 +20,25 @@ public class HornFMODController : MonoBehaviour
     [Header("FMOD Event")]
     public EventReference hornEvent;
 
-    [Header("FMOD Compatibility")]
-    public bool sendLegacyDistanceToHead = true;
-    public float legacyDistanceToHeadValue = 0.3f;
+    [Header("Audio 1 Volume - Controlled By Unity")]
+    [Tooltip("FMOD parameter that controls only Audio 1 / main horn track volume. Create this parameter in FMOD and automate Audio 1 Volume with it.")]
+    public string audio1VolumeParameterName = "Audio1Volume";
+
+    [Tooltip("Maximum Audio 1 volume sent from Unity. 1 = normal volume.")]
+    [Range(0f, 1f)]
+    public float audio1Volume = 1f;
+
+    [Tooltip("If true, Unity calculates Audio 1 volume from mouthpiece-to-head distance. If false, use Audio 1 Volume as a manual Inspector control.")]
+    public bool useDistanceForAudio1Volume = false;
+
+    [Tooltip("At or below this distance, Audio 1 reaches maximum volume.")]
+    public float fullVolumeDistance = 0.04f;
+
+    [Tooltip("At or beyond this distance, Audio 1 becomes silent.")]
+    public float zeroVolumeDistance = 0.35f;
+
+    [Tooltip("Smoothing speed for Unity-driven Audio 1 volume.")]
+    public float volumeSmoothing = 8f;
 
     [Header("VR References")]
     public Transform playerHead;
@@ -141,6 +157,9 @@ public class HornFMODController : MonoBehaviour
     private float debugTimer;
     private bool isHornHeld;
     private bool isMouthpieceSnapped;
+    private float currentAudio1Volume = 0f;
+    private float lastAppliedAudio1Volume = -1f;
+    private float lastAudio1VolumeDistance = 0f;
 
     private HornMusicSegment CurrentSegment
     {
@@ -216,6 +235,7 @@ public class HornFMODController : MonoBehaviour
 
         ApplyMouthpieceLock();
         UpdateAngle();
+        ApplyAudio1VolumeFromUnity();
         SendParametersToFMOD();
         Update3DPosition();
 
@@ -330,10 +350,61 @@ public class HornFMODController : MonoBehaviour
         }
 
         eventCreated = true;
+
+        // Keep the whole FMOD event at normal volume.
+        // Audio 1 is controlled separately through the Audio1Volume FMOD parameter.
+        CheckFMODResult(hornInstance.setVolume(1f), "set event master volume to 1");
+        ApplyAudio1VolumeFromUnity(true);
+
         CheckFMODResult(hornInstance.start(), "start");
         CheckFMODResult(hornInstance.setPaused(true), "initial setPaused(true)");
         Update3DPosition();
         Log("FMOD Event created and started in paused state.");
+    }
+
+    private void ApplyAudio1VolumeFromUnity(bool force = false)
+    {
+        if (!eventCreated)
+            return;
+
+        if (string.IsNullOrEmpty(audio1VolumeParameterName))
+        {
+            Debug.LogWarning("[HornFMODController] Audio 1 volume parameter name is empty.");
+            return;
+        }
+
+        float targetVolume = Mathf.Clamp01(audio1Volume);
+
+        if (useDistanceForAudio1Volume)
+        {
+            lastAudio1VolumeDistance = GetMouthpieceDistanceToHeadAnchor();
+
+            // Distance close to fullVolumeDistance => 1.
+            // Distance close to zeroVolumeDistance => 0.
+            targetVolume = Mathf.InverseLerp(zeroVolumeDistance, fullVolumeDistance, lastAudio1VolumeDistance);
+            targetVolume = Mathf.Clamp01(targetVolume) * Mathf.Clamp01(audio1Volume);
+        }
+
+        currentAudio1Volume = force
+            ? targetVolume
+            : Mathf.Lerp(currentAudio1Volume, targetVolume, Time.deltaTime * volumeSmoothing);
+
+        if (!force && Mathf.Abs(currentAudio1Volume - lastAppliedAudio1Volume) < 0.001f)
+            return;
+
+        lastAppliedAudio1Volume = currentAudio1Volume;
+        CheckFMODResult(
+            hornInstance.setParameterByName(audio1VolumeParameterName, currentAudio1Volume),
+            "setParameterByName " + audio1VolumeParameterName
+        );
+    }
+
+    private float GetMouthpieceDistanceToHeadAnchor()
+    {
+        if (playerHead == null)
+            return zeroVolumeDistance;
+
+        return Vector3.Distance(GetMouthpiecePosition(), GetMouthpieceAnchorPosition());
     }
 
     private void ResetExtraLayers()
@@ -601,9 +672,8 @@ public class HornFMODController : MonoBehaviour
 
     private void SendParametersToFMOD()
     {
-        if (sendLegacyDistanceToHead)
-            CheckFMODResult(hornInstance.setParameterByName("DistanceToHead", legacyDistanceToHeadValue), "setParameterByName DistanceToHead");
-
+        // DistanceToHead has been removed from FMOD volume control.
+        // Unity now controls Audio 1 volume through the Audio1Volume parameter.
         CheckFMODResult(hornInstance.setParameterByName("HornAngle", smoothedAngle), "setParameterByName HornAngle");
     }
 
@@ -980,6 +1050,8 @@ public class HornFMODController : MonoBehaviour
             " " + segmentName +
             " | Timeline: " + timelinePosition + " ms" +
             " | Mouthpiece OK:" + mouthpieceOK +
+            " | Audio1 Distance: " + lastAudio1VolumeDistance.ToString("F3") +
+            " | Audio1 Volume: " + currentAudio1Volume.ToString("F2") +
             " | Angle: " + smoothedAngle.ToString("F2") + " OK:" + angleOK +
             " | Playing: " + isPlaying
         );
