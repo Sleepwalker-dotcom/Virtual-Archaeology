@@ -202,12 +202,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99312287}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.338, y: 1.599, z: -6.128}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.1261802, y: 0.12752378, z: -0.93579483}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1122064266}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &121653668
 GameObject:
@@ -459,37 +459,6 @@ MonoBehaviour:
   useBoxMask: 1
   boxMaskTransform: {fileID: 0}
   keepInsideBox: 0
---- !u!1 &186669265
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 186669266}
-  m_Layer: 0
-  m_Name: FMOD_Bank_Loader
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &186669266
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 186669265}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.738354, y: 0.17093205, z: -13.234106}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &187474234
 GameObject:
   m_ObjectHideFlags: 0
@@ -857,6 +826,112 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &358775637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 358775638}
+  - component: {fileID: 358775641}
+  - component: {fileID: 358775640}
+  - component: {fileID: 358775639}
+  m_Layer: 0
+  m_Name: Zone_Garden_Audio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &358775638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358775637}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -13.48, y: 1.599, z: -6.67}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1464137047}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &358775639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358775637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84b78fc50a8e4da4bb1ee2f61f6686ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioEvent:
+    Guid:
+      Data1: -983360189
+      Data2: 1141989873
+      Data3: 1094734758
+      Data4: -1991508723
+    Path: event:/Garden
+  soundSource: {fileID: 831112163}
+  playerTag: Player
+  playOnce: 0
+  stopOnExit: 1
+  allowFadeout: 1
+--- !u!54 &358775640
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358775637}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &358775641
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 358775637}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6.5296497, y: 3, z: 5.467739}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &464013426
 GameObject:
   m_ObjectHideFlags: 0
@@ -867,8 +942,8 @@ GameObject:
   m_Component:
   - component: {fileID: 464013427}
   - component: {fileID: 464013430}
-  - component: {fileID: 464013429}
   - component: {fileID: 464013428}
+  - component: {fileID: 464013431}
   m_Layer: 0
   m_Name: Desktop Test Camera
   m_TagString: Untagged
@@ -935,14 +1010,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!81 &464013429
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 464013426}
-  m_Enabled: 1
 --- !u!20 &464013430
 Camera:
   m_ObjectHideFlags: 0
@@ -994,6 +1061,20 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &464013431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 464013426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 0}
 --- !u!1 &563797004
 GameObject:
   m_ObjectHideFlags: 0
@@ -1055,7 +1136,7 @@ Transform:
   m_GameObject: {fileID: 668738086}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.738354, y: 0.17093205, z: -13.234106}
+  m_LocalPosition: {x: -7.92, y: 1.49, z: -6.837}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1075,11 +1156,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioEvent:
     Guid:
-      Data1: -1299402854
-      Data2: 1295491250
-      Data3: 285206187
-      Data4: 1603639640
-    Path: event:/Garden SFX
+      Data1: 1438684345
+      Data2: 1098277280
+      Data3: 550662837
+      Data4: 708865854
+    Path: event:/TavernEating
   soundSource: {fileID: 99312288}
   playerTag: Player
   playOnce: 0
@@ -1131,7 +1212,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 12, y: 3, z: 12}
+  m_Size: {x: 4.053227, y: 1.4351268, z: 3.5146875}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
@@ -1254,6 +1335,37 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &831112162
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 831112163}
+  m_Layer: 0
+  m_Name: Audio_Garden
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &831112163
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 831112162}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.16582, y: 0.4445238, z: -0.93579483}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1122064266}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!134 &857966402
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -1469,7 +1581,7 @@ Transform:
   m_GameObject: {fileID: 1019063103}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.738354, y: 0.17093205, z: -13.234106}
+  m_LocalPosition: {x: -7.929, y: 1.336, z: -4.14}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1489,11 +1601,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioEvent:
     Guid:
-      Data1: -1403959798
-      Data2: 1156800952
-      Data3: 387896746
-      Data4: 828989557
-    Path: event:/Fire BGM
+      Data1: -364980514
+      Data2: 1241136308
+      Data3: 1238021544
+      Data4: 130064705
+    Path: event:/Fireplace
   soundSource: {fileID: 1194257172}
   playerTag: Player
   playOnce: 0
@@ -1545,7 +1657,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5, y: 3, z: 5}
+  m_Size: {x: 1.5087733, y: 1.169766, z: 1.3404961}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1064939039
 PrefabInstance:
@@ -1954,6 +2066,41 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1066126499}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1122064265
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1122064266}
+  m_Layer: 0
+  m_Name: Scene3D_AudioSources
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1122064266
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1122064265}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.46418, y: 1.1544762, z: -5.192205}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 99312288}
+  - {fileID: 1194257172}
+  - {fileID: 1674516856}
+  - {fileID: 831112163}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1178589591
 GameObject:
   m_ObjectHideFlags: 0
@@ -2015,12 +2162,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1194257171}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.962, y: 0.955, z: -3.782}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.5021801, y: -0.19947618, z: 1.4102049}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1122064266}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1225532527
 PrefabInstance:
@@ -2476,7 +2623,7 @@ Transform:
   m_GameObject: {fileID: 1231185630}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -9.738354, y: 0.17093205, z: -13.234106}
+  m_LocalPosition: {x: -6.31, y: 1.55, z: -6.71}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2496,11 +2643,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioEvent:
     Guid:
-      Data1: -1041104647
-      Data2: 1311960160
-      Data3: 2099268793
-      Data4: 783445314
-    Path: event:/Outside SFX
+      Data1: 1552937518
+      Data2: 1126027709
+      Data3: -1231892299
+      Data4: 724143758
+    Path: event:/Outside
   soundSource: {fileID: 1674516856}
   playerTag: Player
   playOnce: 0
@@ -2552,7 +2699,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 18, y: 4, z: 18}
+  m_Size: {x: 0.95081186, y: 0.96596813, z: 6.4912586}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1256504191
 GameObject:
@@ -2563,8 +2710,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1256504192}
-  - component: {fileID: 1256504193}
   - component: {fileID: 1256504194}
+  - component: {fileID: 1256504195}
   m_Layer: 0
   m_Name: FMOD_Global_Audio_Manager
   m_TagString: Untagged
@@ -2587,39 +2734,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1256504193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1256504191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1abd9bdce74b8641844022e26448c31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneMusicList:
-  - sceneName: Museum
-    bgmEvent:
-      Guid:
-        Data1: 1163090460
-        Data2: 1272713666
-        Data3: 1024834749
-        Data4: 1122043950
-      Path: event:/Museum BGM
-    fadeInTime: 0
-  - sceneName: Tavern
-    bgmEvent:
-      Guid:
-        Data1: -1055413169
-        Data2: 1115565215
-        Data3: -358937208
-        Data4: -135144614
-      Path: event:/Taven BGM
-    fadeInTime: 0
-  startupMusicSceneName: Museum
-  defaultFadeOutTime: 0.25
 --- !u!114 &1256504194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2635,9 +2749,50 @@ MonoBehaviour:
   LoadEvent: 1
   UnloadEvent: 2
   Banks:
-  - Ambient Sound
+  - InteractionMusic
+  - Scene3D
+  - SceneBGM
+  - UI2D
+  - Voice
   CollisionTag: 
   PreloadSamples: 0
+--- !u!114 &1256504195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1256504191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7390ef92d42e42e29c4f9b820dc80e5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startupEnvironment: 0
+  playMuseumBgmOnStart: 1
+  restartMuseumBgmWhenBackToMuseum: 1
+  museumEnvironmentRoot: {fileID: 1178589591}
+  tavernEnvironmentRoot: {fileID: 563797004}
+  scene3DAudioZonesRoot: {fileID: 1464137046}
+  museumBgmEvent:
+    Guid:
+      Data1: -410316644
+      Data2: 1244891558
+      Data3: 63293605
+      Data4: -53347697
+    Path: event:/MuseumBGM
+  sceneTransitionEvent:
+    Guid:
+      Data1: 637220998
+      Data2: 1252325401
+      Data3: 487951788
+      Data4: 280636528
+    Path: event:/SceneTransition
+  museumBgmFadeOutTime: 1
+  environmentSwitchDelay: 0.4
+  currentEnvironment: 0
+  museumBgmIsPlaying: 0
+  isSwitching: 0
 --- !u!1001 &1276870588
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3074,6 +3229,7 @@ Transform:
   - {fileID: 668738087}
   - {fileID: 1019063104}
   - {fileID: 1231185631}
+  - {fileID: 358775638}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1579749101
@@ -3245,7 +3401,7 @@ PrefabInstance:
       addedObject: {fileID: 1623698370}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0c57a41aef1ad7a4bbd473c3f1de0c65, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1623698369}
+      addedObject: {fileID: 1623698373}
   m_SourcePrefab: {fileID: 100100000, guid: 0c57a41aef1ad7a4bbd473c3f1de0c65, type: 3}
 --- !u!4 &1623698367 stripped
 Transform:
@@ -3257,41 +3413,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0c57a41aef1ad7a4bbd473c3f1de0c65, type: 3}
   m_PrefabInstance: {fileID: 1623698366}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1623698369
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1623698368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6838612e12539914986e0c5abdd3d3e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  museumRoot: {fileID: 1178589591}
-  tavernRoot: {fileID: 563797004}
-  hornObject: {fileID: 1225532528}
-  hiddenDuringMuseum:
-  - {fileID: 563797004}
-  - {fileID: 1225532528}
-  - {fileID: 1002030180}
-  - {fileID: 705507993}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 232907752}
-  transitionEffect: {fileID: 0}
-  revealDelay: 0
-  museumMusicSceneName: Museum
-  tavernMusicSceneName: Tavern
-  tavernRevealSfx:
-    Guid:
-      Data1: -782291936
-      Data2: 1239579580
-      Data3: -2117665616
-      Data4: -1942480931
-    Path: event:/Scene Transition
-  tavernRevealVolumeDb: -80
 --- !u!114 &1623698370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3462,6 +3583,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.019999998, y: 0.008699369, z: 0.00951871}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1623698373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1623698368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 379c3ea0f93ee7446b9a80668d8e8eb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hornPieceGrabInteractable: {fileID: 1623698370}
+  audioEnvironmentManager: {fileID: 1256504195}
+  targetEnvironment: 1
+  triggerOnce: 1
+  hasTriggered: 0
 --- !u!1 &1674516855
 GameObject:
   m_ObjectHideFlags: 0
@@ -3486,12 +3624,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1674516855}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.68, y: 1.78, z: -6.78}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.5381799, y: 0.6255238, z: -1.5877953}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1122064266}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1685904483
 GameObject:
@@ -3689,25 +3827,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneTransitionSfx:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 637220998
+      Data2: 1252325401
+      Data3: 487951788
+      Data4: 280636528
+    Path: event:/SceneTransition
   positiveFeedbackSfx:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 1799102434
+      Data2: 1109929396
+      Data3: 1499638957
+      Data4: -1086095570
+    Path: event:/PositiveFeedback
   applauseSfx:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 1672658437
+      Data2: 1193939531
+      Data3: -1563270214
+      Data4: -466180315
+    Path: event:/Applause
 --- !u!4 &1994237180
 Transform:
   m_ObjectHideFlags: 0
@@ -3737,10 +3875,7 @@ SceneRoots:
   - {fileID: 1002030181}
   - {fileID: 232907754}
   - {fileID: 1256504192}
-  - {fileID: 186669266}
-  - {fileID: 99312288}
-  - {fileID: 1194257172}
-  - {fileID: 1674516856}
+  - {fileID: 1122064266}
   - {fileID: 1464137047}
   - {fileID: 1994237180}
   - {fileID: 236943012}

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-8416314202321253839
+--- !u!114 &-8528984251820185133
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Playing Horn/ExtraLayer3Active
+  m_Name: parameter:/PlayingHorn/ExtraLayer3Active
   m_EditorClassIdentifier: 
   Name: ExtraLayer3Active
   StudioPath: 
@@ -18,13 +18,13 @@ MonoBehaviour:
   Max: 1
   Default: 0
   ID:
-    data1: 3388191747
-    data2: 3407988805
+    data1: 500596420
+    data2: 2626198927
   Type: 0
   IsGlobal: 0
   Labels: []
   Exists: 1
---- !u!114 &-7075808925633344325
+--- !u!114 &-8132659906545503109
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -33,22 +33,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Playing Horn/ExtraLayer1Active
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/SceneTransition
   m_EditorClassIdentifier: 
-  Name: ExtraLayer1Active
-  StudioPath: 
-  Min: 0
-  Max: 1
-  Default: 0
-  ID:
-    data1: 4225123485
-    data2: 2384207348
-  Type: 0
-  IsGlobal: 0
-  Labels: []
-  Exists: 1
---- !u!114 &-6144786447495321821
+  Path: event:/SceneTransition
+  Guid:
+    Data1: 637220998
+    Data2: 1252325401
+    Data3: 487951788
+    Data4: 280636528
+  Banks:
+  - {fileID: 519202417374233294}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 10000
+--- !u!114 &-7800340219973280094
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -58,7 +61,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Playing Horn/ExtraLayer2Active
+  m_Name: parameter:/PlayingHorn/ExtraLayer2Active
   m_EditorClassIdentifier: 
   Name: ExtraLayer2Active
   StudioPath: 
@@ -66,13 +69,67 @@ MonoBehaviour:
   Max: 1
   Default: 0
   ID:
-    data1: 2092704289
-    data2: 2070123661
+    data1: 1881817650
+    data2: 3681114905
   Type: 0
   IsGlobal: 0
   Labels: []
   Exists: 1
---- !u!114 &-5140802781580567163
+--- !u!114 &-7033315270103458866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Garden
+  m_EditorClassIdentifier: 
+  Path: event:/Garden
+  Guid:
+    Data1: -983360189
+    Data2: 1141989873
+    Data3: 1094734758
+    Data4: -1991508723
+  Banks:
+  - {fileID: 1078887878910137133}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 203400
+--- !u!114 &-5506557130868732368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MuseumBGM
+  m_EditorClassIdentifier: 
+  Path: event:/MuseumBGM
+  Guid:
+    Data1: -410316644
+    Data2: 1244891558
+    Data3: 63293605
+    Data4: -53347697
+  Banks:
+  - {fileID: 1196903846730683076}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 116000
+--- !u!114 &-3645397200932462346
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -82,7 +139,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Playing Horn/Audio1Volume
+  m_Name: parameter:/PlayingHorn/Audio1Volume
   m_EditorClassIdentifier: 
   Name: Audio1Volume
   StudioPath: 
@@ -90,13 +147,64 @@ MonoBehaviour:
   Max: 1
   Default: 0
   ID:
-    data1: 3344387563
-    data2: 4245718736
+    data1: 3884538111
+    data2: 3301104559
   Type: 0
   IsGlobal: 0
   Labels: []
   Exists: 1
---- !u!114 &-4769211059013360259
+--- !u!114 &-3220079095775984335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/PositiveFeedback
+  m_EditorClassIdentifier: 
+  Path: event:/PositiveFeedback
+  Guid:
+    Data1: 1799102434
+    Data2: 1109929396
+    Data3: 1499638957
+    Data4: -1086095570
+  Banks:
+  - {fileID: 519202417374233294}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-2819577456437149706
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/PlayingHorn/HornAngle
+  m_EditorClassIdentifier: 
+  Name: HornAngle
+  StudioPath: 
+  Min: -90
+  Max: 90
+  Default: -90
+  ID:
+    data1: 685683846
+    data2: 4020265402
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &-1246961612833427097
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -108,71 +216,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
   m_Name: bank:/Master.strings.bank
   m_EditorClassIdentifier: 
-  Path: Assets/StreamingAssets/Desktop/Master.strings.bank
+  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639201399015665764
+  lastModified: 639201616954556559
   FileSizes:
   - Name: Desktop
-    Value: 1372
+    Value: 1570
   Exists: 1
---- !u!114 &-3774204712409152384
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Garden SFX
-  m_EditorClassIdentifier: 
-  Path: event:/Garden SFX
-  Guid:
-    Data1: -1299402854
-    Data2: 1295491250
-    Data3: 285206187
-    Data4: 1603639640
-  Banks:
-  - {fileID: 4180713556636970735}
-  - {fileID: -1922073698551682090}
-  IsStream: 1
-  Is3D: 1
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 203400
---- !u!114 &-2543694835106596887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Taven BGM
-  m_EditorClassIdentifier: 
-  Path: event:/Taven BGM
-  Guid:
-    Data1: -1055413169
-    Data2: 1115565215
-    Data3: -358937208
-    Data4: -135144614
-  Banks:
-  - {fileID: 4180713556636970735}
-  - {fileID: -1922073698551682090}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 69000
---- !u!114 &-1922073698551682090
+--- !u!114 &-344253865430888411
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -182,43 +234,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Desktop/Tower Hamlet's March.bank
+  m_Name: bank:/InteractionMusic.bank
   m_EditorClassIdentifier: 
-  Path: Assets/StreamingAssets/Desktop/Tower Hamlet's March.bank
-  Name: Desktop/Tower Hamlet's March
-  StudioPath: bank:/Tower Hamlet's March
-  lastModified: 639201399016590822
+  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/InteractionMusic.bank
+  Name: InteractionMusic
+  StudioPath: bank:/InteractionMusic
+  lastModified: 639201876875285768
   FileSizes:
   - Name: Desktop
-    Value: 6762656
+    Value: 767168
   Exists: 1
---- !u!114 &-779018633514497230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Museum BGM
-  m_EditorClassIdentifier: 
-  Path: event:/Museum BGM
-  Guid:
-    Data1: 1163090460
-    Data2: 1272713666
-    Data3: 1024834749
-    Data4: 1122043950
-  Banks:
-  - {fileID: -1922073698551682090}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 0
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 116209
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,182 +257,32 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
   EditorBanks:
-  - {fileID: 3353117116400634388}
-  - {fileID: -4769211059013360259}
-  - {fileID: -1922073698551682090}
-  - {fileID: 4180713556636970735}
+  - {fileID: -1246961612833427097}
+  - {fileID: -344253865430888411}
+  - {fileID: 6623334757376438794}
+  - {fileID: 1078887878910137133}
+  - {fileID: 1196903846730683076}
+  - {fileID: 519202417374233294}
+  - {fileID: 7371694254635504345}
   EditorEvents:
   - {fileID: 7791222459457887334}
-  - {fileID: -779018633514497230}
-  - {fileID: 2596825182327220592}
-  - {fileID: 1452685879548947842}
-  - {fileID: -2543694835106596887}
-  - {fileID: 1233742784979950074}
-  - {fileID: -3774204712409152384}
-  - {fileID: 5734049295262451578}
+  - {fileID: 8682651204380966275}
+  - {fileID: 7030914528048031072}
+  - {fileID: -7033315270103458866}
+  - {fileID: 1256308372251812500}
+  - {fileID: 1953657177138567651}
+  - {fileID: -5506557130868732368}
+  - {fileID: 3287849144685589200}
+  - {fileID: -8132659906545503109}
+  - {fileID: -3220079095775984335}
   EditorParameters: []
   MasterBanks:
-  - {fileID: 3353117116400634388}
+  - {fileID: 6623334757376438794}
   StringsBanks:
-  - {fileID: -4769211059013360259}
-  cacheTime: 639201399016590822
+  - {fileID: -1246961612833427097}
+  cacheTime: 639201876877097080
   cacheVersion: 131636
---- !u!114 &1233742784979950074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Fire BGM
-  m_EditorClassIdentifier: 
-  Path: event:/Fire BGM
-  Guid:
-    Data1: -1403959798
-    Data2: 1156800952
-    Data3: 387896746
-    Data4: 828989557
-  Banks:
-  - {fileID: 4180713556636970735}
-  - {fileID: -1922073698551682090}
-  IsStream: 1
-  Is3D: 1
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 79536
---- !u!114 &1452685879548947842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Playing Horn
-  m_EditorClassIdentifier: 
-  Path: event:/Playing Horn
-  Guid:
-    Data1: -716770751
-    Data2: 1127344592
-    Data3: -809684067
-    Data4: 2114306701
-  Banks:
-  - {fileID: -1922073698551682090}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 1
-  Parameters:
-  - {fileID: 6564338235112858606}
-  - {fileID: -7075808925633344325}
-  - {fileID: -6144786447495321821}
-  - {fileID: -8416314202321253839}
-  - {fileID: -5140802781580567163}
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 39338
---- !u!114 &2596825182327220592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Scene Transition
-  m_EditorClassIdentifier: 
-  Path: event:/Scene Transition
-  Guid:
-    Data1: -782291936
-    Data2: 1239579580
-    Data3: -2117665616
-    Data4: -1942480931
-  Banks:
-  - {fileID: -1922073698551682090}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
---- !u!114 &3353117116400634388
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Desktop/Master.bank
-  m_EditorClassIdentifier: 
-  Path: Assets/StreamingAssets/Desktop/Master.bank
-  Name: Desktop/Master
-  StudioPath: bank:/Master
-  lastModified: 639201399015650678
-  FileSizes:
-  - Name: Desktop
-    Value: 1036
-  Exists: 1
---- !u!114 &4180713556636970735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Ambient Sound.bank
-  m_EditorClassIdentifier: 
-  Path: Assets/StreamingAssets/Desktop/Ambient Sound.bank
-  Name: Ambient Sound
-  StudioPath: bank:/Ambient Sound
-  lastModified: 639201399015614677
-  FileSizes:
-  - Name: Desktop
-    Value: 4797312
-  Exists: 1
---- !u!114 &5734049295262451578
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/Outside SFX
-  m_EditorClassIdentifier: 
-  Path: event:/Outside SFX
-  Guid:
-    Data1: -1041104647
-    Data2: 1311960160
-    Data3: 2099268793
-    Data4: 783445314
-  Banks:
-  - {fileID: 4180713556636970735}
-  - {fileID: -1922073698551682090}
-  IsStream: 1
-  Is3D: 1
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 36466
---- !u!114 &6564338235112858606
+--- !u!114 &407813035644869156
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -417,19 +292,227 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
-  m_Name: parameter:/Playing Horn/HornAngle
+  m_Name: parameter:/PlayingHorn/ExtraLayer1Active
   m_EditorClassIdentifier: 
-  Name: HornAngle
+  Name: ExtraLayer1Active
   StudioPath: 
-  Min: -90
-  Max: 90
+  Min: 0
+  Max: 1
   Default: 0
   ID:
-    data1: 3635642876
-    data2: 748419306
+    data1: 2006377567
+    data2: 612304445
   Type: 0
   IsGlobal: 0
   Labels: []
+  Exists: 1
+--- !u!114 &519202417374233294
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/UI2D.bank
+  m_EditorClassIdentifier: 
+  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/UI2D.bank
+  Name: UI2D
+  StudioPath: bank:/UI2D
+  lastModified: 639201876877097080
+  FileSizes:
+  - Name: Desktop
+    Value: 378080
+  Exists: 1
+--- !u!114 &1078887878910137133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Scene3D.bank
+  m_EditorClassIdentifier: 
+  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Scene3D.bank
+  Name: Scene3D
+  StudioPath: bank:/Scene3D
+  lastModified: 639201616987513084
+  FileSizes:
+  - Name: Desktop
+    Value: 4521248
+  Exists: 1
+--- !u!114 &1196903846730683076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/SceneBGM.bank
+  m_EditorClassIdentifier: 
+  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/SceneBGM.bank
+  Name: SceneBGM
+  StudioPath: bank:/SceneBGM
+  lastModified: 639201617003849670
+  FileSizes:
+  - Name: Desktop
+    Value: 1233024
+  Exists: 1
+--- !u!114 &1256308372251812500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/TavernEating
+  m_EditorClassIdentifier: 
+  Path: event:/TavernEating
+  Guid:
+    Data1: 1438684345
+    Data2: 1098277280
+    Data3: 550662837
+    Data4: 708865854
+  Banks:
+  - {fileID: 1078887878910137133}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 9.400001
+  Length: 61000
+--- !u!114 &1953657177138567651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Fireplace
+  m_EditorClassIdentifier: 
+  Path: event:/Fireplace
+  Guid:
+    Data1: -364980514
+    Data2: 1241136308
+    Data3: 1238021544
+    Data4: 130064705
+  Banks:
+  - {fileID: 1078887878910137133}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 79536
+--- !u!114 &3287849144685589200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Applause
+  m_EditorClassIdentifier: 
+  Path: event:/Applause
+  Guid:
+    Data1: 1672658437
+    Data2: 1193939531
+    Data3: -1563270214
+    Data4: -466180315
+  Banks:
+  - {fileID: 519202417374233294}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &6623334757376438794
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639201616954541511
+  FileSizes:
+  - Name: Desktop
+    Value: 1036
+  Exists: 1
+--- !u!114 &7030914528048031072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Outside
+  m_EditorClassIdentifier: 
+  Path: event:/Outside
+  Guid:
+    Data1: 1552937518
+    Data2: 1126027709
+    Data3: -1231892299
+    Data4: 724143758
+  Banks:
+  - {fileID: 1078887878910137133}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 36466
+--- !u!114 &7371694254635504345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Voice.bank
+  m_EditorClassIdentifier: 
+  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Voice.bank
+  Name: Voice
+  StudioPath: bank:/Voice
+  lastModified: 639201617004228466
+  FileSizes:
+  - Name: Desktop
+    Value: 494
   Exists: 1
 --- !u!114 &7791222459457887334
 MonoBehaviour:
@@ -459,3 +542,35 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 61000
+--- !u!114 &8682651204380966275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/PlayingHorn
+  m_EditorClassIdentifier: 
+  Path: event:/PlayingHorn
+  Guid:
+    Data1: -1005633575
+    Data2: 1262648763
+    Data3: 367901857
+    Data4: -777714670
+  Banks:
+  - {fileID: -344253865430888411}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: -3645397200932462346}
+  - {fileID: 407813035644869156}
+  - {fileID: -8528984251820185133}
+  - {fileID: -2819577456437149706}
+  - {fileID: -7800340219973280094}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 40442

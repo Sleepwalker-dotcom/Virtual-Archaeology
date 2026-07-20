@@ -451,10 +451,10 @@ MonoBehaviour:
   m_Name: FMODStudioSettings
   m_EditorClassIdentifier: 
   switchSettingsMigration: 1
-  HasSourceProject: 0
+  HasSourceProject: 1
   HasPlatforms: 1
-  sourceProjectPath: 
-  sourceBankPath: Assets/StreamingAssets
+  sourceProjectPath: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Archaeology_Audio.fspro
+  sourceBankPath: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 5
   ShowBankRefreshWindow: 1
@@ -476,10 +476,13 @@ MonoBehaviour:
   RealChannelSettings: []
   Plugins: []
   MasterBanks:
-  - Desktop/Master
+  - Master
   Banks:
-  - Ambient Sound
-  - Desktop/Tower Hamlet's March
+  - InteractionMusic
+  - Scene3D
+  - SceneBGM
+  - UI2D
+  - Voice
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0
