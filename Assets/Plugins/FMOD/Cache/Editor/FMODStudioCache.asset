@@ -111,11 +111,39 @@ MonoBehaviour:
   Path: Assets/StreamingAssets/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639200159373484944
+  lastModified: 639201399015665764
   FileSizes:
   - Name: Desktop
-    Value: 1206
+    Value: 1372
   Exists: 1
+--- !u!114 &-3774204712409152384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Garden SFX
+  m_EditorClassIdentifier: 
+  Path: event:/Garden SFX
+  Guid:
+    Data1: -1299402854
+    Data2: 1295491250
+    Data3: 285206187
+    Data4: 1603639640
+  Banks:
+  - {fileID: 4180713556636970735}
+  - {fileID: -1922073698551682090}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 203400
 --- !u!114 &-2543694835106596887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,6 +163,7 @@ MonoBehaviour:
     Data3: -358937208
     Data4: -135144614
   Banks:
+  - {fileID: 4180713556636970735}
   - {fileID: -1922073698551682090}
   IsStream: 1
   Is3D: 0
@@ -158,10 +187,10 @@ MonoBehaviour:
   Path: Assets/StreamingAssets/Desktop/Tower Hamlet's March.bank
   Name: Desktop/Tower Hamlet's March
   StudioPath: bank:/Tower Hamlet's March
-  lastModified: 639200159374931900
+  lastModified: 639201399016590822
   FileSizes:
   - Name: Desktop
-    Value: 3004608
+    Value: 6762656
   Exists: 1
 --- !u!114 &-779018633514497230
 MonoBehaviour:
@@ -206,19 +235,51 @@ MonoBehaviour:
   - {fileID: 3353117116400634388}
   - {fileID: -4769211059013360259}
   - {fileID: -1922073698551682090}
+  - {fileID: 4180713556636970735}
   EditorEvents:
   - {fileID: 7791222459457887334}
   - {fileID: -779018633514497230}
   - {fileID: 2596825182327220592}
   - {fileID: 1452685879548947842}
   - {fileID: -2543694835106596887}
+  - {fileID: 1233742784979950074}
+  - {fileID: -3774204712409152384}
+  - {fileID: 5734049295262451578}
   EditorParameters: []
   MasterBanks:
   - {fileID: 3353117116400634388}
   StringsBanks:
   - {fileID: -4769211059013360259}
-  cacheTime: 639200159374931900
+  cacheTime: 639201399016590822
   cacheVersion: 131636
+--- !u!114 &1233742784979950074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Fire BGM
+  m_EditorClassIdentifier: 
+  Path: event:/Fire BGM
+  Guid:
+    Data1: -1403959798
+    Data2: 1156800952
+    Data3: 387896746
+    Data4: 828989557
+  Banks:
+  - {fileID: 4180713556636970735}
+  - {fileID: -1922073698551682090}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 79536
 --- !u!114 &1452685879548947842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,11 +354,59 @@ MonoBehaviour:
   Path: Assets/StreamingAssets/Desktop/Master.bank
   Name: Desktop/Master
   StudioPath: bank:/Master
-  lastModified: 639200159373469847
+  lastModified: 639201399015650678
   FileSizes:
   - Name: Desktop
     Value: 1036
   Exists: 1
+--- !u!114 &4180713556636970735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Ambient Sound.bank
+  m_EditorClassIdentifier: 
+  Path: Assets/StreamingAssets/Desktop/Ambient Sound.bank
+  Name: Ambient Sound
+  StudioPath: bank:/Ambient Sound
+  lastModified: 639201399015614677
+  FileSizes:
+  - Name: Desktop
+    Value: 4797312
+  Exists: 1
+--- !u!114 &5734049295262451578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Outside SFX
+  m_EditorClassIdentifier: 
+  Path: event:/Outside SFX
+  Guid:
+    Data1: -1041104647
+    Data2: 1311960160
+    Data3: 2099268793
+    Data4: 783445314
+  Banks:
+  - {fileID: 4180713556636970735}
+  - {fileID: -1922073698551682090}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 36466
 --- !u!114 &6564338235112858606
 MonoBehaviour:
   m_ObjectHideFlags: 0
