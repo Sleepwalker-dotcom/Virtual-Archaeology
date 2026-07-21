@@ -2806,7 +2806,7 @@ Transform:
   m_GameObject: {fileID: 1217643560}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.35, y: 1.5139999, z: 0}
+  m_LocalPosition: {x: -3.14, y: 1.5139999, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3909,7 +3909,21 @@ PlayableDirector:
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
-  m_SceneBindings: []
+  m_SceneBindings:
+  - key: {fileID: 8155484664304936648, guid: 09878cac83836034cb93f1be47828326, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -5504249597798459803, guid: 09878cac83836034cb93f1be47828326, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 7002949487886793352, guid: 09878cac83836034cb93f1be47828326, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -4171676075041636479, guid: 09878cac83836034cb93f1be47828326, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 4309841744011127488, guid: 09878cac83836034cb93f1be47828326, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 5866415605652470766, guid: 09878cac83836034cb93f1be47828326, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 705423496396298072, guid: 09878cac83836034cb93f1be47828326, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!1 &1464137046
@@ -4205,7 +4219,7 @@ MonoBehaviour:
   socketGuideLight: {fileID: 1217643561}
   completeHornGuideLight: {fileID: 402116606}
   transitionCanvasGroup: {fileID: 303279477}
-  guideLightFadeDuration: 3
+  guideLightFadeDuration: 7
   pieceGuideIntensity: 700
   socketGuideIntensity: 3
   completeHornGuideIntensity: 700
@@ -4223,6 +4237,9 @@ MonoBehaviour:
   onFreeExplorationStarted:
     m_PersistentCalls:
       m_Calls: []
+  enableTestMode: 1
+  testStartPoint: 1
+  logStateChanges: 1
 --- !u!4 &1492328565
 Transform:
   m_ObjectHideFlags: 0
@@ -4437,10 +4454,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ad34abafad169848a38072baa96cdb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_InteractionManager: {fileID: 0}
+  m_InteractionManager: {fileID: 325002604}
   m_Colliders: []
   m_InteractionLayers:
-    m_Bits: 2
+    m_Bits: 1
   m_DistanceCalculationMode: 1
   m_SelectMode: 0
   m_FocusMode: 1
@@ -4499,7 +4516,7 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1

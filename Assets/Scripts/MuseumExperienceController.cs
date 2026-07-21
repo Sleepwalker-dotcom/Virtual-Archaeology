@@ -20,6 +20,17 @@ public sealed class MuseumExperienceController : MonoBehaviour
         FreeExploration
     }
 
+    public enum TestStartPoint
+    {
+        Normal,
+        WaitForPiecePickup,
+        WaitForPieceInsertion,
+        HornRestoration,
+        WaitForHornPickup,
+        EnvironmentTransition,
+        FreeExploration
+    }
+
     public MuseumExperienceState CurrentState { get; private set; }
 
     [Header("Timeline Directors")]
@@ -115,7 +126,14 @@ public sealed class MuseumExperienceController : MonoBehaviour
     [SerializeField]
     private UnityEvent onFreeExplorationStarted;
 
-    [Header("Debug")]
+    [Header("Debug / Testing")]
+    [Tooltip("Start Play Mode directly from the selected experience stage.")]
+    [SerializeField]
+    private bool enableTestMode;
+
+    [SerializeField]
+    private TestStartPoint testStartPoint = TestStartPoint.Normal;
+
     [SerializeField]
     private bool logStateChanges = true;
 
@@ -160,17 +178,183 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
     private void Start()
     {
+        if (enableTestMode &&
+            testStartPoint != TestStartPoint.Normal)
+        {
+            ApplyTestStartPoint(testStartPoint);
+            return;
+        }
+
+        StartNormalExperience();
+    }
+
+    private void StartNormalExperience()
+    {
         SetState(MuseumExperienceState.MuseumIntro);
 
         if (museumIntroDirector != null &&
             museumIntroDirector.playableAsset != null)
         {
+            museumIntroDirector.time = 0d;
             museumIntroDirector.Play();
         }
         else
         {
             UnlockPiece();
         }
+    }
+
+    private void ApplyTestStartPoint(TestStartPoint startPoint)
+    {
+        StopAllTimelines();
+
+        switch (startPoint)
+        {
+            case TestStartPoint.WaitForPiecePickup:
+                StartCoroutine(SetupWaitForPiecePickup());
+                break;
+            case TestStartPoint.WaitForPieceInsertion:
+                SetupWaitForPieceInsertion();
+                break;
+            case TestStartPoint.HornRestoration:
+                SetupHornRestoration();
+                break;
+            case TestStartPoint.WaitForHornPickup:
+                SetupWaitForHornPickup();
+                break;
+            case TestStartPoint.EnvironmentTransition:
+                SetupEnvironmentTransition();
+                break;
+            case TestStartPoint.FreeExploration:
+                SetupFreeExploration();
+                break;
+            default:
+                StartNormalExperience();
+                break;
+        }
+    }
+
+    private IEnumerator SetupWaitForPiecePickup()
+    {
+        ResetProgressFlags();
+        SetCompleteHornState(false, false, false);
+        SetEnabled(pieceSocket, false);
+        SetGuideLights(0f, 0f, 0f);
+        FadeGuidanceLight(
+            ref pieceLightCoroutine,
+            pieceGuideLight,
+            pieceGuideIntensity
+        );
+
+        if (guideLightFadeDuration > 0f)
+        {
+            yield return new WaitForSeconds(
+                guideLightFadeDuration
+            );
+        }
+
+        RestorePieceInteractionState();
+        SetState(MuseumExperienceState.WaitForPiecePickup);
+    }
+
+    private void SetupWaitForPieceInsertion()
+    {
+        ResetProgressFlags();
+        piecePickupHandled = true;
+        RestorePieceInteractionState();
+        SetCompleteHornState(false, false, false);
+        SetEnabled(pieceSocket, true);
+        SetGuideLights(0f, socketGuideIntensity, 0f);
+        SetState(MuseumExperienceState.WaitForPieceInsertion);
+    }
+
+    private void SetupHornRestoration()
+    {
+        ResetProgressFlags();
+        piecePickupHandled = true;
+        pieceInsertionHandled = true;
+        RestorePieceInteractionState();
+        SetCompleteHornState(false, false, false);
+        SetState(MuseumExperienceState.HornRestoration);
+        LockPieceIntoSocket();
+        SetGuideLights(0f, 0f, 0f);
+
+        if (hornRestorationDirector != null &&
+            hornRestorationDirector.playableAsset != null)
+        {
+            hornRestorationDirector.time = 0d;
+            hornRestorationDirector.Play();
+        }
+        else
+        {
+            CommitHornAssembly();
+            CompleteHornRestoration();
+        }
+    }
+
+    private void SetupWaitForHornPickup()
+    {
+        ResetProgressFlags();
+        piecePickupHandled = true;
+        pieceInsertionHandled = true;
+        SetState(MuseumExperienceState.HornRestoration);
+        CommitHornAssembly();
+        HideRestorationVfx();
+        SetCompleteHornState(true, true, false);
+        SetGuideLights(0f, 0f, completeHornGuideIntensity);
+        SetState(MuseumExperienceState.WaitForHornPickup);
+    }
+
+    private void SetupEnvironmentTransition()
+    {
+        ResetProgressFlags();
+        piecePickupHandled = true;
+        pieceInsertionHandled = true;
+        hornPickupHandled = true;
+        SetState(MuseumExperienceState.HornRestoration);
+        CommitHornAssembly();
+        SetCompleteHornState(true, false, false);
+        SetGuideLights(0f, 0f, 0f);
+        SetState(MuseumExperienceState.EnvironmentTransition);
+
+        if (environmentTransitionDirector != null &&
+            environmentTransitionDirector.playableAsset != null)
+        {
+            environmentTransitionDirector.time = 0d;
+            environmentTransitionDirector.Play();
+        }
+        else
+        {
+            BeginEnvironmentAudioTransition();
+            CompleteEnvironmentTransition();
+        }
+    }
+
+    private void SetupFreeExploration()
+    {
+        ResetProgressFlags();
+        piecePickupHandled = true;
+        pieceInsertionHandled = true;
+        hornPickupHandled = true;
+        SetState(MuseumExperienceState.HornRestoration);
+        CommitHornAssembly();
+        SetCompleteHornState(true, true, false);
+        SetGuideLights(0f, 0f, 0f);
+
+        if (transitionCanvasGroup != null)
+        {
+            transitionCanvasGroup.alpha = 0f;
+            transitionCanvasGroup.blocksRaycasts = false;
+        }
+
+        SetState(MuseumExperienceState.EnvironmentTransition);
+
+        if (audioEnvironmentManager != null)
+        {
+            audioEnvironmentManager.SwitchToTavern();
+        }
+
+        CompleteEnvironmentTransition();
     }
 
     private void OnDisable()
@@ -688,6 +872,97 @@ public sealed class MuseumExperienceController : MonoBehaviour
             targetAlpha > 0f;
 
         transitionFadeCoroutine = null;
+    }
+
+    private void StopAllTimelines()
+    {
+        StopTimeline(museumIntroDirector);
+        StopTimeline(hornRestorationDirector);
+        StopTimeline(environmentTransitionDirector);
+    }
+
+    private static void StopTimeline(PlayableDirector director)
+    {
+        if (director == null)
+        {
+            return;
+        }
+
+        if (director.state == PlayState.Playing)
+        {
+            director.Stop();
+        }
+
+        director.time = 0d;
+    }
+
+    private void ResetProgressFlags()
+    {
+        piecePickupHandled = false;
+        pieceInsertionHandled = false;
+        hornPickupHandled = false;
+        assemblyCommitted = false;
+
+        if (restorationVfxRoot != null)
+        {
+            restorationVfxRoot.SetActive(false);
+        }
+    }
+
+    private void RestorePieceInteractionState()
+    {
+        if (pieceRoot != null)
+        {
+            pieceRoot.gameObject.SetActive(true);
+        }
+
+        if (pieceRigidbody != null)
+        {
+            pieceRigidbody.isKinematic = false;
+        }
+
+        if (pieceColliders != null)
+        {
+            foreach (Collider pieceCollider in pieceColliders)
+            {
+                if (pieceCollider != null)
+                {
+                    pieceCollider.enabled = true;
+                }
+            }
+        }
+
+        SetEnabled(pieceGrab, true);
+    }
+
+    private void SetCompleteHornState(
+        bool visible,
+        bool grabEnabled,
+        bool performanceEnabled
+    )
+    {
+        if (completeHornRoot != null)
+        {
+            completeHornRoot.SetActive(visible);
+        }
+
+        SetEnabled(completeHornGrab, grabEnabled);
+
+        if (hornPerformanceController != null)
+        {
+            hornPerformanceController.enabled = performanceEnabled;
+        }
+    }
+
+    private void SetGuideLights(
+        float pieceIntensity,
+        float socketIntensity,
+        float hornIntensity
+    )
+    {
+        SetLightIntensity(pieceGuideLight, pieceIntensity);
+        SetLightIntensity(socketGuideLight, socketIntensity);
+        SetLightIntensity(completeHornGuideLight, hornIntensity);
     }
 
     // =========================================================
