@@ -1,5 +1,25 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8781515992350634487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639203436416937538
+  FileSizes:
+  - Name: Desktop
+    Value: 1036
+  Exists: 1
 --- !u!114 &-8528984251820185133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43,7 +63,7 @@ MonoBehaviour:
     Data3: 487951788
     Data4: 280636528
   Banks:
-  - {fileID: 519202417374233294}
+  - {fileID: 1161653169878846475}
   IsStream: 1
   Is3D: 0
   IsOneShot: 1
@@ -94,7 +114,7 @@ MonoBehaviour:
     Data3: 1094734758
     Data4: -1991508723
   Banks:
-  - {fileID: 1078887878910137133}
+  - {fileID: 2863456184758795240}
   IsStream: 1
   Is3D: 1
   IsOneShot: 0
@@ -102,6 +122,26 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 15
   Length: 203400
+--- !u!114 &-5670397373579388100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/SceneBGM.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Desktop/SceneBGM.bank
+  Name: SceneBGM
+  StudioPath: bank:/SceneBGM
+  lastModified: 639203436418241307
+  FileSizes:
+  - Name: Desktop
+    Value: 1233024
+  Exists: 1
 --- !u!114 &-5506557130868732368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,7 +161,7 @@ MonoBehaviour:
     Data3: 63293605
     Data4: -53347697
   Banks:
-  - {fileID: 1196903846730683076}
+  - {fileID: -5670397373579388100}
   IsStream: 1
   Is3D: 0
   IsOneShot: 1
@@ -172,7 +212,7 @@ MonoBehaviour:
     Data3: 1499638957
     Data4: -1086095570
   Banks:
-  - {fileID: 519202417374233294}
+  - {fileID: 1161653169878846475}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -204,46 +244,6 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
---- !u!114 &-1246961612833427097
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.strings.bank
-  m_EditorClassIdentifier: 
-  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Master.strings.bank
-  Name: Master.strings
-  StudioPath: bank:/Master.strings
-  lastModified: 639202789384173147
-  FileSizes:
-  - Name: Desktop
-    Value: 1608
-  Exists: 1
---- !u!114 &-344253865430888411
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/InteractionMusic.bank
-  m_EditorClassIdentifier: 
-  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/InteractionMusic.bank
-  Name: InteractionMusic
-  StudioPath: bank:/InteractionMusic
-  lastModified: 639202723820198812
-  FileSizes:
-  - Name: Desktop
-    Value: 953760
-  Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,13 +257,13 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
   EditorBanks:
-  - {fileID: -1246961612833427097}
-  - {fileID: -344253865430888411}
-  - {fileID: 6623334757376438794}
-  - {fileID: 1078887878910137133}
-  - {fileID: 1196903846730683076}
-  - {fileID: 519202417374233294}
-  - {fileID: 7371694254635504345}
+  - {fileID: 2642882407560019900}
+  - {fileID: 2745255666091697675}
+  - {fileID: -8781515992350634487}
+  - {fileID: 2863456184758795240}
+  - {fileID: -5670397373579388100}
+  - {fileID: 1161653169878846475}
+  - {fileID: 6910451372088602963}
   EditorEvents:
   - {fileID: 7791222459457887334}
   - {fileID: 8682651204380966275}
@@ -278,10 +278,10 @@ MonoBehaviour:
   - {fileID: 2006491208667310224}
   EditorParameters: []
   MasterBanks:
-  - {fileID: 6623334757376438794}
+  - {fileID: -8781515992350634487}
   StringsBanks:
-  - {fileID: -1246961612833427097}
-  cacheTime: 639202789386045096
+  - {fileID: 2642882407560019900}
+  cacheTime: 639203436424013480
   cacheVersion: 131636
 --- !u!114 &407813035644869156
 MonoBehaviour:
@@ -307,7 +307,7 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
---- !u!114 &519202417374233294
+--- !u!114 &1161653169878846475
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -319,53 +319,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
   m_Name: bank:/UI2D.bank
   m_EditorClassIdentifier: 
-  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/UI2D.bank
+  Path: FMODBanks/Desktop/UI2D.bank
   Name: UI2D
   StudioPath: bank:/UI2D
-  lastModified: 639202746183809229
+  lastModified: 639203436417017501
   FileSizes:
   - Name: Desktop
     Value: 340992
-  Exists: 1
---- !u!114 &1078887878910137133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Scene3D.bank
-  m_EditorClassIdentifier: 
-  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Scene3D.bank
-  Name: Scene3D
-  StudioPath: bank:/Scene3D
-  lastModified: 639202722158387025
-  FileSizes:
-  - Name: Desktop
-    Value: 4521248
-  Exists: 1
---- !u!114 &1196903846730683076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/SceneBGM.bank
-  m_EditorClassIdentifier: 
-  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/SceneBGM.bank
-  Name: SceneBGM
-  StudioPath: bank:/SceneBGM
-  lastModified: 639202722173747901
-  FileSizes:
-  - Name: Desktop
-    Value: 1233024
   Exists: 1
 --- !u!114 &1256308372251812500
 MonoBehaviour:
@@ -386,7 +346,7 @@ MonoBehaviour:
     Data3: 550662837
     Data4: 708865854
   Banks:
-  - {fileID: 1078887878910137133}
+  - {fileID: 2863456184758795240}
   IsStream: 1
   Is3D: 1
   IsOneShot: 0
@@ -413,7 +373,7 @@ MonoBehaviour:
     Data3: 1238021544
     Data4: 130064705
   Banks:
-  - {fileID: 1078887878910137133}
+  - {fileID: 2863456184758795240}
   IsStream: 1
   Is3D: 1
   IsOneShot: 0
@@ -440,7 +400,7 @@ MonoBehaviour:
     Data3: 1899002004
     Data4: -2069320262
   Banks:
-  - {fileID: 7371694254635504345}
+  - {fileID: 6910451372088602963}
   IsStream: 1
   Is3D: 0
   IsOneShot: 1
@@ -448,6 +408,66 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 43914
+--- !u!114 &2642882407560019900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 639203436414067217
+  FileSizes:
+  - Name: Desktop
+    Value: 1608
+  Exists: 1
+--- !u!114 &2745255666091697675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/InteractionMusic.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Desktop/InteractionMusic.bank
+  Name: InteractionMusic
+  StudioPath: bank:/InteractionMusic
+  lastModified: 639203436419300541
+  FileSizes:
+  - Name: Desktop
+    Value: 953760
+  Exists: 1
+--- !u!114 &2863456184758795240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Scene3D.bank
+  m_EditorClassIdentifier: 
+  Path: FMODBanks/Desktop/Scene3D.bank
+  Name: Scene3D
+  StudioPath: bank:/Scene3D
+  lastModified: 639203436424013480
+  FileSizes:
+  - Name: Desktop
+    Value: 4521248
+  Exists: 1
 --- !u!114 &3287849144685589200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -467,7 +487,7 @@ MonoBehaviour:
     Data3: -1563270214
     Data4: -466180315
   Banks:
-  - {fileID: 519202417374233294}
+  - {fileID: 1161653169878846475}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -475,7 +495,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &6623334757376438794
+--- !u!114 &6910451372088602963
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -485,15 +505,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.bank
+  m_Name: bank:/Voice.bank
   m_EditorClassIdentifier: 
-  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Master.bank
-  Name: Master
-  StudioPath: bank:/Master
-  lastModified: 639202789384152797
+  Path: FMODBanks/Desktop/Voice.bank
+  Name: Voice
+  StudioPath: bank:/Voice
+  lastModified: 639203436414649346
   FileSizes:
   - Name: Desktop
-    Value: 1036
+    Value: 308704
   Exists: 1
 --- !u!114 &7030914528048031072
 MonoBehaviour:
@@ -514,7 +534,7 @@ MonoBehaviour:
     Data3: -1231892299
     Data4: 724143758
   Banks:
-  - {fileID: 1078887878910137133}
+  - {fileID: 2863456184758795240}
   IsStream: 1
   Is3D: 1
   IsOneShot: 0
@@ -522,26 +542,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 5.6
   Length: 36466
---- !u!114 &7371694254635504345
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Voice.bank
-  m_EditorClassIdentifier: 
-  Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Voice.bank
-  Name: Voice
-  StudioPath: bank:/Voice
-  lastModified: 639202789386045096
-  FileSizes:
-  - Name: Desktop
-    Value: 308704
-  Exists: 1
 --- !u!114 &7791222459457887334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -589,7 +589,7 @@ MonoBehaviour:
     Data3: 367901857
     Data4: -777714670
   Banks:
-  - {fileID: -344253865430888411}
+  - {fileID: 2745255666091697675}
   IsStream: 1
   Is3D: 0
   IsOneShot: 1
