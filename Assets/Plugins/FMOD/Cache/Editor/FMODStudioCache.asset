@@ -100,7 +100,7 @@ MonoBehaviour:
   IsOneShot: 0
   Parameters: []
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 15
   Length: 203400
 --- !u!114 &-5506557130868732368
 MonoBehaviour:
@@ -219,10 +219,10 @@ MonoBehaviour:
   Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639201616954556559
+  lastModified: 639202789384173147
   FileSizes:
   - Name: Desktop
-    Value: 1570
+    Value: 1608
   Exists: 1
 --- !u!114 &-344253865430888411
 MonoBehaviour:
@@ -239,10 +239,10 @@ MonoBehaviour:
   Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/InteractionMusic.bank
   Name: InteractionMusic
   StudioPath: bank:/InteractionMusic
-  lastModified: 639201876875285768
+  lastModified: 639202723820198812
   FileSizes:
   - Name: Desktop
-    Value: 767168
+    Value: 953760
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -275,12 +275,13 @@ MonoBehaviour:
   - {fileID: 3287849144685589200}
   - {fileID: -8132659906545503109}
   - {fileID: -3220079095775984335}
+  - {fileID: 2006491208667310224}
   EditorParameters: []
   MasterBanks:
   - {fileID: 6623334757376438794}
   StringsBanks:
   - {fileID: -1246961612833427097}
-  cacheTime: 639201876877097080
+  cacheTime: 639202789386045096
   cacheVersion: 131636
 --- !u!114 &407813035644869156
 MonoBehaviour:
@@ -321,10 +322,10 @@ MonoBehaviour:
   Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/UI2D.bank
   Name: UI2D
   StudioPath: bank:/UI2D
-  lastModified: 639201876877097080
+  lastModified: 639202746183809229
   FileSizes:
   - Name: Desktop
-    Value: 378080
+    Value: 340992
   Exists: 1
 --- !u!114 &1078887878910137133
 MonoBehaviour:
@@ -341,7 +342,7 @@ MonoBehaviour:
   Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Scene3D.bank
   Name: Scene3D
   StudioPath: bank:/Scene3D
-  lastModified: 639201616987513084
+  lastModified: 639202722158387025
   FileSizes:
   - Name: Desktop
     Value: 4521248
@@ -361,7 +362,7 @@ MonoBehaviour:
   Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/SceneBGM.bank
   Name: SceneBGM
   StudioPath: bank:/SceneBGM
-  lastModified: 639201617003849670
+  lastModified: 639202722173747901
   FileSizes:
   - Name: Desktop
     Value: 1233024
@@ -418,8 +419,35 @@ MonoBehaviour:
   IsOneShot: 0
   Parameters: []
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 8
   Length: 79536
+--- !u!114 &2006491208667310224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/01_Intro
+  m_EditorClassIdentifier: 
+  Path: event:/01_Intro
+  Guid:
+    Data1: -431659014
+    Data2: 1206676383
+    Data3: 1899002004
+    Data4: -2069320262
+  Banks:
+  - {fileID: 7371694254635504345}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 43914
 --- !u!114 &3287849144685589200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -462,7 +490,7 @@ MonoBehaviour:
   Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639201616954541511
+  lastModified: 639202789384152797
   FileSizes:
   - Name: Desktop
     Value: 1036
@@ -492,7 +520,7 @@ MonoBehaviour:
   IsOneShot: 0
   Parameters: []
   MinDistance: 1
-  MaxDistance: 20
+  MaxDistance: 5.6
   Length: 36466
 --- !u!114 &7371694254635504345
 MonoBehaviour:
@@ -509,10 +537,10 @@ MonoBehaviour:
   Path: E:/Goldsmiths/Virtual Archaeology/Archaeology_Audio/Build/Desktop/Voice.bank
   Name: Voice
   StudioPath: bank:/Voice
-  lastModified: 639201617004228466
+  lastModified: 639202789386045096
   FileSizes:
   - Name: Desktop
-    Value: 494
+    Value: 308704
   Exists: 1
 --- !u!114 &7791222459457887334
 MonoBehaviour:
@@ -573,4 +601,4 @@ MonoBehaviour:
   - {fileID: -7800340219973280094}
   MinDistance: 1
   MaxDistance: 20
-  Length: 40442
+  Length: 41712

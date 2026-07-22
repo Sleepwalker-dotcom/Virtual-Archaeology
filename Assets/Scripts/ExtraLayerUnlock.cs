@@ -13,6 +13,10 @@ public class ExtraLayerUnlock
     [Header("Trigger Object")]
     public GameObject triggerObject;
 
+    [Header("Round Reveal Object")]
+    [Tooltip("Visual object revealed automatically when this layer's round starts.")]
+    public GameObject newItemObject;
+
     [Header("Glow Renderers")]
     public Renderer[] glowRenderers;
     public Color glowColor = Color.cyan;

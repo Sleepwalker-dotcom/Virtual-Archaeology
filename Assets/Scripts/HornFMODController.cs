@@ -17,6 +17,12 @@ public class HornMusicSegment
 
 public class HornFMODController : MonoBehaviour
 {
+    public enum HornPlaybackMode
+    {
+        AngleSegmentMode,
+        ShakeSpeedMode
+    }
+
     [Header("FMOD Event")]
     public EventReference hornEvent;
 
@@ -92,8 +98,26 @@ public class HornFMODController : MonoBehaviour
     public int startSegmentIndex;
 
     [Header("Round Settings")]
-    public int totalRounds = 5;
+    public int totalRounds = 4;
     public int currentRoundIndex;
+    public HornPlaybackMode currentPlaybackMode;
+
+    [Header("Shake Speed Mode - Rounds 2 to 4")]
+    public Transform shakeTrackedObject;
+    public Transform shakeReferenceHead;
+    public float minSideShakeSpeed = 0.05f;
+    public float maxSideShakeSpeed = 1.2f;
+    public float minPlaybackRate = 0.4f;
+    public float maxPlaybackRate = 1.4f;
+    public float shakeSmoothing = 8f;
+    public int wholeMusicStartMs;
+    [Tooltip("0 uses the end time of the last existing segment.")]
+    public int wholeMusicEndMs;
+
+    [Header("Shake Speed Runtime")]
+    [SerializeField] private float rawSideShakeSpeed;
+    [SerializeField] private float shakeSpeed01;
+    [SerializeField] private float currentPlaybackRate = 1f;
 
     [Header("Extra Layers")]
     public ExtraLayerUnlock[] extraLayers =
@@ -160,6 +184,8 @@ public class HornFMODController : MonoBehaviour
     private float currentAudio1Volume = 0f;
     private float lastAppliedAudio1Volume = -1f;
     private float lastAudio1VolumeDistance = 0f;
+    private Vector3 previousShakePosition;
+    private float manualTimelinePositionMs;
 
     private HornMusicSegment CurrentSegment
     {
@@ -175,6 +201,20 @@ public class HornFMODController : MonoBehaviour
     private void Awake()
     {
         CacheGrabInteractableIfNeeded();
+    }
+
+    private void OnValidate()
+    {
+        totalRounds = 4;
+
+        if (extraLayers == null)
+            return;
+
+        for (int i = 0; i < extraLayers.Length; i++)
+        {
+            if (extraLayers[i] != null)
+                extraLayers[i].unlockRoundIndex = i + 1;
+        }
     }
 
     private void OnEnable()
@@ -230,7 +270,7 @@ public class HornFMODController : MonoBehaviour
         if (!isActivated || isComplete || !eventCreated)
             return;
 
-        if (playerHead == null || hornObject == null || CurrentSegment == null)
+        if (playerHead == null || hornObject == null)
             return;
 
         ApplyMouthpieceLock();
@@ -239,13 +279,24 @@ public class HornFMODController : MonoBehaviour
         SendParametersToFMOD();
         Update3DPosition();
 
-        bool angleOK = IsAngleInRange(CurrentSegment);
         bool mouthpieceOK = isMouthpieceSnapped;
 
-        HandlePlayPause(mouthpieceOK && angleOK);
-        CheckSegmentEnd();
-        UpdateGuideUI(mouthpieceOK, angleOK);
-        DebugRuntimeValues(mouthpieceOK, angleOK);
+        if (currentPlaybackMode == HornPlaybackMode.AngleSegmentMode)
+        {
+            if (CurrentSegment == null)
+                return;
+
+            bool angleOK = IsAngleInRange(CurrentSegment);
+            HandlePlayPause(mouthpieceOK && angleOK);
+            CheckSegmentEnd();
+            UpdateGuideUI(mouthpieceOK, angleOK);
+            DebugRuntimeValues(mouthpieceOK, angleOK);
+        }
+        else
+        {
+            UpdateShakeSpeedMode(mouthpieceOK);
+            DebugRuntimeValues(mouthpieceOK, true);
+        }
     }
 
     public void ActivateHorn()
@@ -273,6 +324,7 @@ public class HornFMODController : MonoBehaviour
 
         isActivated = true;
         isPlaying = false;
+        totalRounds = 4;
         currentRoundIndex = 0;
         currentSegmentIndex = Mathf.Clamp(startSegmentIndex, 0, segments.Length - 1);
 
@@ -285,11 +337,8 @@ public class HornFMODController : MonoBehaviour
             return;
 
         ResetExtraLayers();
-        UpdateRoundState();
+        StartRound(0);
         SetGuideVisible(true);
-        SetGuideSegment();
-        JumpToCurrentSegmentStart();
-        PauseEvent();
 
         Log("Horn activated. FMOD event is paused at the current segment start.");
     }
@@ -425,11 +474,227 @@ public class HornFMODController : MonoBehaviour
             if (layer.triggerObject != null)
                 layer.triggerObject.SetActive(false);
 
+            if (layer.newItemObject != null)
+                layer.newItemObject.SetActive(false);
+
             if (eventCreated)
                 SetExtraLayerParameter(layer, 0f, "Reset " + layer.fmodParameterName);
         }
 
         Log("All extra layers reset.");
+    }
+
+    private void StartRound(int roundIndex)
+    {
+        currentRoundIndex = roundIndex;
+        currentSegmentIndex = 0;
+
+        if (currentRoundIndex == 0)
+        {
+            currentPlaybackMode = HornPlaybackMode.AngleSegmentMode;
+            JumpToCurrentSegmentStart();
+            PauseEvent();
+            SetGuideSegment();
+            Log("Round 1 started: existing angle segment mode preserved.");
+            return;
+        }
+
+        currentPlaybackMode = HornPlaybackMode.ShakeSpeedMode;
+        RevealItemAndUnlockLayerForRound(currentRoundIndex);
+        JumpToWholeMusicStart();
+        InitializeShakeTracking();
+        PauseEvent();
+        UpdateShakeGuide();
+
+        Log(
+            "Round " + (currentRoundIndex + 1) +
+            " started: shake speed mode."
+        );
+    }
+
+    private void RevealItemAndUnlockLayerForRound(int roundIndex)
+    {
+        int layerIndex = roundIndex - 1;
+
+        if (extraLayers == null ||
+            layerIndex < 0 ||
+            layerIndex >= extraLayers.Length)
+        {
+            Debug.LogWarning(
+                "[HornFMODController] No extra layer configured for round " +
+                (roundIndex + 1) + ".",
+                this
+            );
+            return;
+        }
+
+        ExtraLayerUnlock layer = extraLayers[layerIndex];
+
+        if (layer == null)
+            return;
+
+        if (layer.newItemObject != null)
+            layer.newItemObject.SetActive(true);
+
+        layer.unlocked = true;
+
+        if (eventCreated &&
+            SetExtraLayerParameter(
+                layer,
+                1f,
+                "Unlock " + layer.fmodParameterName
+            ))
+        {
+            layer.activated = true;
+        }
+
+        Log("Revealed item and unlocked layer: " + layer.layerName);
+    }
+
+    private void JumpToWholeMusicStart()
+    {
+        manualTimelinePositionMs = wholeMusicStartMs;
+
+        if (!eventCreated)
+            return;
+
+        CheckFMODResult(
+            hornInstance.setTimelinePosition(wholeMusicStartMs),
+            "setTimelinePosition to whole music start"
+        );
+    }
+
+    private void InitializeShakeTracking()
+    {
+        if (shakeTrackedObject == null)
+            shakeTrackedObject = hornObject;
+
+        if (shakeReferenceHead == null)
+            shakeReferenceHead = playerHead;
+
+        previousShakePosition = shakeTrackedObject != null
+            ? shakeTrackedObject.position
+            : Vector3.zero;
+
+        rawSideShakeSpeed = 0f;
+        shakeSpeed01 = 0f;
+        currentPlaybackRate = minPlaybackRate;
+    }
+
+    private void UpdateShakeSpeedMode(bool mouthpieceOK)
+    {
+        UpdateShakeSpeed();
+        HandlePlayPause(mouthpieceOK);
+
+        if (!mouthpieceOK)
+        {
+            UpdateShakeGuide();
+            return;
+        }
+
+        AdvanceTimelineByShakeSpeed();
+        CheckWholeMusicEnd();
+        UpdateShakeGuide();
+    }
+
+    private void UpdateShakeSpeed()
+    {
+        if (shakeTrackedObject == null || shakeReferenceHead == null)
+            return;
+
+        Vector3 currentPosition = shakeTrackedObject.position;
+        Vector3 velocity =
+            (currentPosition - previousShakePosition) /
+            Mathf.Max(Time.deltaTime, 0.0001f);
+
+        rawSideShakeSpeed = Mathf.Abs(
+            Vector3.Dot(velocity, shakeReferenceHead.right)
+        );
+
+        float target01 = Mathf.Clamp01(
+            Mathf.InverseLerp(
+                minSideShakeSpeed,
+                maxSideShakeSpeed,
+                rawSideShakeSpeed
+            )
+        );
+
+        shakeSpeed01 = Mathf.Lerp(
+            shakeSpeed01,
+            target01,
+            Time.deltaTime * shakeSmoothing
+        );
+
+        currentPlaybackRate = Mathf.Lerp(
+            minPlaybackRate,
+            maxPlaybackRate,
+            shakeSpeed01
+        );
+
+        previousShakePosition = currentPosition;
+    }
+
+    private void AdvanceTimelineByShakeSpeed()
+    {
+        manualTimelinePositionMs +=
+            Time.deltaTime * 1000f * currentPlaybackRate;
+
+        int resolvedEndMs = GetWholeMusicEndMs();
+
+        manualTimelinePositionMs = Mathf.Min(
+            manualTimelinePositionMs,
+            resolvedEndMs
+        );
+
+        CheckFMODResult(
+            hornInstance.setTimelinePosition(
+                Mathf.RoundToInt(manualTimelinePositionMs)
+            ),
+            "setTimelinePosition from shake speed"
+        );
+    }
+
+    private void CheckWholeMusicEnd()
+    {
+        if (manualTimelinePositionMs < GetWholeMusicEndMs())
+            return;
+
+        GoToNextRoundOrComplete();
+    }
+
+    private int GetWholeMusicEndMs()
+    {
+        if (wholeMusicEndMs > wholeMusicStartMs)
+            return wholeMusicEndMs;
+
+        if (segments != null && segments.Length > 0)
+            return Mathf.Max(wholeMusicStartMs, segments[segments.Length - 1].endTimeMs);
+
+        return wholeMusicStartMs;
+    }
+
+    private void UpdateShakeGuide()
+    {
+        if (segmentText != null)
+        {
+            segmentText.text =
+                "Round " + (currentRoundIndex + 1) + "/" + totalRounds +
+                " - Shake Speed Mode";
+        }
+
+        if (angleRangeText != null)
+        {
+            angleRangeText.text =
+                "Side speed: " + rawSideShakeSpeed.ToString("F2") +
+                " m/s | Playback: " + currentPlaybackRate.ToString("F2") + "x";
+        }
+
+        if (statusText != null)
+        {
+            statusText.text = isMouthpieceSnapped
+                ? "Shake left and right"
+                : "Bring mouthpiece to mouth";
+        }
     }
 
     private void UpdateRoundState()
@@ -757,13 +1022,7 @@ public class HornFMODController : MonoBehaviour
             return;
         }
 
-        currentSegmentIndex = 0;
-        JumpToCurrentSegmentStart();
-        PauseEvent();
-        UpdateRoundState();
-        SetGuideSegment();
-
-        Log("Started Round " + (currentRoundIndex + 1) + " / " + totalRounds);
+        StartRound(currentRoundIndex);
     }
 
     private void CompleteExperience()

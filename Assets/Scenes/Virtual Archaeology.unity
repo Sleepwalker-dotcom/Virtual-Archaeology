@@ -1338,7 +1338,7 @@ MonoBehaviour:
   lockMouthpieceToHead: 1
   mouthpieceHeadLocalOffset: {x: 0, y: -0.08, z: 0.12}
   requireGrabBeforeMouthpieceLock: 1
-  mouthpieceSnapDistance: 0.18
+  mouthpieceSnapDistance: 0.1
   hornGrabInteractable: {fileID: 1708524454}
   segments:
   - segmentName: Phrase 1
