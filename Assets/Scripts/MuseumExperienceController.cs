@@ -482,25 +482,34 @@ public sealed class MuseumExperienceController : MonoBehaviour
         }
 
         piecePickupHandled = true;
+        pieceInsertionHandled = true;
 
-        SetState(MuseumExperienceState.WaitForPieceInsertion);
+        SetState(MuseumExperienceState.HornRestoration);
+        LockPieceIntoSocket();
 
-        // 开启 Horn 缺口的 Socket。
-        SetEnabled(pieceSocket, true);
-
-        // Piece 灯熄灭。
         FadeGuidanceLight(
             ref pieceLightCoroutine,
             pieceGuideLight,
             0f
         );
 
-        // Socket 灯按照独立亮度设置渐亮。
         FadeGuidanceLight(
             ref socketLightCoroutine,
             socketGuideLight,
-            socketGuideIntensity
+            0f
         );
+
+        if (hornRestorationDirector != null &&
+            hornRestorationDirector.playableAsset != null)
+        {
+            hornRestorationDirector.time = 0d;
+            hornRestorationDirector.Play();
+        }
+        else
+        {
+            CommitHornAssembly();
+            CompleteHornRestoration();
+        }
     }
 
     // =========================================================
