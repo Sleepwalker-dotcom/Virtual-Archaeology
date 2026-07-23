@@ -21,6 +21,7 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
     [SerializeField] private GameObject tavernEnvironmentRoot;
 
     [Header("Optional Audio Zone Roots")]
+    [SerializeField] private GameObject scene3DAudioSourcesRoot;
     [SerializeField] private GameObject scene3DAudioZonesRoot;
 
     [Header("FMOD Events")]
@@ -37,6 +38,7 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
     [SerializeField] private bool isSwitching;
 
     private EventInstance museumBgmInstance;
+    private EventInstance sceneTransitionInstance;
     private Coroutine switchRoutine;
 
     private void Start()
@@ -111,17 +113,25 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
     private IEnumerator SwitchEnvironmentRoutine(EnvironmentState targetEnvironment)
     {
         isSwitching = true;
+        SetScene3DAudioActive(false);
 
         if (currentEnvironment == EnvironmentState.Museum && museumBgmIsPlaying)
             yield return FadeOutAndStopMuseumBGM();
 
-        PlaySceneTransition();
+        bool transitionStarted = StartTrackedSceneTransition();
 
         if (environmentSwitchDelay > 0f)
             yield return new WaitForSeconds(environmentSwitchDelay);
 
-        ApplyEnvironmentImmediate(targetEnvironment);
+        ApplyEnvironmentRoots(targetEnvironment);
         currentEnvironment = targetEnvironment;
+
+        if (transitionStarted)
+            yield return WaitForSceneTransitionToFinish();
+
+        SetScene3DAudioActive(
+            targetEnvironment == EnvironmentState.Tavern
+        );
 
         if (targetEnvironment == EnvironmentState.Museum && restartMuseumBgmWhenBackToMuseum)
             StartMuseumBGM();
@@ -153,6 +163,14 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
 
     private void ApplyEnvironmentImmediate(EnvironmentState environmentState)
     {
+        ApplyEnvironmentRoots(environmentState);
+        SetScene3DAudioActive(
+            environmentState == EnvironmentState.Tavern
+        );
+    }
+
+    private void ApplyEnvironmentRoots(EnvironmentState environmentState)
+    {
         bool museumActive = environmentState == EnvironmentState.Museum;
 
         if (museumEnvironmentRoot != null)
@@ -160,15 +178,100 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
 
         if (tavernEnvironmentRoot != null)
             tavernEnvironmentRoot.SetActive(!museumActive);
+    }
+
+    private void SetScene3DAudioActive(bool active)
+    {
+        if (scene3DAudioSourcesRoot != null)
+            scene3DAudioSourcesRoot.SetActive(active);
 
         if (scene3DAudioZonesRoot != null)
-            scene3DAudioZonesRoot.SetActive(!museumActive);
+            scene3DAudioZonesRoot.SetActive(active);
+    }
+
+    private bool StartTrackedSceneTransition()
+    {
+        if (sceneTransitionEvent.IsNull)
+        {
+            Debug.LogWarning(
+                "[SingleSceneAudioEnvironmentManager] Scene Transition event is not assigned.",
+                this
+            );
+            return false;
+        }
+
+        sceneTransitionInstance =
+            RuntimeManager.CreateInstance(sceneTransitionEvent);
+
+        if (!sceneTransitionInstance.isValid())
+        {
+            Debug.LogError(
+                "[SingleSceneAudioEnvironmentManager] Scene Transition instance is invalid.",
+                this
+            );
+            return false;
+        }
+
+        FMOD.RESULT result = sceneTransitionInstance.start();
+
+        if (result != FMOD.RESULT.OK)
+        {
+            Debug.LogError(
+                "[SingleSceneAudioEnvironmentManager] Failed to start Scene Transition: " +
+                result,
+                this
+            );
+            sceneTransitionInstance.release();
+            sceneTransitionInstance.clearHandle();
+            return false;
+        }
+
+        return true;
+    }
+
+    private IEnumerator WaitForSceneTransitionToFinish()
+    {
+        while (sceneTransitionInstance.isValid())
+        {
+            FMOD.RESULT result =
+                sceneTransitionInstance.getPlaybackState(
+                    out PLAYBACK_STATE playbackState
+                );
+
+            if (result != FMOD.RESULT.OK ||
+                playbackState == PLAYBACK_STATE.STOPPED)
+            {
+                break;
+            }
+
+            yield return null;
+        }
+
+        if (sceneTransitionInstance.isValid())
+        {
+            sceneTransitionInstance.release();
+            sceneTransitionInstance.clearHandle();
+        }
+
+        Debug.Log(
+            "[SingleSceneAudioEnvironmentManager] Scene Transition finished; Scene3D audio enabled.",
+            this
+        );
     }
 
     private void OnDestroy()
     {
         if (switchRoutine != null)
             StopCoroutine(switchRoutine);
+
+        if (sceneTransitionInstance.isValid())
+        {
+            sceneTransitionInstance.stop(
+                FMOD.Studio.STOP_MODE.IMMEDIATE
+            );
+            sceneTransitionInstance.release();
+            sceneTransitionInstance.clearHandle();
+        }
 
         if (!museumBgmInstance.isValid())
             return;

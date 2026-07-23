@@ -3778,7 +3778,7 @@ MonoBehaviour:
   mouthpieceHeadLocalOffset: {x: 0, y: -0.08, z: 0.12}
   requireGrabBeforeMouthpieceLock: 1
   mouthpieceSnapDistance: 0.05
-  mouthpieceUnsnapDistance: 0.2
+  mouthpieceUnsnapDistance: 0.15
   hornGrabInteractable: {fileID: 1225532532}
   segments:
   - segmentName: Phrase 1
@@ -3830,6 +3830,21 @@ MonoBehaviour:
   totalRounds: 4
   currentRoundIndex: 0
   currentPlaybackMode: 0
+  onFirstRoundCompleted:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1994237179}
+        m_TargetAssemblyTypeName: FMOD2DSFXPlayer, Assembly-CSharp
+        m_MethodName: PlayApplause
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   shakeTrackedObject: {fileID: 1225532529}
   shakeReferenceHead: {fileID: 1848856746}
   minSideShakeSpeed: 0.03
@@ -4260,6 +4275,7 @@ MonoBehaviour:
   restartMuseumBgmWhenBackToMuseum: 1
   museumEnvironmentRoot: {fileID: 1178589591}
   tavernEnvironmentRoot: {fileID: 563797004}
+  scene3DAudioSourcesRoot: {fileID: 1122064265}
   scene3DAudioZonesRoot: {fileID: 1464137046}
   museumBgmEvent:
     Guid:
