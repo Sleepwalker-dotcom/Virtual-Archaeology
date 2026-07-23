@@ -186,6 +186,7 @@ public class HornFMODController : MonoBehaviour
     private float lastAudio1VolumeDistance = 0f;
     private Vector3 previousShakePosition;
     private float manualTimelinePositionMs;
+    private RectTransform anglePointer;
 
     private HornMusicSegment CurrentSegment
     {
@@ -262,7 +263,9 @@ public class HornFMODController : MonoBehaviour
             Debug.LogWarning("[HornFMODController] Horn Grab Interactable is not assigned. Mouthpiece lock will wait forever unless this is assigned.");
 
         CacheHornRenderersIfNeeded();
-        SetGuideVisible(false);
+
+        if (!isActivated)
+            SetGuideVisible(false);
     }
 
     private void LateUpdate()
@@ -338,7 +341,7 @@ public class HornFMODController : MonoBehaviour
 
         ResetExtraLayers();
         StartRound(0);
-        SetGuideVisible(true);
+        SetGuideVisible(isHornHeld);
 
         Log("Horn activated. FMOD event is paused at the current segment start.");
     }
@@ -892,12 +895,14 @@ public class HornFMODController : MonoBehaviour
         isHornHeld = true;
         isMouthpieceSnapped = false;
         ActivateHorn();
+        SetGuideVisible(true);
         Log("Horn picked up. Mouthpiece snap is now enabled.");
     }
 
     private void OnHornSelectExited(SelectExitEventArgs args)
     {
         SyncGrabState();
+        SetGuideVisible(false);
         Log("Horn released. Mouthpiece snap is disabled.");
     }
 
@@ -1100,17 +1105,17 @@ public class HornFMODController : MonoBehaviour
         canvas.renderMode = RenderMode.WorldSpace;
 
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
-        canvasRect.sizeDelta = new Vector2(560f, 360f);
-        canvasRect.localScale = Vector3.one * 0.0018f;
+        canvasRect.sizeDelta = new Vector2(220f, 620f);
+        canvasRect.localScale = Vector3.one * 0.0015f;
 
         if (playerHead != null)
         {
             canvas.transform.SetParent(playerHead, false);
-            canvas.transform.localPosition = new Vector3(0f, -0.18f, 1.25f);
+            canvas.transform.localPosition = new Vector3(-0.48f, -0.06f, 1.2f);
             canvas.transform.localRotation = Quaternion.identity;
         }
 
-        guidePanel = new GameObject("HornGuidePanel", typeof(Image), typeof(VerticalLayoutGroup), typeof(ContentSizeFitter));
+        guidePanel = new GameObject("HornGuidePanel", typeof(RectTransform));
         guidePanel.transform.SetParent(canvas.transform, false);
 
         RectTransform panelRect = guidePanel.GetComponent<RectTransform>();
@@ -1119,25 +1124,87 @@ public class HornFMODController : MonoBehaviour
         panelRect.offsetMin = Vector2.zero;
         panelRect.offsetMax = Vector2.zero;
 
-        Image panelImage = guidePanel.GetComponent<Image>();
-        panelImage.color = new Color(0.04f, 0.045f, 0.05f, 0.82f);
+        angleSlider = CreateSlider(
+            guidePanel.transform,
+            "AngleSlider",
+            -90f,
+            90f,
+            out angleFillImage,
+            out angleTargetBand
+        );
 
-        VerticalLayoutGroup layout = guidePanel.GetComponent<VerticalLayoutGroup>();
-        layout.padding = new RectOffset(24, 24, 20, 20);
-        layout.spacing = 12f;
-        layout.childControlHeight = true;
-        layout.childControlWidth = true;
-        layout.childForceExpandHeight = false;
+        CreateGuideImage(
+            guidePanel.transform,
+            "HornGuideDepth",
+            "HornGuideFrame",
+            new Color(0.09f, 0.065f, 0.035f, 0.65f),
+            new Vector2(8f, -8f),
+            Vector2.zero
+        );
 
-        guidePanel.GetComponent<ContentSizeFitter>().verticalFit = ContentSizeFitter.FitMode.Unconstrained;
+        CreateGuideImage(
+            guidePanel.transform,
+            "HornGuideFrame",
+            "HornGuideFrame",
+            Color.white,
+            Vector2.zero,
+            Vector2.zero
+        );
 
-        segmentText = CreateText(guidePanel.transform, "SegmentText", 28, FontStyle.Bold);
-        mouthpieceStatusText = CreateText(guidePanel.transform, "MouthpieceStatusText", 22, FontStyle.Bold);
-        angleRangeText = CreateText(guidePanel.transform, "AngleRangeText", 22, FontStyle.Normal);
-        angleSlider = CreateSlider(guidePanel.transform, "AngleSlider", -90f, 90f, out angleFillImage, out angleTargetBand);
-        statusText = CreateText(guidePanel.transform, "StatusText", 24, FontStyle.Bold);
+        anglePointer = CreateGuideImage(
+            guidePanel.transform,
+            "HornGuidePointer",
+            "HornGuidePointer",
+            Color.white,
+            Vector2.zero,
+            new Vector2(92f, 68f)
+        ).GetComponent<RectTransform>();
+
+        UpdatePointerPosition(angleSlider.value);
 
         Log("Auto guide UI created.");
+    }
+
+    private RawImage CreateGuideImage(
+        Transform parent,
+        string objectName,
+        string resourceName,
+        Color color,
+        Vector2 offset,
+        Vector2 size
+    )
+    {
+        RawImage image = new GameObject(objectName, typeof(RawImage)).GetComponent<RawImage>();
+        image.transform.SetParent(parent, false);
+
+        Texture2D texture = Resources.Load<Texture2D>(resourceName);
+        Sprite sprite = texture == null
+            ? Resources.Load<Sprite>(resourceName)
+            : null;
+        image.texture = texture != null
+            ? texture
+            : sprite != null
+                ? sprite.texture
+                : null;
+        image.color = color;
+        image.raycastTarget = false;
+
+        RectTransform rect = image.GetComponent<RectTransform>();
+
+        if (size == Vector2.zero)
+        {
+            Stretch(rect);
+            rect.anchoredPosition = offset;
+        }
+        else
+        {
+            rect.anchorMin = new Vector2(0.66f, 0.13f);
+            rect.anchorMax = new Vector2(0.66f, 0.13f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = size;
+        }
+
+        return image;
     }
 
     private Text CreateText(Transform parent, string name, int fontSize, FontStyle style)
@@ -1164,13 +1231,12 @@ public class HornFMODController : MonoBehaviour
         root.transform.SetParent(parent, false);
 
         RectTransform rootRect = root.GetComponent<RectTransform>();
-        rootRect.sizeDelta = new Vector2(0f, 32f);
+        rootRect.anchorMin = new Vector2(0.42f, 0.13f);
+        rootRect.anchorMax = new Vector2(0.58f, 0.89f);
+        rootRect.offsetMin = Vector2.zero;
+        rootRect.offsetMax = Vector2.zero;
 
-        LayoutElement layoutElement = root.GetComponent<LayoutElement>();
-        layoutElement.minHeight = 32f;
-        layoutElement.preferredHeight = 32f;
-
-        GameObject background = CreateSliderImage(root.transform, "Background", new Color(0.18f, 0.18f, 0.2f, 1f));
+        GameObject background = CreateSliderImage(root.transform, "Background", new Color(0.05f, 0.04f, 0.025f, 0.45f));
         RectTransform backgroundRect = background.GetComponent<RectTransform>();
         Stretch(backgroundRect);
 
@@ -1195,7 +1261,7 @@ public class HornFMODController : MonoBehaviour
         slider.interactable = false;
         slider.fillRect = fillRect;
         slider.targetGraphic = fillImage;
-        slider.direction = Slider.Direction.LeftToRight;
+        slider.direction = Slider.Direction.BottomToTop;
 
         return slider;
     }
@@ -1253,7 +1319,10 @@ public class HornFMODController : MonoBehaviour
         }
 
         if (angleSlider != null)
+        {
             angleSlider.value = smoothedAngle;
+            UpdatePointerPosition(smoothedAngle);
+        }
 
         if (angleFillImage != null)
             angleFillImage.color = angleOK ? inRangeColor : outOfRangeColor;
@@ -1276,14 +1345,25 @@ public class HornFMODController : MonoBehaviour
         float anchorMin = Mathf.Clamp01((minValue - sliderMin) / range);
         float anchorMax = Mathf.Clamp01((maxValue - sliderMin) / range);
 
-        band.anchorMin = new Vector2(anchorMin, 0f);
-        band.anchorMax = new Vector2(anchorMax, 1f);
+        band.anchorMin = new Vector2(0f, anchorMin);
+        band.anchorMax = new Vector2(1f, anchorMax);
         band.offsetMin = Vector2.zero;
         band.offsetMax = Vector2.zero;
 
         Image bandImage = band.GetComponent<Image>();
         if (bandImage != null)
             bandImage.color = targetBandColor;
+    }
+
+    private void UpdatePointerPosition(float value)
+    {
+        if (anglePointer == null)
+            return;
+
+        float normalized = Mathf.InverseLerp(-90f, 90f, value);
+        anglePointer.anchorMin = new Vector2(0.66f, Mathf.Lerp(0.13f, 0.89f, normalized));
+        anglePointer.anchorMax = anglePointer.anchorMin;
+        anglePointer.anchoredPosition = Vector2.zero;
     }
 
     private void DebugRuntimeValues(bool mouthpieceOK, bool angleOK)

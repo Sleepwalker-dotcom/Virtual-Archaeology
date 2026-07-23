@@ -207,6 +207,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
     private void ApplyTestStartPoint(TestStartPoint startPoint)
     {
         StopAllTimelines();
+        SetTransitionCanvasImmediate(0f);
 
         switch (startPoint)
         {
@@ -421,8 +422,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         if (transitionCanvasGroup != null)
         {
-            transitionCanvasGroup.alpha = 0f;
-            transitionCanvasGroup.blocksRaycasts = false;
+            SetTransitionCanvasImmediate(1f);
         }
     }
 
@@ -441,6 +441,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
     /// </summary>
     public void ShowPieceGuide()
     {
+        FadeTransitionCanvas(0f);
+
         FadeGuidanceLight(
             ref pieceLightCoroutine,
             pieceGuideLight,
@@ -680,6 +682,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         hornPickupHandled = true;
 
+        SetCompleteHornPhysicsLocked(false);
+
         SetState(MuseumExperienceState.EnvironmentTransition);
 
         // 玩家拿起完整 Horn 后关闭提示灯。
@@ -832,6 +836,23 @@ public sealed class MuseumExperienceController : MonoBehaviour
         );
     }
 
+    private void SetTransitionCanvasImmediate(float targetAlpha)
+    {
+        if (transitionCanvasGroup == null)
+        {
+            return;
+        }
+
+        if (transitionFadeCoroutine != null)
+        {
+            StopCoroutine(transitionFadeCoroutine);
+            transitionFadeCoroutine = null;
+        }
+
+        transitionCanvasGroup.alpha = targetAlpha;
+        transitionCanvasGroup.blocksRaycasts = targetAlpha > 0f;
+    }
+
     private IEnumerator FadeCanvas(float targetAlpha)
     {
         float startAlpha = transitionCanvasGroup.alpha;
@@ -947,6 +968,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
         }
 
         SetEnabled(completeHornGrab, grabEnabled);
+        SetCompleteHornPhysicsLocked(visible && grabEnabled);
 
         if (hornPerformanceController != null)
         {
@@ -978,6 +1000,30 @@ public sealed class MuseumExperienceController : MonoBehaviour
         {
             behaviour.enabled = enabled;
         }
+    }
+
+    private void SetCompleteHornPhysicsLocked(bool locked)
+    {
+        if (completeHornGrab == null)
+        {
+            return;
+        }
+
+        Rigidbody body = completeHornGrab.GetComponent<Rigidbody>();
+
+        if (body == null)
+        {
+            return;
+        }
+
+        if (locked)
+        {
+            body.linearVelocity = Vector3.zero;
+            body.angularVelocity = Vector3.zero;
+        }
+
+        body.useGravity = !locked;
+        body.isKinematic = locked;
     }
 
     private static void SetLightIntensity(
