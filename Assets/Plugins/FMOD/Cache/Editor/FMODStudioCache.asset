@@ -1,5 +1,32 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8818475990579643832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/PickupVO
+  m_EditorClassIdentifier: 
+  Path: event:/PickupVO
+  Guid:
+    Data1: 1807953943
+    Data2: 1156443322
+    Data3: -351172467
+    Data4: -1015443257
+  Banks:
+  - {fileID: 6910451372088602963}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 5137
 --- !u!114 &-8781515992350634487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15,7 +42,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639202789384152797
+  lastModified: 639204420545657166
   FileSizes:
   - Name: Desktop
     Value: 1036
@@ -244,6 +271,60 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &-1545433755779145337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/GardenVO
+  m_EditorClassIdentifier: 
+  Path: event:/GardenVO
+  Guid:
+    Data1: -390119118
+    Data2: 1258334611
+    Data3: -993372028
+    Data4: -370051369
+  Banks:
+  - {fileID: 6910451372088602963}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 20176
+--- !u!114 &-622482378548960071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/RestoreVO
+  m_EditorClassIdentifier: 
+  Path: event:/RestoreVO
+  Guid:
+    Data1: 585834493
+    Data2: 1140628594
+    Data3: 1066184872
+    Data4: -569261087
+  Banks:
+  - {fileID: 6910451372088602963}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 7356
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -276,12 +357,15 @@ MonoBehaviour:
   - {fileID: -8132659906545503109}
   - {fileID: -3220079095775984335}
   - {fileID: 2006491208667310224}
+  - {fileID: -8818475990579643832}
+  - {fileID: -1545433755779145337}
+  - {fileID: -622482378548960071}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8781515992350634487}
   StringsBanks:
   - {fileID: 2642882407560019900}
-  cacheTime: 639202789386045096
+  cacheTime: 639204420547975860
   cacheVersion: 131636
 --- !u!114 &407813035644869156
 MonoBehaviour:
@@ -423,10 +507,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639202789384173147
+  lastModified: 639204420545672491
   FileSizes:
   - Name: Desktop
-    Value: 1608
+    Value: 1730
   Exists: 1
 --- !u!114 &2745255666091697675
 MonoBehaviour:
@@ -510,10 +594,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Voice.bank
   Name: Voice
   StudioPath: bank:/Voice
-  lastModified: 639202789386045096
+  lastModified: 639204420547975860
   FileSizes:
   - Name: Desktop
-    Value: 308704
+    Value: 562848
   Exists: 1
 --- !u!114 &7030914528048031072
 MonoBehaviour:
