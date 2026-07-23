@@ -57,6 +57,7 @@ public class HornFMODController : MonoBehaviour
     public Vector3 mouthpieceHeadLocalOffset = new Vector3(0f, -0.08f, 0.12f);
     public bool requireGrabBeforeMouthpieceLock = true;
     public float mouthpieceSnapDistance = 0.18f;
+    public float mouthpieceUnsnapDistance = 0.25f;
     public XRGrabInteractable hornGrabInteractable;
 
     [Header("Segments")]
@@ -854,10 +855,30 @@ public class HornFMODController : MonoBehaviour
 
         Vector3 targetPosition = GetMouthpieceAnchorPosition();
         Vector3 currentMouthpiecePosition = GetMouthpiecePosition();
+        float distanceToAnchor =
+            Vector3.Distance(
+                currentMouthpiecePosition,
+                targetPosition
+            );
 
-        if (!isMouthpieceSnapped)
+        if (isMouthpieceSnapped)
         {
-            float distanceToAnchor = Vector3.Distance(currentMouthpiecePosition, targetPosition);
+            float releaseDistance = Mathf.Max(
+                mouthpieceSnapDistance,
+                mouthpieceUnsnapDistance
+            );
+
+            if (distanceToAnchor > releaseDistance)
+            {
+                isMouthpieceSnapped = false;
+                Log(
+                    "Mouthpiece moved beyond the unsnap distance. Music disabled."
+                );
+                return;
+            }
+        }
+        else
+        {
             if (distanceToAnchor > mouthpieceSnapDistance)
                 return;
 

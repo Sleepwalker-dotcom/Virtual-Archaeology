@@ -3778,6 +3778,7 @@ MonoBehaviour:
   mouthpieceHeadLocalOffset: {x: 0, y: -0.08, z: 0.12}
   requireGrabBeforeMouthpieceLock: 1
   mouthpieceSnapDistance: 0.05
+  mouthpieceUnsnapDistance: 0.2
   hornGrabInteractable: {fileID: 1225532532}
   segments:
   - segmentName: Phrase 1
@@ -3788,8 +3789,8 @@ MonoBehaviour:
   - segmentName: Phrase 2
     startTimeMs: 3650
     endTimeMs: 6518
-    minAngle: 20
-    maxAngle: 55
+    minAngle: 25
+    maxAngle: 35
   - segmentName: Phrase 3
     startTimeMs: 6518
     endTimeMs: 12810
@@ -3798,8 +3799,8 @@ MonoBehaviour:
   - segmentName: Phrase 4
     startTimeMs: 12810
     endTimeMs: 15737
-    minAngle: 35
-    maxAngle: 65
+    minAngle: 25
+    maxAngle: 55
   - segmentName: Phrase 5
     startTimeMs: 15737
     endTimeMs: 18700
@@ -3818,8 +3819,8 @@ MonoBehaviour:
   - segmentName: Phrase 8
     startTimeMs: 28014
     endTimeMs: 32577
-    minAngle: 25
-    maxAngle: 55
+    minAngle: 5
+    maxAngle: 10
   - segmentName: Phrase 9
     startTimeMs: 32577
     endTimeMs: 38538
@@ -3831,8 +3832,8 @@ MonoBehaviour:
   currentPlaybackMode: 0
   shakeTrackedObject: {fileID: 1225532529}
   shakeReferenceHead: {fileID: 1848856746}
-  minSideShakeSpeed: 0.05
-  maxSideShakeSpeed: 1
+  minSideShakeSpeed: 0.03
+  maxSideShakeSpeed: 0.45
   minPlaybackRate: 0.4
   maxPlaybackRate: 1.4
   shakeSmoothing: 8
