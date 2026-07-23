@@ -167,9 +167,13 @@ public sealed class MuseumExperienceController : MonoBehaviour
     private Coroutine transitionFadeCoroutine;
     private GentleHoverEffect hornHoverEffect;
     private Material[] originalHornMouthMaterials;
+    private Vector3 completeHornTavernLocalPosition;
+    private Quaternion completeHornTavernLocalRotation;
+    private bool hasCompleteHornTavernPose;
 
     private void Awake()
     {
+        CaptureCompleteHornTavernPose();
         PrepareHornRestorationObjects();
         InitializeExperience();
     }
@@ -755,24 +759,41 @@ public sealed class MuseumExperienceController : MonoBehaviour
         PrepareHornPickupCollider();
 
         Transform hornTransform = completeHornRoot.transform;
-        GameObject pivotObject =
-            new GameObject("HornGuidePivot");
-        Transform pivotTransform = pivotObject.transform;
+        Transform pivotTransform = hornTransform.parent;
 
-        pivotTransform.SetParent(
-            hornTransform.parent,
-            true
-        );
-        pivotTransform.SetPositionAndRotation(
-            hornTransform.position,
-            hornTransform.rotation
-        );
-        pivotTransform.localScale = Vector3.one;
+        if (pivotTransform == null ||
+            pivotTransform.name != "HornGuidePivot")
+        {
+            GameObject pivotObject =
+                new GameObject("HornGuidePivot");
+            pivotTransform = pivotObject.transform;
+            pivotTransform.SetParent(
+                hornTransform.parent,
+                true
+            );
+            pivotTransform.SetPositionAndRotation(
+                hornTransform.position,
+                hornTransform.rotation
+            );
+            pivotTransform.localScale = Vector3.one;
+            hornTransform.SetParent(pivotTransform, true);
+        }
 
-        hornTransform.SetParent(pivotTransform, true);
+        hornTransform.SetLocalPositionAndRotation(
+            Vector3.zero,
+            Quaternion.identity
+        );
 
         hornHoverEffect =
-            pivotObject.AddComponent<GentleHoverEffect>();
+            pivotTransform.GetComponent<GentleHoverEffect>();
+
+        if (hornHoverEffect == null)
+        {
+            hornHoverEffect =
+                pivotTransform.gameObject
+                    .AddComponent<GentleHoverEffect>();
+        }
+
         hornHoverEffect.CaptureCurrentPoseAsBase();
     }
 
@@ -1056,9 +1077,18 @@ public sealed class MuseumExperienceController : MonoBehaviour
         HideHornPickup();
         SetState(MuseumExperienceState.FreeExploration);
 
+        RestoreCompleteHornTavernPose();
+
+        if (completeHornRoot != null)
+        {
+            completeHornRoot.SetActive(true);
+        }
+
+        SetCompleteHornPhysicsLocked(true);
+        SetEnabled(completeHornGrab, true);
+
         if (hornPerformanceController != null)
         {
-            SetEnabled(completeHornGrab, true);
             hornPerformanceController.enabled = true;
             hornPerformanceController.ActivateHorn();
         }
@@ -1078,6 +1108,60 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         Debug.Log(
             "[MuseumExperience] Horn_incomplete hidden at the end of the Museum transition.",
+            this
+        );
+    }
+
+    private void CaptureCompleteHornTavernPose()
+    {
+        if (completeHornRoot == null)
+        {
+            return;
+        }
+
+        Transform hornTransform = completeHornRoot.transform;
+        Transform poseTransform =
+            hornTransform.parent != null &&
+            hornTransform.parent.name == "HornGuidePivot"
+                ? hornTransform.parent
+                : hornTransform;
+
+        completeHornTavernLocalPosition =
+            poseTransform.localPosition;
+        completeHornTavernLocalRotation =
+            poseTransform.localRotation;
+        hasCompleteHornTavernPose = true;
+    }
+
+    private void RestoreCompleteHornTavernPose()
+    {
+        if (!hasCompleteHornTavernPose ||
+            completeHornRoot == null)
+        {
+            return;
+        }
+
+        Transform hornTransform = completeHornRoot.transform;
+        Transform poseTransform =
+            hornHoverEffect != null
+                ? hornHoverEffect.transform
+                : hornTransform;
+
+        poseTransform.SetLocalPositionAndRotation(
+            completeHornTavernLocalPosition,
+            completeHornTavernLocalRotation
+        );
+
+        if (poseTransform != hornTransform)
+        {
+            hornTransform.SetLocalPositionAndRotation(
+                Vector3.zero,
+                Quaternion.identity
+            );
+        }
+
+        Debug.Log(
+            "[MuseumExperience] French Natural Horn restored to its Tavern position.",
             this
         );
     }
