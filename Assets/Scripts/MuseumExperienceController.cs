@@ -142,6 +142,12 @@ public sealed class MuseumExperienceController : MonoBehaviour
     private UnityEvent onPlayRestorationNarration;
 
     [SerializeField]
+    private UnityEvent onPlayRestoreVoiceOver;
+
+    [SerializeField]
+    private UnityEvent onPlayPickupVoiceOver;
+
+    [SerializeField]
     private UnityEvent onFreeExplorationStarted;
 
     [Header("Debug / Testing")]
@@ -194,12 +200,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
             );
         }
 
-        if (hornPickupGrab != null)
-        {
-            hornPickupGrab.selectEntered.AddListener(
-                HandleCompleteHornSelected
-            );
-        }
+        RefreshHornPickupListener();
     }
 
     private void Start()
@@ -584,6 +585,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
         LockPieceIntoSocket();
         CommitHornAssembly();
         ReplaceHornMouthMaterial();
+        onPlayPickupVoiceOver?.Invoke();
         UnlockCompleteHornForPickup();
         Debug.Log(
             "[MuseumExperience] Horn_Piece inserted; material replaced, Horn_incomplete unlocked, restoration resumed.",
@@ -722,6 +724,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
             completeHornGuideLight,
             completeHornGuideIntensity
         );
+        onPlayRestoreVoiceOver?.Invoke();
 
         SetState(MuseumExperienceState.WaitForPieceInsertion);
         Debug.Log(
@@ -938,6 +941,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
         SetPickupHornPhysicsLocked(true);
         SetEnabled(hornPickupGrab, false);
         SetEnabled(hornPickupGrab, true);
+        RefreshHornPickupListener();
         SetState(MuseumExperienceState.WaitForHornPickup);
 
         Debug.Log(
@@ -1000,6 +1004,13 @@ public sealed class MuseumExperienceController : MonoBehaviour
         SelectEnterEventArgs args
     )
     {
+        Debug.Log(
+            "[MuseumExperience] Horn_incomplete select callback. State=" +
+            CurrentState + ", AlreadyHandled=" +
+            hornPickupHandled + ".",
+            this
+        );
+
         if (CurrentState !=
             MuseumExperienceState.WaitForHornPickup ||
             hornPickupHandled)
@@ -1045,6 +1056,21 @@ public sealed class MuseumExperienceController : MonoBehaviour
             BeginEnvironmentAudioTransition();
             CompleteEnvironmentTransition();
         }
+    }
+
+    private void RefreshHornPickupListener()
+    {
+        if (hornPickupGrab == null)
+        {
+            return;
+        }
+
+        hornPickupGrab.selectEntered.RemoveListener(
+            HandleCompleteHornSelected
+        );
+        hornPickupGrab.selectEntered.AddListener(
+            HandleCompleteHornSelected
+        );
     }
 
     // =========================================================

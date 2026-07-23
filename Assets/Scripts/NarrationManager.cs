@@ -7,6 +7,9 @@ public sealed class NarrationManager : MonoBehaviour
     [Header("FMOD Narration Events")]
     [SerializeField] private EventReference introNarrationEvent;
     [SerializeField] private EventReference restorationNarrationEvent;
+    [SerializeField] private EventReference restoreVoiceOverEvent;
+    [SerializeField] private EventReference pickupVoiceOverEvent;
+    [SerializeField] private EventReference gardenVoiceOverEvent;
 
     [Header("Playback")]
     [SerializeField] private bool allowFadeoutWhenInterrupted = true;
@@ -21,6 +24,21 @@ public sealed class NarrationManager : MonoBehaviour
     public void PlayRestorationNarration()
     {
         PlayNarration(restorationNarrationEvent, "Restoration");
+    }
+
+    public void PlayRestoreVoiceOver()
+    {
+        PlayNarration(restoreVoiceOverEvent, "Restore VO");
+    }
+
+    public void PlayPickupVoiceOver()
+    {
+        PlayNarration(pickupVoiceOverEvent, "Pickup VO");
+    }
+
+    public void PlayGardenVoiceOver()
+    {
+        PlayNarration(gardenVoiceOverEvent, "Garden VO");
     }
 
     public void StopNarration()

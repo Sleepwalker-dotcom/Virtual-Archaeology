@@ -103,7 +103,7 @@ public class HornFMODController : MonoBehaviour
     public int totalRounds = 4;
     public int currentRoundIndex;
     public HornPlaybackMode currentPlaybackMode;
-    public UnityEvent onFirstRoundCompleted;
+    public UnityEvent onApplauseRequested;
 
     [Header("Shake Speed Mode - Rounds 2 to 4")]
     public Transform shakeTrackedObject;
@@ -1046,12 +1046,18 @@ public class HornFMODController : MonoBehaviour
 
         if (currentRoundIndex == 1)
         {
-            onFirstRoundCompleted?.Invoke();
-            Log("First performance completed. FMOD applause requested.");
+            onApplauseRequested?.Invoke();
+            Log(
+                "First performance completed. FMOD applause requested."
+            );
         }
 
         if (currentRoundIndex >= totalRounds)
         {
+            onApplauseRequested?.Invoke();
+            Log(
+                "Final performance completed. FMOD applause requested."
+            );
             CompleteExperience();
             return;
         }

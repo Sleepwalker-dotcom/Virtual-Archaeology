@@ -972,6 +972,27 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  restoreVoiceOverEvent:
+    Guid:
+      Data1: 585834493
+      Data2: 1140628594
+      Data3: 1066184872
+      Data4: -569261087
+    Path: event:/RestoreVO
+  pickupVoiceOverEvent:
+    Guid:
+      Data1: 1807953943
+      Data2: 1156443322
+      Data3: -351172467
+      Data4: -1015443257
+    Path: event:/PickupVO
+  gardenVoiceOverEvent:
+    Guid:
+      Data1: -390119118
+      Data2: 1258334611
+      Data3: -993372028
+      Data4: -370051369
+    Path: event:/GardenVO
   allowFadeoutWhenInterrupted: 1
 --- !u!1 &260789616
 GameObject:
@@ -3837,7 +3858,7 @@ MonoBehaviour:
   totalRounds: 4
   currentRoundIndex: 0
   currentPlaybackMode: 0
-  onFirstRoundCompleted:
+  onApplauseRequested:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1994237179}
@@ -3849,7 +3870,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
   shakeTrackedObject: {fileID: 1225532529}
@@ -4300,6 +4321,21 @@ MonoBehaviour:
     Path: event:/SceneTransition
   museumBgmFadeOutTime: 1
   environmentSwitchDelay: 0.4
+  onSceneTransitionFinished:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 236943013}
+        m_TargetAssemblyTypeName: NarrationManager, Assembly-CSharp
+        m_MethodName: PlayGardenVoiceOver
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument:
+          m_BoolArgument: 0
+        m_CallState: 2
   currentEnvironment: 0
   museumBgmIsPlaying: 0
   isSwitching: 0
@@ -5199,7 +5235,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument:
           m_BoolArgument: 0
         m_CallState: 2
   restorationVfxRoot: {fileID: 1197779011}
@@ -5245,11 +5281,41 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onPlayRestoreVoiceOver:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 236943013}
+        m_TargetAssemblyTypeName: NarrationManager, Assembly-CSharp
+        m_MethodName: PlayRestoreVoiceOver
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onPlayPickupVoiceOver:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 236943013}
+        m_TargetAssemblyTypeName: NarrationManager, Assembly-CSharp
+        m_MethodName: PlayPickupVoiceOver
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onFreeExplorationStarted:
     m_PersistentCalls:
       m_Calls: []
   enableTestMode: 1
-  testStartPoint: 5
+  testStartPoint: 0
   logStateChanges: 1
 --- !u!4 &1492328565
 Transform:

@@ -2,6 +2,7 @@ using System.Collections;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SingleSceneAudioEnvironmentManager : MonoBehaviour
 {
@@ -31,6 +32,9 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
     [Header("Timing")]
     [SerializeField] private float museumBgmFadeOutTime = 1f;
     [SerializeField] private float environmentSwitchDelay = 0.4f;
+
+    [Header("Transition Events")]
+    [SerializeField] private UnityEvent onSceneTransitionFinished;
 
     [Header("Debug")]
     [SerializeField] private EnvironmentState currentEnvironment;
@@ -128,6 +132,9 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
 
         if (transitionStarted)
             yield return WaitForSceneTransitionToFinish();
+
+        if (targetEnvironment == EnvironmentState.Tavern)
+            onSceneTransitionFinished?.Invoke();
 
         SetScene3DAudioActive(
             targetEnvironment == EnvironmentState.Tavern
