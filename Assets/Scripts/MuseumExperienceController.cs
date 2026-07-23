@@ -72,6 +72,28 @@ public sealed class MuseumExperienceController : MonoBehaviour
     [SerializeField]
     private HornFMODController hornPerformanceController;
 
+    [Header("Horn Restoration")]
+    [SerializeField]
+    private XRGrabInteractable hornPickupGrab;
+
+    [SerializeField]
+    private Rigidbody hornPickupRigidbody;
+
+    [SerializeField]
+    private Renderer hornMouthRenderer;
+
+    [SerializeField, Min(0)]
+    private int hornMouthMaterialSlot;
+
+    [SerializeField]
+    private Material hornMat;
+
+    [SerializeField]
+    private UnityEvent onHornPieceInsertedVfx;
+
+    [SerializeField]
+    private UnityEvent onHornPieceInsertedSound;
+
     [Header("Presentation Objects")]
     [SerializeField]
     private GameObject restorationVfxRoot;
@@ -96,10 +118,6 @@ public sealed class MuseumExperienceController : MonoBehaviour
     [Tooltip("提示玩家拿起 Piece of Horn 的灯光最终亮度。")]
     [SerializeField, Min(0f)]
     private float pieceGuideIntensity = 3f;
-
-    [Tooltip("提示玩家把 Piece 放入 Horn 的灯光最终亮度。")]
-    [SerializeField, Min(0f)]
-    private float socketGuideIntensity = 3f;
 
     [Tooltip("提示玩家拿起完整 Horn 的灯光最终亮度。")]
     [SerializeField, Min(0f)]
@@ -141,14 +159,18 @@ public sealed class MuseumExperienceController : MonoBehaviour
     private bool pieceInsertionHandled;
     private bool hornPickupHandled;
     private bool assemblyCommitted;
+    private bool hornGuideStarted;
 
     private Coroutine pieceLightCoroutine;
     private Coroutine socketLightCoroutine;
     private Coroutine hornLightCoroutine;
     private Coroutine transitionFadeCoroutine;
+    private GentleHoverEffect hornHoverEffect;
+    private Material[] originalHornMouthMaterials;
 
     private void Awake()
     {
+        PrepareHornRestorationObjects();
         InitializeExperience();
     }
 
@@ -168,9 +190,9 @@ public sealed class MuseumExperienceController : MonoBehaviour
             );
         }
 
-        if (completeHornGrab != null)
+        if (hornPickupGrab != null)
         {
-            completeHornGrab.selectEntered.AddListener(
+            hornPickupGrab.selectEntered.AddListener(
                 HandleCompleteHornSelected
             );
         }
@@ -239,7 +261,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
     {
         ResetProgressFlags();
         SetCompleteHornState(false, false, false);
-        SetEnabled(pieceSocket, false);
+        SetPieceSocketActive(false);
         SetGuideLights(0f, 0f, 0f);
         FadeGuidanceLight(
             ref pieceLightCoroutine,
@@ -264,20 +286,18 @@ public sealed class MuseumExperienceController : MonoBehaviour
         piecePickupHandled = true;
         RestorePieceInteractionState();
         SetCompleteHornState(false, false, false);
-        SetEnabled(pieceSocket, true);
-        SetGuideLights(0f, socketGuideIntensity, 0f);
-        SetState(MuseumExperienceState.WaitForPieceInsertion);
+        SetGuideLights(0f, 0f, 0f);
+        SetState(MuseumExperienceState.HornRestoration);
+        ShowCompleteHornGuide();
     }
 
     private void SetupHornRestoration()
     {
         ResetProgressFlags();
         piecePickupHandled = true;
-        pieceInsertionHandled = true;
         RestorePieceInteractionState();
         SetCompleteHornState(false, false, false);
         SetState(MuseumExperienceState.HornRestoration);
-        LockPieceIntoSocket();
         SetGuideLights(0f, 0f, 0f);
 
         if (hornRestorationDirector != null &&
@@ -300,8 +320,14 @@ public sealed class MuseumExperienceController : MonoBehaviour
         pieceInsertionHandled = true;
         SetState(MuseumExperienceState.HornRestoration);
         CommitHornAssembly();
+        ReplaceHornMouthMaterial();
         HideRestorationVfx();
         SetCompleteHornState(true, true, false);
+        SetCompleteHornPhysicsLocked(true);
+        if (hornHoverEffect != null)
+        {
+            hornHoverEffect.Play();
+        }
         SetGuideLights(0f, 0f, completeHornGuideIntensity);
         SetState(MuseumExperienceState.WaitForHornPickup);
     }
@@ -374,9 +400,9 @@ public sealed class MuseumExperienceController : MonoBehaviour
             );
         }
 
-        if (completeHornGrab != null)
+        if (hornPickupGrab != null)
         {
-            completeHornGrab.selectEntered.RemoveListener(
+            hornPickupGrab.selectEntered.RemoveListener(
                 HandleCompleteHornSelected
             );
         }
@@ -390,10 +416,20 @@ public sealed class MuseumExperienceController : MonoBehaviour
         pieceInsertionHandled = false;
         hornPickupHandled = false;
         assemblyCommitted = false;
+        hornGuideStarted = false;
 
         SetEnabled(pieceGrab, false);
-        SetEnabled(pieceSocket, false);
+        SetPieceSocketActive(false);
         SetEnabled(completeHornGrab, false);
+        SetEnabled(hornPickupGrab, false);
+        SetPickupHornPhysicsLocked(true);
+
+        if (hornHoverEffect != null)
+        {
+            hornHoverEffect.StopImmediately();
+        }
+
+        RestoreHornMouthMaterial();
 
         if (pieceRoot != null)
         {
@@ -482,10 +518,12 @@ public sealed class MuseumExperienceController : MonoBehaviour
         }
 
         piecePickupHandled = true;
-        pieceInsertionHandled = true;
 
         SetState(MuseumExperienceState.HornRestoration);
-        LockPieceIntoSocket();
+        Debug.Log(
+            "[MuseumExperience] Horn_Piece picked up; starting HornRestorationDirector.",
+            this
+        );
 
         FadeGuidanceLight(
             ref pieceLightCoroutine,
@@ -528,20 +566,28 @@ public sealed class MuseumExperienceController : MonoBehaviour
         }
 
         // 确认插入 Socket 的物体是指定 Piece。
-        if (pieceGrab == null ||
+        if (args == null ||
+            args.interactorObject.transform !=
+                pieceSocket.transform ||
             args.interactableObject.transform !=
-            pieceGrab.transform)
+                pieceGrab.transform)
         {
             return;
         }
 
         pieceInsertionHandled = true;
 
-        SetState(MuseumExperienceState.HornRestoration);
-
         LockPieceIntoSocket();
+        CommitHornAssembly();
+        ReplaceHornMouthMaterial();
+        UnlockCompleteHornForPickup();
+        Debug.Log(
+            "[MuseumExperience] Horn_Piece inserted; material replaced, Horn_incomplete unlocked, restoration resumed.",
+            this
+        );
+        onHornPieceInsertedVfx?.Invoke();
+        onHornPieceInsertedSound?.Invoke();
 
-        // Piece 插入后关闭 Socket 提示灯。
         FadeGuidanceLight(
             ref socketLightCoroutine,
             socketGuideLight,
@@ -551,11 +597,10 @@ public sealed class MuseumExperienceController : MonoBehaviour
         if (hornRestorationDirector != null &&
             hornRestorationDirector.playableAsset != null)
         {
-            hornRestorationDirector.Play();
+            hornRestorationDirector.Resume();
         }
         else
         {
-            CommitHornAssembly();
             CompleteHornRestoration();
         }
     }
@@ -563,7 +608,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
     private void LockPieceIntoSocket()
     {
         SetEnabled(pieceGrab, false);
-        SetEnabled(pieceSocket, false);
+        SetPieceSocketActive(false);
 
         if (pieceRigidbody != null)
         {
@@ -647,10 +692,262 @@ public sealed class MuseumExperienceController : MonoBehaviour
     /// </summary>
     public void ShowCompleteHornGuide()
     {
+        if (hornGuideStarted || pieceInsertionHandled)
+        {
+            return;
+        }
+
+        hornGuideStarted = true;
+
+        if (completeHornRoot != null)
+        {
+            completeHornRoot.SetActive(true);
+        }
+
+        SetCompleteHornPhysicsLocked(true);
+        SetEnabled(completeHornGrab, false);
+        SetPieceSocketActive(true);
+
+        if (hornHoverEffect != null)
+        {
+            hornHoverEffect.Play();
+        }
+
         FadeGuidanceLight(
             ref hornLightCoroutine,
             completeHornGuideLight,
             completeHornGuideIntensity
+        );
+
+        SetState(MuseumExperienceState.WaitForPieceInsertion);
+        Debug.Log(
+            "[MuseumExperience] ShowCompleteHornGuide; hover started, Socket opened, restoration paused.",
+            this
+        );
+
+        if (hornRestorationDirector != null)
+        {
+            hornRestorationDirector.Pause();
+        }
+    }
+
+    private void PrepareHornRestorationObjects()
+    {
+        if (completeHornRoot == null)
+        {
+            return;
+        }
+
+        if (hornMouthRenderer == null)
+        {
+            hornMouthRenderer =
+                completeHornRoot.GetComponentInChildren<Renderer>(
+                    true
+                );
+        }
+
+        if (hornMouthRenderer != null)
+        {
+            originalHornMouthMaterials =
+                hornMouthRenderer.sharedMaterials;
+        }
+
+        PrepareHornPickupCollider();
+
+        Transform hornTransform = completeHornRoot.transform;
+        GameObject pivotObject =
+            new GameObject("HornGuidePivot");
+        Transform pivotTransform = pivotObject.transform;
+
+        pivotTransform.SetParent(
+            hornTransform.parent,
+            true
+        );
+        pivotTransform.SetPositionAndRotation(
+            hornTransform.position,
+            hornTransform.rotation
+        );
+        pivotTransform.localScale = Vector3.one;
+
+        hornTransform.SetParent(pivotTransform, true);
+
+        hornHoverEffect =
+            pivotObject.AddComponent<GentleHoverEffect>();
+        hornHoverEffect.CaptureCurrentPoseAsBase();
+    }
+
+    private void SetPieceSocketActive(bool active)
+    {
+        if (pieceSocket == null)
+        {
+            return;
+        }
+
+        pieceSocket.enabled = true;
+        pieceSocket.socketActive = active;
+    }
+
+    private void PrepareHornPickupCollider()
+    {
+        if (hornPickupGrab == null)
+        {
+            return;
+        }
+
+        Collider pickupCollider =
+            hornPickupGrab.GetComponent<Collider>();
+
+        if (pickupCollider == null)
+        {
+            Renderer pickupRenderer =
+                hornPickupGrab.GetComponentInChildren<Renderer>(
+                    true
+                );
+
+            if (pickupRenderer == null)
+            {
+                Debug.LogWarning(
+                    "[MuseumExperience] Horn_incomplete has no Renderer for pickup collider bounds.",
+                    this
+                );
+                return;
+            }
+
+            Transform rootTransform =
+                hornPickupGrab.transform;
+            Bounds bounds = pickupRenderer.bounds;
+            Vector3 scale = rootTransform.lossyScale;
+            BoxCollider boxCollider =
+                hornPickupGrab.gameObject
+                    .AddComponent<BoxCollider>();
+
+            boxCollider.center =
+                rootTransform.InverseTransformPoint(
+                    bounds.center
+                );
+            boxCollider.size = new Vector3(
+                bounds.size.x /
+                    Mathf.Max(
+                        Mathf.Abs(scale.x),
+                        0.0001f
+                    ),
+                bounds.size.y /
+                    Mathf.Max(
+                        Mathf.Abs(scale.y),
+                        0.0001f
+                    ),
+                bounds.size.z /
+                    Mathf.Max(
+                        Mathf.Abs(scale.z),
+                        0.0001f
+                    )
+            );
+            pickupCollider = boxCollider;
+        }
+
+        if (!hornPickupGrab.colliders.Contains(
+                pickupCollider
+            ))
+        {
+            hornPickupGrab.colliders.Add(pickupCollider);
+        }
+    }
+
+    private void ReplaceHornMouthMaterial()
+    {
+        if (hornMouthRenderer == null || hornMat == null)
+        {
+            Debug.LogWarning(
+                "[MuseumExperience] Horn Mouth Renderer or Horn_Mat is not assigned.",
+                this
+            );
+            return;
+        }
+
+        Material[] materials =
+            hornMouthRenderer.sharedMaterials;
+
+        if (hornMouthMaterialSlot < 0 ||
+            hornMouthMaterialSlot >= materials.Length)
+        {
+            Debug.LogError(
+                "[MuseumExperience] Horn Mouth material slot is invalid.",
+                this
+            );
+            return;
+        }
+
+        string previousMaterialName =
+            materials[hornMouthMaterialSlot] != null
+                ? materials[hornMouthMaterialSlot].name
+                : "None";
+
+        materials[hornMouthMaterialSlot] = hornMat;
+        hornMouthRenderer.sharedMaterials = materials;
+
+        Debug.Log(
+            "[MuseumExperience] Horn Mouth material changed: " +
+            previousMaterialName + " -> " + hornMat.name +
+            " on " + hornMouthRenderer.name + ".",
+            this
+        );
+    }
+
+    private void RestoreHornMouthMaterial()
+    {
+        if (hornMouthRenderer == null ||
+            originalHornMouthMaterials == null)
+        {
+            return;
+        }
+
+        hornMouthRenderer.sharedMaterials =
+            originalHornMouthMaterials;
+    }
+
+    private void UnlockCompleteHornForPickup()
+    {
+        SetEnabled(completeHornGrab, false);
+
+        if (hornPickupGrab != null)
+        {
+            hornPickupGrab.gameObject.SetActive(true);
+        }
+
+        SetPickupHornPhysicsLocked(true);
+        SetEnabled(hornPickupGrab, false);
+        SetEnabled(hornPickupGrab, true);
+        SetState(MuseumExperienceState.WaitForHornPickup);
+
+        Debug.Log(
+            "[MuseumExperience] Horn_incomplete pickup ready. " +
+            "Active=" +
+            hornPickupGrab.gameObject.activeInHierarchy +
+            ", GrabEnabled=" + hornPickupGrab.enabled +
+            ", Colliders=" +
+            hornPickupGrab.colliders.Count +
+            ", IsKinematic=" +
+            hornPickupRigidbody.isKinematic + ".",
+            this
+        );
+    }
+
+    private void StopHornHoverWithoutMovingHorn()
+    {
+        if (hornHoverEffect == null ||
+            completeHornRoot == null)
+        {
+            return;
+        }
+
+        Transform hornTransform = completeHornRoot.transform;
+        Vector3 worldPosition = hornTransform.position;
+        Quaternion worldRotation = hornTransform.rotation;
+
+        hornHoverEffect.StopImmediately();
+        hornTransform.SetPositionAndRotation(
+            worldPosition,
+            worldRotation
         );
     }
 
@@ -661,7 +958,9 @@ public sealed class MuseumExperienceController : MonoBehaviour
     public void CompleteHornRestoration()
     {
         if (CurrentState !=
-            MuseumExperienceState.HornRestoration)
+                MuseumExperienceState.HornRestoration &&
+            CurrentState !=
+                MuseumExperienceState.WaitForHornPickup)
         {
             return;
         }
@@ -669,9 +968,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
         CommitHornAssembly();
         HideRestorationVfx();
 
-        SetEnabled(completeHornGrab, true);
-
-        SetState(MuseumExperienceState.WaitForHornPickup);
+        UnlockCompleteHornForPickup();
     }
 
     // =========================================================
@@ -691,9 +988,14 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         hornPickupHandled = true;
 
-        SetCompleteHornPhysicsLocked(false);
+        StopHornHoverWithoutMovingHorn();
+        SetPickupHornPhysicsLocked(false);
 
         SetState(MuseumExperienceState.EnvironmentTransition);
+        Debug.Log(
+            "[MuseumExperience] Horn_incomplete first grabbed; EnvironmentTransitionDirector restarted.",
+            this
+        );
 
         // 玩家拿起完整 Horn 后关闭提示灯。
         FadeGuidanceLight(
@@ -705,6 +1007,16 @@ public sealed class MuseumExperienceController : MonoBehaviour
         if (environmentTransitionDirector != null &&
             environmentTransitionDirector.playableAsset != null)
         {
+            if (hornRestorationDirector != null &&
+                hornRestorationDirector.state ==
+                    PlayState.Playing)
+            {
+                hornRestorationDirector.Pause();
+            }
+
+            environmentTransitionDirector.Stop();
+            environmentTransitionDirector.time = 0d;
+            environmentTransitionDirector.Evaluate();
             environmentTransitionDirector.Play();
         }
         else
@@ -741,15 +1053,33 @@ public sealed class MuseumExperienceController : MonoBehaviour
             return;
         }
 
+        HideHornPickup();
         SetState(MuseumExperienceState.FreeExploration);
 
         if (hornPerformanceController != null)
         {
+            SetEnabled(completeHornGrab, true);
             hornPerformanceController.enabled = true;
             hornPerformanceController.ActivateHorn();
         }
 
         onFreeExplorationStarted?.Invoke();
+    }
+
+    private void HideHornPickup()
+    {
+        if (hornPickupGrab == null)
+        {
+            return;
+        }
+
+        SetEnabled(hornPickupGrab, false);
+        hornPickupGrab.gameObject.SetActive(false);
+
+        Debug.Log(
+            "[MuseumExperience] Horn_incomplete hidden at the end of the Museum transition.",
+            this
+        );
     }
 
     // =========================================================
@@ -932,6 +1262,15 @@ public sealed class MuseumExperienceController : MonoBehaviour
         pieceInsertionHandled = false;
         hornPickupHandled = false;
         assemblyCommitted = false;
+        hornGuideStarted = false;
+
+        SetPieceSocketActive(false);
+        RestoreHornMouthMaterial();
+
+        if (hornHoverEffect != null)
+        {
+            hornHoverEffect.StopImmediately();
+        }
 
         if (restorationVfxRoot != null)
         {
@@ -1033,6 +1372,25 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         body.useGravity = !locked;
         body.isKinematic = locked;
+    }
+
+    private void SetPickupHornPhysicsLocked(bool locked)
+    {
+        if (hornPickupRigidbody == null)
+        {
+            return;
+        }
+
+        if (locked)
+        {
+            hornPickupRigidbody.linearVelocity =
+                Vector3.zero;
+            hornPickupRigidbody.angularVelocity =
+                Vector3.zero;
+        }
+
+        hornPickupRigidbody.useGravity = false;
+        hornPickupRigidbody.isKinematic = locked;
     }
 
     private static void SetLightIntensity(

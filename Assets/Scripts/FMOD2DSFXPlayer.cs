@@ -31,5 +31,10 @@ public class FMOD2DSFXPlayer : MonoBehaviour
         }
 
         RuntimeManager.PlayOneShot(eventReference);
+        Debug.Log(
+            "[FMOD2DSFXPlayer] Playing " +
+            label + ": " + eventReference.Path,
+            this
+        );
     }
 }
