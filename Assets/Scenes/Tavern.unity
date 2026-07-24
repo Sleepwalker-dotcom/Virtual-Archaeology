@@ -3868,7 +3868,7 @@ MonoBehaviour:
     minAngle: -20
     maxAngle: 10
   startSegmentIndex: 0
-  totalRounds: 3
+  totalRounds: 2
   currentRoundIndex: 0
   currentPlaybackMode: 0
   onApplauseRequested:
