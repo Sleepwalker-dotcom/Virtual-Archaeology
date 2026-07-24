@@ -254,7 +254,7 @@ public class HornFMODController : MonoBehaviour
 
     private void OnValidate()
     {
-        totalRounds = 4;
+        totalRounds = Mathf.Max(1, totalRounds);
 
         if (extraLayers == null)
             return;
@@ -396,7 +396,7 @@ public class HornFMODController : MonoBehaviour
 
         isActivated = true;
         isPlaying = false;
-        totalRounds = 4;
+        totalRounds = Mathf.Max(1, totalRounds);
         currentRoundIndex = 0;
         currentSegmentIndex = Mathf.Clamp(startSegmentIndex, 0, segments.Length - 1);
 

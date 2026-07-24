@@ -3868,7 +3868,7 @@ MonoBehaviour:
     minAngle: -20
     maxAngle: 10
   startSegmentIndex: 0
-  totalRounds: 4
+  totalRounds: 3
   currentRoundIndex: 0
   currentPlaybackMode: 0
   onApplauseRequested:
@@ -5366,7 +5366,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   enableTestMode: 1
-  testStartPoint: 0
+  testStartPoint: 5
   logStateChanges: 1
 --- !u!4 &1492328565
 Transform:
