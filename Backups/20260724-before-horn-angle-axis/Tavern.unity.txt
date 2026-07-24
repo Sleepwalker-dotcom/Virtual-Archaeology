@@ -3802,7 +3802,6 @@ MonoBehaviour:
   hornObject: {fileID: 1225532529}
   mouthpieceTransform: {fileID: 129587642}
   instrumentTipTransform: {fileID: 1824772203}
-  useHornLocalZAxisForAngle: 1
   lockMouthpieceToHead: 1
   mouthpieceHeadLocalOffset: {x: 0, y: -0.08, z: 0.12}
   requireGrabBeforeMouthpieceLock: 1
@@ -3917,7 +3916,7 @@ MonoBehaviour:
     glowIntensity: 3
     unlocked: 0
     activated: 0
-  invertAngle: 1
+  invertAngle: 0
   angleSmoothing: 8
   hornRenderers: []
   glowColor: {r: 1, g: 0.75, b: 0.2, a: 1}
@@ -5354,7 +5353,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   enableTestMode: 1
-  testStartPoint: 0
+  testStartPoint: 6
   logStateChanges: 1
 --- !u!4 &1492328565
 Transform:

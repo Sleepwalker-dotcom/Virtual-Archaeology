@@ -127,6 +127,18 @@ public sealed class MuseumExperienceController : MonoBehaviour
     [SerializeField, Min(0f)]
     private float transitionFadeDuration = 0.6f;
 
+    [SerializeField]
+    private Renderer[] museumWallDissolveRenderers;
+
+    [SerializeField, Min(0f)]
+    private float museumWallDissolveDuration = 2f;
+
+    [SerializeField]
+    private Transform[] delayedTavernRevealRoots;
+
+    [SerializeField, Min(0f)]
+    private float delayedTavernRevealDelay = 10f;
+
     [Header("Existing Audio and Environment System")]
     [SerializeField]
     private SingleSceneAudioEnvironmentManager audioEnvironmentManager;
@@ -166,11 +178,19 @@ public sealed class MuseumExperienceController : MonoBehaviour
     private bool hornPickupHandled;
     private bool assemblyCommitted;
     private bool hornGuideStarted;
+    private static readonly int DissolveAmountId =
+        Shader.PropertyToID("_DissolveAmount");
 
     private Coroutine pieceLightCoroutine;
     private Coroutine socketLightCoroutine;
     private Coroutine hornLightCoroutine;
     private Coroutine transitionFadeCoroutine;
+    private Coroutine museumWallDissolveCoroutine;
+    private Coroutine delayedEnvironmentTransitionCoroutine;
+    private Coroutine delayedTavernRevealCoroutine;
+    private MaterialPropertyBlock museumWallPropertyBlock;
+    private bool holdDelayedTavernRevealHidden;
+    private float delayedTavernRevealTime;
     private GentleHoverEffect hornHoverEffect;
     private Material[] originalHornMouthMaterials;
     private Vector3 completeHornTavernLocalPosition;
@@ -213,6 +233,23 @@ public sealed class MuseumExperienceController : MonoBehaviour
         }
 
         StartNormalExperience();
+    }
+
+    private void LateUpdate()
+    {
+        if (!holdDelayedTavernRevealHidden)
+        {
+            return;
+        }
+
+        if (Time.time >= delayedTavernRevealTime)
+        {
+            holdDelayedTavernRevealHidden = false;
+            SetDelayedTavernRevealObjectsActive(true);
+            return;
+        }
+
+        SetDelayedTavernRevealObjectsActive(false);
     }
 
     private void StartNormalExperience()
@@ -348,18 +385,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
         SetCompleteHornState(true, false, false);
         SetGuideLights(0f, 0f, 0f);
         SetState(MuseumExperienceState.EnvironmentTransition);
-
-        if (environmentTransitionDirector != null &&
-            environmentTransitionDirector.playableAsset != null)
-        {
-            environmentTransitionDirector.time = 0d;
-            environmentTransitionDirector.Play();
-        }
-        else
-        {
-            BeginEnvironmentAudioTransition();
-            CompleteEnvironmentTransition();
-        }
+        BeginEnvironmentTransitionAfterWallDissolve(false);
     }
 
     private void SetupFreeExploration()
@@ -372,6 +398,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
         CommitHornAssembly();
         SetCompleteHornState(true, true, false);
         SetGuideLights(0f, 0f, 0f);
+        SetMuseumWallDissolveImmediate(1f);
+        SetDelayedTavernRevealObjectsActive(true);
 
         if (transitionCanvasGroup != null)
         {
@@ -465,6 +493,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
         {
             SetTransitionCanvasImmediate(1f);
         }
+
+        SetMuseumWallDissolveImmediate(0f);
     }
 
     // =========================================================
@@ -588,7 +618,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
         onPlayPickupVoiceOver?.Invoke();
         UnlockCompleteHornForPickup();
         Debug.Log(
-            "[MuseumExperience] Horn_Piece inserted; material replaced, Horn_incomplete unlocked, restoration resumed.",
+            "[MuseumExperience] Horn_Piece inserted; material replaced, Horn_incomplete unlocked, waiting for pickup.",
             this
         );
         onHornPieceInsertedVfx?.Invoke();
@@ -603,7 +633,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
         if (hornRestorationDirector != null &&
             hornRestorationDirector.playableAsset != null)
         {
-            hornRestorationDirector.Resume();
+            hornRestorationDirector.Pause();
         }
         else
         {
@@ -1036,26 +1066,13 @@ public sealed class MuseumExperienceController : MonoBehaviour
             0f
         );
 
-        if (environmentTransitionDirector != null &&
-            environmentTransitionDirector.playableAsset != null)
+        if (hornRestorationDirector != null &&
+            hornRestorationDirector.state == PlayState.Playing)
         {
-            if (hornRestorationDirector != null &&
-                hornRestorationDirector.state ==
-                    PlayState.Playing)
-            {
-                hornRestorationDirector.Pause();
-            }
+            hornRestorationDirector.Pause();
+        }
 
-            environmentTransitionDirector.Stop();
-            environmentTransitionDirector.time = 0d;
-            environmentTransitionDirector.Evaluate();
-            environmentTransitionDirector.Play();
-        }
-        else
-        {
-            BeginEnvironmentAudioTransition();
-            CompleteEnvironmentTransition();
-        }
+        BeginEnvironmentTransitionAfterWallDissolve(true);
     }
 
     private void RefreshHornPickupListener()
@@ -1100,6 +1117,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
             return;
         }
 
+        SetMuseumWallDissolveImmediate(1f);
         HideHornPickup();
         SetState(MuseumExperienceState.FreeExploration);
 
@@ -1119,6 +1137,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
             hornPerformanceController.ActivateHorn();
         }
 
+        BeginDelayedTavernReveal();
         onFreeExplorationStarted?.Invoke();
     }
 
@@ -1344,8 +1363,200 @@ public sealed class MuseumExperienceController : MonoBehaviour
         transitionFadeCoroutine = null;
     }
 
+    private void BeginMuseumWallDissolve()
+    {
+        if (museumWallDissolveCoroutine != null)
+        {
+            StopCoroutine(museumWallDissolveCoroutine);
+        }
+
+        museumWallDissolveCoroutine = StartCoroutine(
+            FadeMuseumWallDissolve()
+        );
+    }
+
+    private void BeginEnvironmentTransitionAfterWallDissolve(
+        bool evaluateBeforePlay
+    )
+    {
+        if (delayedEnvironmentTransitionCoroutine != null)
+        {
+            StopCoroutine(delayedEnvironmentTransitionCoroutine);
+        }
+
+        delayedEnvironmentTransitionCoroutine = StartCoroutine(
+            PlayEnvironmentTransitionAfterWallDissolve(
+                evaluateBeforePlay
+            )
+        );
+    }
+
+    private IEnumerator PlayEnvironmentTransitionAfterWallDissolve(
+        bool evaluateBeforePlay
+    )
+    {
+        BeginMuseumWallDissolve();
+
+        if (museumWallDissolveDuration > 0f)
+        {
+            yield return new WaitForSeconds(
+                museumWallDissolveDuration
+            );
+        }
+
+        SetMuseumWallDissolveImmediate(1f);
+        SetDelayedTavernRevealObjectsActive(false);
+        holdDelayedTavernRevealHidden = true;
+        delayedTavernRevealTime = float.PositiveInfinity;
+
+        if (environmentTransitionDirector != null &&
+            environmentTransitionDirector.playableAsset != null)
+        {
+            environmentTransitionDirector.Stop();
+            environmentTransitionDirector.time = 0d;
+
+            if (evaluateBeforePlay)
+            {
+                environmentTransitionDirector.Evaluate();
+            }
+
+            environmentTransitionDirector.Play();
+        }
+        else
+        {
+            BeginEnvironmentAudioTransition();
+            CompleteEnvironmentTransition();
+        }
+
+        delayedEnvironmentTransitionCoroutine = null;
+    }
+
+    private void BeginDelayedTavernReveal()
+    {
+        if (delayedTavernRevealCoroutine != null)
+        {
+            StopCoroutine(delayedTavernRevealCoroutine);
+        }
+
+        SetDelayedTavernRevealObjectsActive(false);
+        holdDelayedTavernRevealHidden = true;
+        delayedTavernRevealTime =
+            Time.time + delayedTavernRevealDelay;
+
+        delayedTavernRevealCoroutine = StartCoroutine(
+            RevealDelayedTavernObjects()
+        );
+    }
+
+    private IEnumerator RevealDelayedTavernObjects()
+    {
+        if (delayedTavernRevealDelay > 0f)
+        {
+            yield return new WaitForSeconds(
+                delayedTavernRevealDelay
+            );
+        }
+
+        SetDelayedTavernRevealObjectsActive(true);
+        holdDelayedTavernRevealHidden = false;
+        delayedTavernRevealCoroutine = null;
+    }
+
+    private void SetDelayedTavernRevealObjectsActive(bool active)
+    {
+        if (delayedTavernRevealRoots == null)
+        {
+            return;
+        }
+
+        foreach (Transform root in delayedTavernRevealRoots)
+        {
+            if (root != null)
+            {
+                root.gameObject.SetActive(active);
+            }
+        }
+    }
+
+    private IEnumerator FadeMuseumWallDissolve()
+    {
+        if (museumWallDissolveDuration <= 0f)
+        {
+            SetMuseumWallDissolveImmediate(1f);
+            yield break;
+        }
+
+        float elapsed = 0f;
+
+        while (elapsed < museumWallDissolveDuration)
+        {
+            elapsed += Time.deltaTime;
+
+            SetMuseumWallDissolve(
+                Mathf.Clamp01(
+                    elapsed / museumWallDissolveDuration
+                )
+            );
+
+            yield return null;
+        }
+
+        SetMuseumWallDissolve(1f);
+        museumWallDissolveCoroutine = null;
+    }
+
+    private void SetMuseumWallDissolveImmediate(float amount)
+    {
+        if (museumWallDissolveCoroutine != null)
+        {
+            StopCoroutine(museumWallDissolveCoroutine);
+            museumWallDissolveCoroutine = null;
+        }
+
+        SetMuseumWallDissolve(amount);
+    }
+
+    private void SetMuseumWallDissolve(float amount)
+    {
+        if (museumWallDissolveRenderers == null)
+        {
+            return;
+        }
+
+        museumWallPropertyBlock ??= new MaterialPropertyBlock();
+
+        foreach (Renderer wallRenderer in museumWallDissolveRenderers)
+        {
+            if (wallRenderer == null)
+            {
+                continue;
+            }
+
+            wallRenderer.GetPropertyBlock(museumWallPropertyBlock);
+            museumWallPropertyBlock.SetFloat(
+                DissolveAmountId,
+                amount
+            );
+            wallRenderer.SetPropertyBlock(museumWallPropertyBlock);
+        }
+    }
+
     private void StopAllTimelines()
     {
+        if (delayedEnvironmentTransitionCoroutine != null)
+        {
+            StopCoroutine(delayedEnvironmentTransitionCoroutine);
+            delayedEnvironmentTransitionCoroutine = null;
+        }
+
+        if (delayedTavernRevealCoroutine != null)
+        {
+            StopCoroutine(delayedTavernRevealCoroutine);
+            delayedTavernRevealCoroutine = null;
+        }
+
+        holdDelayedTavernRevealHidden = false;
+
         StopTimeline(museumIntroDirector);
         StopTimeline(hornRestorationDirector);
         StopTimeline(environmentTransitionDirector);
@@ -1368,6 +1579,20 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
     private void ResetProgressFlags()
     {
+        if (delayedEnvironmentTransitionCoroutine != null)
+        {
+            StopCoroutine(delayedEnvironmentTransitionCoroutine);
+            delayedEnvironmentTransitionCoroutine = null;
+        }
+
+        if (delayedTavernRevealCoroutine != null)
+        {
+            StopCoroutine(delayedTavernRevealCoroutine);
+            delayedTavernRevealCoroutine = null;
+        }
+
+        holdDelayedTavernRevealHidden = false;
+
         piecePickupHandled = false;
         pieceInsertionHandled = false;
         hornPickupHandled = false;
@@ -1376,6 +1601,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         SetPieceSocketActive(false);
         RestoreHornMouthMaterial();
+        SetMuseumWallDissolveImmediate(0f);
 
         if (hornHoverEffect != null)
         {

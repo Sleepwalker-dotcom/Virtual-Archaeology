@@ -55,7 +55,6 @@ public class HornFMODController : MonoBehaviour
     [Header("Mouthpiece Pose")]
     public Transform mouthpieceTransform;
     public Transform instrumentTipTransform;
-    public bool useHornLocalZAxisForAngle = true;
     public bool lockMouthpieceToHead = true;
     public Vector3 mouthpieceHeadLocalOffset = new Vector3(0f, -0.08f, 0.12f);
     public bool requireGrabBeforeMouthpieceLock = true;
@@ -1057,9 +1056,6 @@ public class HornFMODController : MonoBehaviour
 
     private Vector3 GetInstrumentAxis()
     {
-        if (useHornLocalZAxisForAngle && hornObject != null)
-            return hornObject.forward.normalized;
-
         if (mouthpieceTransform != null && instrumentTipTransform != null)
         {
             Vector3 axis = instrumentTipTransform.position - mouthpieceTransform.position;
