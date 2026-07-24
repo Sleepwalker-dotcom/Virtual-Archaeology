@@ -994,6 +994,18 @@ MonoBehaviour:
       Data4: -370051369
     Path: event:/GardenVO
   allowFadeoutWhenInterrupted: 1
+  subtitle01: Can you hear them? The clinking of bottles, the laughter, and the rhythm
+    of life... How I miss those sounds.
+  subtitle02: This place was once a tavern, where people played the horn and sang
+    until the first light of dawn. But those sounds faded long ago.
+  subtitle03: "I\u2019m Cecilia. I once kept this tavern; now I guard its last echoes."
+  subtitle04: "You came for the horn, didn\u2019t you? Only a fragment of it remains
+    here. Take it and return it to where it belongs. Perhaps the tavern will sing
+    again."
+  subtitleFadeInSeconds: 0.35
+  subtitleFadeOutSeconds: 0.35
+  subtitleCanvasGroup: {fileID: 0}
+  subtitleText: {fileID: 0}
 --- !u!1 &260789616
 GameObject:
   m_ObjectHideFlags: 0
@@ -1952,7 +1964,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &563797005
 Transform:
   m_ObjectHideFlags: 0

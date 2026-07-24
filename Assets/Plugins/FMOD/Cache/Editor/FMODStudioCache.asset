@@ -42,7 +42,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639203436416937538
+  lastModified: 639204420545657166
   FileSizes:
   - Name: Desktop
     Value: 1036
@@ -164,7 +164,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/SceneBGM.bank
   Name: SceneBGM
   StudioPath: bank:/SceneBGM
-  lastModified: 639203436418241307
+  lastModified: 639202722173747901
   FileSizes:
   - Name: Desktop
     Value: 1233024
@@ -365,7 +365,7 @@ MonoBehaviour:
   - {fileID: -8781515992350634487}
   StringsBanks:
   - {fileID: 2642882407560019900}
-  cacheTime: 639204437078652304
+  cacheTime: 639204970201485433
   cacheVersion: 131636
 --- !u!114 &407813035644869156
 MonoBehaviour:
@@ -406,7 +406,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/UI2D.bank
   Name: UI2D
   StudioPath: bank:/UI2D
-  lastModified: 639203436417017501
+  lastModified: 639202746183809229
   FileSizes:
   - Name: Desktop
     Value: 340992
@@ -491,7 +491,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 43914
+  Length: 48914
 --- !u!114 &2642882407560019900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,7 +507,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639204437078652304
+  lastModified: 639204420545672491
   FileSizes:
   - Name: Desktop
     Value: 1730
@@ -527,7 +527,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/InteractionMusic.bank
   Name: InteractionMusic
   StudioPath: bank:/InteractionMusic
-  lastModified: 639203436419300541
+  lastModified: 639202723820198812
   FileSizes:
   - Name: Desktop
     Value: 953760
@@ -547,7 +547,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Scene3D.bank
   Name: Scene3D
   StudioPath: bank:/Scene3D
-  lastModified: 639203436424013480
+  lastModified: 639202722158387025
   FileSizes:
   - Name: Desktop
     Value: 4521248
@@ -594,10 +594,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Voice.bank
   Name: Voice
   StudioPath: bank:/Voice
-  lastModified: 639204437078268673
+  lastModified: 639204970201485433
   FileSizes:
   - Name: Desktop
-    Value: 562848
+    Value: 563200
   Exists: 1
 --- !u!114 &7030914528048031072
 MonoBehaviour:
