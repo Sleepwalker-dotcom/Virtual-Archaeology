@@ -3898,6 +3898,7 @@ MonoBehaviour:
   rawSideShakeSpeed: 0
   shakeSpeed01: 0
   currentPlaybackRate: 1
+  unlockAllExtraLayersOnFirstSwingRound: 1
   extraLayers:
   - layerName: Extra Layer 1
     unlockRoundIndex: 1

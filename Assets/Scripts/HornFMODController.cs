@@ -125,6 +125,8 @@ public class HornFMODController : MonoBehaviour
     [SerializeField] private float currentPlaybackRate = 1f;
 
     [Header("Extra Layers")]
+    [Tooltip("Temporarily enable every configured extra layer when the first shake-speed round starts.")]
+    public bool unlockAllExtraLayersOnFirstSwingRound;
     public ExtraLayerUnlock[] extraLayers =
     {
         new ExtraLayerUnlock
@@ -596,6 +598,17 @@ public class HornFMODController : MonoBehaviour
 
     private void RevealItemAndUnlockLayerForRound(int roundIndex)
     {
+        if (unlockAllExtraLayersOnFirstSwingRound && roundIndex == 1)
+        {
+            if (extraLayers == null)
+                return;
+
+            for (int i = 0; i < extraLayers.Length; i++)
+                RevealItemAndUnlockLayer(i);
+
+            return;
+        }
+
         int layerIndex = roundIndex - 1;
 
         if (extraLayers == null ||
@@ -610,6 +623,11 @@ public class HornFMODController : MonoBehaviour
             return;
         }
 
+        RevealItemAndUnlockLayer(layerIndex);
+    }
+
+    private void RevealItemAndUnlockLayer(int layerIndex)
+    {
         ExtraLayerUnlock layer = extraLayers[layerIndex];
 
         if (layer == null)
