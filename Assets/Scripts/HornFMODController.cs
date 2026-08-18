@@ -346,8 +346,11 @@ public class HornFMODController : MonoBehaviour
         SendParametersToFMOD();
         Update3DPosition();
 
-        bool mouthpieceOK = isMouthpieceSnapped;
-        UpdateSnapPrompt(mouthpieceOK);
+        bool mouthpieceOK = IsMouthpieceOK();
+        if (lockMouthpieceToHead)
+            UpdateSnapPrompt(mouthpieceOK);
+        else
+            SetSnapPromptVisible(false);
 
         if (currentPlaybackMode == HornPlaybackMode.AngleSegmentMode)
         {
@@ -793,9 +796,7 @@ public class HornFMODController : MonoBehaviour
 
         if (statusText != null)
         {
-            statusText.text = isMouthpieceSnapped
-                ? "Shake left and right"
-                : "Bring mouthpiece to mouth";
+            statusText.text = "Shake left and right";
         }
 
         if (angleSlider != null)
@@ -950,7 +951,13 @@ public class HornFMODController : MonoBehaviour
 
     private void ApplyMouthpieceLock()
     {
-        if (!lockMouthpieceToHead || hornObject == null || playerHead == null)
+        if (!lockMouthpieceToHead)
+        {
+            isMouthpieceSnapped = true;
+            return;
+        }
+
+        if (hornObject == null || playerHead == null)
             return;
 
         if (requireGrabBeforeMouthpieceLock && !isHornHeld)
@@ -1039,9 +1046,10 @@ public class HornFMODController : MonoBehaviour
 
         ActivateHorn();
         SetGuideVisible(true);
-        SetSnapPromptVisible(true);
-        UpdateSnapPrompt(false);
-        Log("Horn picked up. Mouthpiece snap is now enabled.");
+        SetSnapPromptVisible(lockMouthpieceToHead);
+        if (lockMouthpieceToHead)
+            UpdateSnapPrompt(false);
+        Log("Horn picked up.");
     }
 
     private void OnHornSelectExited(SelectExitEventArgs args)
@@ -1051,7 +1059,7 @@ public class HornFMODController : MonoBehaviour
         SetSnapPromptVisible(false);
         StopFirstPickupTutorial();
         StopShakeSpeedTutorial();
-        Log("Horn released. Mouthpiece snap is disabled.");
+        Log("Horn released.");
     }
 
     private Vector3 GetMouthpieceAnchorPosition()
@@ -1292,8 +1300,9 @@ public class HornFMODController : MonoBehaviour
 
         ActivateHorn();
         SetGuideVisible(true);
-        SetSnapPromptVisible(true);
-        UpdateSnapPrompt(false);
+        SetSnapPromptVisible(lockMouthpieceToHead);
+        if (lockMouthpieceToHead)
+            UpdateSnapPrompt(false);
     }
 
     private void StopFirstPickupTutorial()
@@ -1338,8 +1347,9 @@ public class HornFMODController : MonoBehaviour
 
         StartRound(currentRoundIndex);
         SetGuideVisible(isHornHeld);
-        SetSnapPromptVisible(isHornHeld);
-        UpdateSnapPrompt(false);
+        SetSnapPromptVisible(lockMouthpieceToHead && isHornHeld);
+        if (lockMouthpieceToHead)
+            UpdateSnapPrompt(false);
     }
 
     private void StopShakeSpeedTutorial()
@@ -1707,6 +1717,9 @@ public class HornFMODController : MonoBehaviour
 
     private void EnsureSnapPromptUI()
     {
+        if (!lockMouthpieceToHead)
+            return;
+
         if (snapPromptText != null || !autoCreateSnapPromptUI)
             return;
 
@@ -1755,6 +1768,8 @@ public class HornFMODController : MonoBehaviour
 
     private void SetSnapPromptVisible(bool visible)
     {
+        visible = visible && lockMouthpieceToHead;
+
         if (snapPromptCanvas != null)
             snapPromptCanvas.SetActive(visible);
         else if (snapPromptText != null)
@@ -1867,8 +1882,12 @@ public class HornFMODController : MonoBehaviour
     {
         if (mouthpieceStatusText != null)
         {
-            mouthpieceStatusText.text = mouthpieceOK ? "Mouthpiece: snapped" : "Mouthpiece: bring to mouth";
-            mouthpieceStatusText.color = mouthpieceOK ? inRangeColor : outOfRangeColor;
+            mouthpieceStatusText.gameObject.SetActive(lockMouthpieceToHead);
+            if (lockMouthpieceToHead)
+            {
+                mouthpieceStatusText.text = mouthpieceOK ? "Mouthpiece: snapped" : "Mouthpiece: bring to mouth";
+                mouthpieceStatusText.color = mouthpieceOK ? inRangeColor : outOfRangeColor;
+            }
         }
 
         if (angleSlider != null)
@@ -1885,8 +1904,13 @@ public class HornFMODController : MonoBehaviour
             if (mouthpieceOK && angleOK)
                 statusText.text = isPlaying ? "Playing" : "Ready";
             else
-                statusText.text = "Adjust mouthpiece and angle";
+                statusText.text = lockMouthpieceToHead ? "Adjust mouthpiece and angle" : "Adjust angle";
         }
+    }
+
+    private bool IsMouthpieceOK()
+    {
+        return !lockMouthpieceToHead || isMouthpieceSnapped;
     }
 
     private void UpdateTargetBand(RectTransform band, float minValue, float maxValue, float sliderMin, float sliderMax)

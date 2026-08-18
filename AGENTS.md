@@ -23,6 +23,7 @@
 - Unity version: 6000.0.58f2.
 - Render pipeline: Universal Render Pipeline (URP) 17.0.4.
 - Primary features include XR Interaction Toolkit 3.0.11, OpenXR 1.15.1, the Input System 1.14.2, FMOD, and Gaussian splat rendering.
+- User desktop path: `D:\Users\KK\Desktop`.
 - Treat `Assets/Plugin` and `Assets/Plugins` as third-party code unless the task explicitly targets a plugin.
 
 ## Safe editing
