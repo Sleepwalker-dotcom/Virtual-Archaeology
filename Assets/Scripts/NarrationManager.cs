@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public sealed class NarrationManager : MonoBehaviour
@@ -17,6 +18,7 @@ public sealed class NarrationManager : MonoBehaviour
 
     [Header("Playback")]
     [SerializeField] private bool allowFadeoutWhenInterrupted = true;
+    [SerializeField] private UnityEvent onGardenVoiceOverFinished;
 
     [Header("Intro Subtitles")]
     [TextArea(2, 5)]
@@ -41,6 +43,7 @@ public sealed class NarrationManager : MonoBehaviour
     private EVENT_CALLBACK narrationCallback;
     private GCHandle callbackHandle;
     private Coroutine subtitleFade;
+    private Coroutine gardenVoiceOverCompletion;
 
     public void PlayIntroNarration()
     {
@@ -65,10 +68,19 @@ public sealed class NarrationManager : MonoBehaviour
     public void PlayGardenVoiceOver()
     {
         PlayNarration(gardenVoiceOverEvent, "Garden VO");
+
+        if (currentNarration.isValid())
+            gardenVoiceOverCompletion = StartCoroutine(WaitForGardenVoiceOver());
     }
 
     public void StopNarration()
     {
+        if (gardenVoiceOverCompletion != null)
+        {
+            StopCoroutine(gardenVoiceOverCompletion);
+            gardenVoiceOverCompletion = null;
+        }
+
         if (!currentNarration.isValid())
             return;
 
@@ -129,6 +141,35 @@ public sealed class NarrationManager : MonoBehaviour
             " narration: " + narrationEvent.Path,
             this
         );
+    }
+
+    private IEnumerator WaitForGardenVoiceOver()
+    {
+        while (currentNarration.isValid())
+        {
+            FMOD.RESULT result = currentNarration.getPlaybackState(
+                out PLAYBACK_STATE playbackState
+            );
+
+            if (result != FMOD.RESULT.OK)
+            {
+                Debug.LogWarning(
+                    "[NarrationManager] Failed to read Garden VO playback state: " +
+                    result,
+                    this
+                );
+                gardenVoiceOverCompletion = null;
+                yield break;
+            }
+
+            if (playbackState == PLAYBACK_STATE.STOPPED)
+                break;
+
+            yield return null;
+        }
+
+        gardenVoiceOverCompletion = null;
+        onGardenVoiceOverFinished?.Invoke();
     }
 
     private void Awake()
