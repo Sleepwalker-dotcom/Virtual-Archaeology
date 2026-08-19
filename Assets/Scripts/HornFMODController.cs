@@ -421,6 +421,21 @@ public class HornFMODController : MonoBehaviour
         Log("Horn activated. FMOD event is paused at the current segment start.");
     }
 
+    public void SetPlayerHead(Transform head)
+    {
+        playerHead = head;
+    }
+
+    public void ActivateHornAndShowCanvas()
+    {
+        ActivateHorn();
+
+        if (isActivated)
+        {
+            SetGuideVisible(true);
+        }
+    }
+
     private void EnsureSegments()
     {
         if (segments != null && segments.Length > 0)

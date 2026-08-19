@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Playables;
@@ -139,6 +140,31 @@ public sealed class MuseumExperienceController : MonoBehaviour
     [SerializeField, Min(0f)]
     private float delayedTavernRevealDelay = 10f;
 
+    [Header("Garden Interaction")]
+    [SerializeField]
+    private Transform gardenInteractionGroup;
+
+    [SerializeField]
+    private FMOD2DSFXPlayer gardenTouchSfxPlayer;
+
+    [SerializeField, Min(0f)]
+    private float hornRevealDistanceFromPlayer = 1f;
+
+    [SerializeField]
+    private Transform hornInteractionArea;
+
+    [SerializeField]
+    private Transform leftHandTouchPoint;
+
+    [SerializeField]
+    private Transform rightHandTouchPoint;
+
+    [SerializeField, Min(0f)]
+    private float gardenHandTouchRadius = 0.08f;
+
+    [SerializeField]
+    private GardenInteractionSystem gardenAppearanceController;
+
     [Header("Existing Audio and Environment System")]
     [SerializeField]
     private SingleSceneAudioEnvironmentManager audioEnvironmentManager;
@@ -196,11 +222,21 @@ public sealed class MuseumExperienceController : MonoBehaviour
     private Vector3 completeHornTavernLocalPosition;
     private Quaternion completeHornTavernLocalRotation;
     private bool hasCompleteHornTavernPose;
+    private readonly List<GardenTouchTarget> gardenTouchTargets =
+        new List<GardenTouchTarget>();
+    private int gardenTouchCount;
+    private HornActivationZone hornActivationZone;
+    private bool gardenInteractionActive;
+    private readonly Collider[] gardenTouchOverlapResults =
+        new Collider[16];
 
     private void Awake()
     {
         CaptureCompleteHornTavernPose();
         PrepareHornRestorationObjects();
+        PrepareGardenInteraction();
+        PrepareGardenAppearanceController();
+        PrepareHornActivationArea();
         InitializeExperience();
     }
 
@@ -237,6 +273,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
     private void LateUpdate()
     {
+        CheckGardenHandTouches();
+
         if (!holdDelayedTavernRevealHidden)
         {
             return;
@@ -1123,22 +1161,378 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         RestoreCompleteHornTavernPose();
 
-        if (completeHornRoot != null)
+        BeginDelayedTavernReveal();
+        BeginGardenInteraction();
+        onFreeExplorationStarted?.Invoke();
+    }
+
+    private void PrepareGardenInteraction()
+    {
+        if (gardenInteractionGroup == null)
         {
-            completeHornRoot.SetActive(true);
+            GameObject groupObject =
+                GameObject.Find("GardenInteractionGroup");
+            gardenInteractionGroup = groupObject != null
+                ? groupObject.transform
+                : null;
+        }
+
+        if (gardenTouchSfxPlayer == null)
+        {
+            gardenTouchSfxPlayer =
+                FindFirstObjectByType<FMOD2DSFXPlayer>(
+                    FindObjectsInactive.Include
+                );
+        }
+
+        if (leftHandTouchPoint == null)
+        {
+            GameObject leftController = GameObject.Find("Left Controller");
+            leftHandTouchPoint = leftController != null
+                ? leftController.transform
+                : null;
+        }
+
+        if (rightHandTouchPoint == null)
+        {
+            GameObject rightController = GameObject.Find("Right Controller");
+            rightHandTouchPoint = rightController != null
+                ? rightController.transform
+                : null;
+        }
+
+        if (leftHandTouchPoint == null || rightHandTouchPoint == null)
+        {
+            Debug.LogWarning(
+                "[MuseumExperience] Left Controller or Right Controller was not found. Garden hand touch detection will be incomplete.",
+                this
+            );
+        }
+
+        gardenTouchTargets.Clear();
+
+        if (gardenInteractionGroup == null)
+        {
+            Debug.LogWarning(
+                "[MuseumExperience] GardenInteractionGroup was not found.",
+                this
+            );
+            return;
+        }
+
+        Collider[] colliders =
+            gardenInteractionGroup.GetComponentsInChildren<Collider>(true);
+        HashSet<GameObject> registeredObjects = new HashSet<GameObject>();
+
+        foreach (Collider targetCollider in colliders)
+        {
+            if (targetCollider == null ||
+                !registeredObjects.Add(targetCollider.gameObject))
+            {
+                continue;
+            }
+
+            GardenTouchTarget target =
+                targetCollider.GetComponent<GardenTouchTarget>();
+
+            if (target == null)
+            {
+                target = targetCollider.gameObject
+                    .AddComponent<GardenTouchTarget>();
+            }
+
+            target.Initialize(this);
+            gardenTouchTargets.Add(target);
+        }
+
+        gardenInteractionGroup.gameObject.SetActive(false);
+    }
+
+    private void BeginGardenInteraction()
+    {
+        SetCompleteHornState(false, false, false);
+        gardenTouchCount = 0;
+        gardenInteractionActive = true;
+
+        foreach (GardenTouchTarget target in gardenTouchTargets)
+        {
+            if (target == null)
+            {
+                continue;
+            }
+
+            target.gameObject.SetActive(true);
+            target.Initialize(this);
+        }
+
+        if (gardenInteractionGroup != null)
+        {
+            gardenInteractionGroup.gameObject.SetActive(true);
+        }
+
+        if (gardenTouchTargets.Count == 0)
+        {
+            RevealHornAfterGardenInteraction();
+        }
+    }
+
+    public void HandleGardenObjectTouched(GardenTouchTarget target)
+    {
+        if (target == null ||
+            !gardenTouchTargets.Contains(target) ||
+            !target.gameObject.activeSelf)
+        {
+            return;
+        }
+
+        gardenTouchSfxPlayer?.PlayPositiveFeedback();
+        target.gameObject.SetActive(false);
+        gardenTouchCount++;
+
+        Debug.Log(
+            "[MuseumExperience] Garden object touched by hand: " +
+            target.name + " (" + gardenTouchCount + "/" +
+            gardenTouchTargets.Count + ").",
+            this
+        );
+
+        if (gardenTouchCount >= gardenTouchTargets.Count)
+        {
+            RevealHornAfterGardenInteraction();
+        }
+    }
+
+    private void CheckGardenHandTouches()
+    {
+        if (!gardenInteractionActive || gardenHandTouchRadius <= 0f)
+        {
+            return;
+        }
+
+        CheckGardenHandTouch(leftHandTouchPoint);
+        CheckGardenHandTouch(rightHandTouchPoint);
+    }
+
+    private void CheckGardenHandTouch(Transform handTouchPoint)
+    {
+        if (handTouchPoint == null)
+        {
+            return;
+        }
+
+        int overlapCount = Physics.OverlapSphereNonAlloc(
+            handTouchPoint.position,
+            gardenHandTouchRadius,
+            gardenTouchOverlapResults,
+            Physics.AllLayers,
+            QueryTriggerInteraction.Collide
+        );
+
+        for (int i = 0; i < overlapCount; i++)
+        {
+            Collider overlap = gardenTouchOverlapResults[i];
+            GardenTouchTarget target = overlap != null
+                ? overlap.GetComponentInParent<GardenTouchTarget>()
+                : null;
+
+            if (target != null)
+            {
+                HandleGardenObjectTouched(target);
+            }
+
+            gardenTouchOverlapResults[i] = null;
+        }
+    }
+
+    private void RevealHornAfterGardenInteraction()
+    {
+        gardenInteractionActive = false;
+
+        if (gardenInteractionGroup != null)
+        {
+            gardenInteractionGroup.gameObject.SetActive(false);
+        }
+
+        if (gardenAppearanceController != null)
+        {
+            GameObject spawnedHornGuidePivot =
+                gardenAppearanceController.ShowHornGuidePivot();
+
+            if (spawnedHornGuidePivot == null)
+            {
+                return;
+            }
+
+            completeHornGrab =
+                spawnedHornGuidePivot.GetComponentInChildren<
+                    XRGrabInteractable
+                >(true);
+            hornPerformanceController =
+                spawnedHornGuidePivot.GetComponentInChildren<
+                    HornFMODController
+                >(true);
+            completeHornRoot = completeHornGrab != null
+                ? completeHornGrab.gameObject
+                : spawnedHornGuidePivot;
+        }
+        else
+        {
+            Transform hornPresentationRoot = GetHornPresentationRoot();
+
+            if (hornPresentationRoot != null)
+            {
+                hornPresentationRoot.gameObject.SetActive(true);
+            }
+
+            if (completeHornRoot != null &&
+                (hornPresentationRoot == null ||
+                 hornPresentationRoot.gameObject != completeHornRoot))
+            {
+                completeHornRoot.SetActive(true);
+            }
+
+            MoveHornInFrontOfPlayer();
+        }
+
+        if (hornPerformanceController != null)
+        {
+            Camera playerCamera = Camera.main;
+
+            if (playerCamera != null)
+            {
+                hornPerformanceController.SetPlayerHead(
+                    playerCamera.transform
+                );
+            }
+
+            hornPerformanceController.enabled = false;
         }
 
         SetCompleteHornPhysicsLocked(true);
         SetEnabled(completeHornGrab, true);
 
-        if (hornPerformanceController != null)
+        if (hornActivationZone != null)
         {
-            hornPerformanceController.enabled = true;
-            hornPerformanceController.ActivateHorn();
+            hornActivationZone.Initialize(hornPerformanceController);
+            hornActivationZone.EnableActivation();
+        }
+    }
+
+    private void PrepareGardenAppearanceController()
+    {
+        if (gardenAppearanceController == null)
+        {
+            gardenAppearanceController =
+                FindFirstObjectByType<GardenInteractionSystem>(
+                    FindObjectsInactive.Include
+                );
+        }
+    }
+
+    private void MoveHornInFrontOfPlayer()
+    {
+        Camera playerCamera = Camera.main;
+
+        if (completeHornRoot == null || playerCamera == null)
+        {
+            Debug.LogWarning(
+                "[MuseumExperience] Cannot place Horn in front of the player because the Horn or Main Camera is missing.",
+                this
+            );
+            return;
         }
 
-        BeginDelayedTavernReveal();
-        onFreeExplorationStarted?.Invoke();
+        Transform hornTransform = completeHornRoot.transform;
+        Transform poseTransform = GetHornPresentationRoot();
+        Transform playerView = playerCamera.transform;
+
+        poseTransform.position =
+            playerView.position +
+            playerView.forward * hornRevealDistanceFromPlayer;
+
+        Rigidbody hornBody = completeHornGrab != null
+            ? completeHornGrab.GetComponent<Rigidbody>()
+            : null;
+
+        if (hornBody != null)
+        {
+            hornBody.position = hornTransform.position;
+            hornBody.rotation = hornTransform.rotation;
+        }
+
+        Physics.SyncTransforms();
+
+        Debug.Log(
+            "[MuseumExperience] HornGuidePivot revealed in front of player. Camera=" +
+            playerView.position + ", Pivot=" + poseTransform.position +
+            ", Distance=" +
+            Vector3.Distance(playerView.position, poseTransform.position) +
+            ".",
+            this
+        );
+    }
+
+    private Transform GetHornPresentationRoot()
+    {
+        if (completeHornRoot == null)
+        {
+            return null;
+        }
+
+        Transform hornTransform = completeHornRoot.transform;
+
+        if (hornTransform.parent != null &&
+            hornTransform.parent.name == "HornGuidePivot")
+        {
+            return hornTransform.parent;
+        }
+
+        return hornTransform;
+    }
+
+    private void PrepareHornActivationArea()
+    {
+        if (hornInteractionArea == null)
+        {
+            GameObject areaObject = GameObject.Find("HornInteractionArea");
+            hornInteractionArea = areaObject != null
+                ? areaObject.transform
+                : null;
+        }
+
+        if (hornInteractionArea == null)
+        {
+            Debug.LogWarning(
+                "[MuseumExperience] HornInteractionArea was not found. Horn interaction will remain disabled.",
+                this
+            );
+            return;
+        }
+
+        Collider areaCollider =
+            hornInteractionArea.GetComponent<Collider>();
+
+        if (areaCollider == null)
+        {
+            Debug.LogWarning(
+                "[MuseumExperience] HornInteractionArea has no Collider. Horn interaction will remain disabled.",
+                this
+            );
+            return;
+        }
+
+        areaCollider.isTrigger = true;
+
+        hornActivationZone =
+            hornInteractionArea.GetComponent<HornActivationZone>();
+
+        if (hornActivationZone == null)
+        {
+            hornActivationZone = hornInteractionArea.gameObject
+                .AddComponent<HornActivationZone>();
+        }
+
+        hornActivationZone.Initialize(hornPerformanceController);
     }
 
     private void HideHornPickup()
@@ -1471,7 +1865,9 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         foreach (Transform root in delayedTavernRevealRoots)
         {
-            if (root != null)
+            if (root != null &&
+                (completeHornRoot == null ||
+                 root.gameObject != completeHornRoot))
             {
                 root.gameObject.SetActive(active);
             }
