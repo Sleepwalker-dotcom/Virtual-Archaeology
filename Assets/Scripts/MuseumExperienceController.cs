@@ -343,6 +343,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
         SetCompleteHornState(false, false, false);
         SetPieceSocketActive(false);
         SetGuideLights(0f, 0f, 0f);
+        SetPieceRenderersVisible(true);
         FadeGuidanceLight(
             ref pieceLightCoroutine,
             pieceGuideLight,
@@ -507,6 +508,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
             pieceRoot.gameObject.SetActive(true);
         }
 
+        SetPieceRenderersVisible(false);
+
         if (completeHornRoot != null)
         {
             completeHornRoot.SetActive(false);
@@ -551,6 +554,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
     public void ShowPieceGuide()
     {
         FadeTransitionCanvas(0f);
+        SetPieceRenderersVisible(true);
 
         FadeGuidanceLight(
             ref pieceLightCoroutine,
@@ -571,6 +575,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
         }
 
         SetEnabled(pieceGrab, true);
+        SetPieceRenderersVisible(true);
 
         SetState(MuseumExperienceState.WaitForPiecePickup);
     }
@@ -2017,6 +2022,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
             pieceRoot.gameObject.SetActive(true);
         }
 
+        SetPieceRenderersVisible(true);
+
         if (pieceRigidbody != null)
         {
             pieceRigidbody.isKinematic = false;
@@ -2137,6 +2144,20 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         targetLight.enabled = true;
         targetLight.intensity = intensity;
+    }
+
+    private void SetPieceRenderersVisible(bool visible)
+    {
+        if (pieceRoot == null)
+        {
+            return;
+        }
+
+        foreach (Renderer pieceRenderer in
+            pieceRoot.GetComponentsInChildren<Renderer>(true))
+        {
+            pieceRenderer.enabled = visible;
+        }
     }
 
     private void SetState(MuseumExperienceState state)

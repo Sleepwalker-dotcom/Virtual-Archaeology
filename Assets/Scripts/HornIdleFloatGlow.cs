@@ -11,6 +11,7 @@ public sealed class HornIdleFloatGlow : MonoBehaviour
     [SerializeField, Min(0f)] private float minGlowIntensity = 0.08f;
     [SerializeField, Min(0f)] private float maxGlowIntensity = 0.35f;
     [SerializeField, Min(0f)] private float grabbedGlowIntensity = 0.6f;
+    [SerializeField] private bool glowOnlyAfterFirstGrab;
     [SerializeField, Min(0f)] private float floatHeight = 0.04f;
     [SerializeField, Min(0.01f)] private float floatSpeed = 0.8f;
 
@@ -30,15 +31,15 @@ public sealed class HornIdleFloatGlow : MonoBehaviour
         CacheMaterials();
         startLocalPosition = target.localPosition;
         grabInteractable = GetComponent<XRGrabInteractable>();
-    }
 
-    private void OnEnable()
-    {
         if (grabInteractable != null)
             grabInteractable.selectEntered.AddListener(HandleGrabbed);
+
+        if (glowOnlyAfterFirstGrab)
+            SetEmission(Color.black);
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         if (grabInteractable != null)
             grabInteractable.selectEntered.RemoveListener(HandleGrabbed);
@@ -52,6 +53,12 @@ public sealed class HornIdleFloatGlow : MonoBehaviour
         float wave = Mathf.Sin(Time.time * floatSpeed * Mathf.PI * 2f);
         target.localPosition = startLocalPosition + Vector3.up * (wave * floatHeight);
 
+        if (glowOnlyAfterFirstGrab)
+        {
+            SetEmission(Color.black);
+            return;
+        }
+
         float glow = Mathf.Lerp(minGlowIntensity, maxGlowIntensity, (wave + 1f) * 0.5f);
         SetEmission(glowColor * glow);
     }
@@ -59,6 +66,7 @@ public sealed class HornIdleFloatGlow : MonoBehaviour
     private void HandleGrabbed(SelectEnterEventArgs args)
     {
         hasBeenGrabbed = true;
+        enabled = true;
 
         if (target != null)
             target.localPosition = startLocalPosition;

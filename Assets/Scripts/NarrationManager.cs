@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+[ExecuteAlways]
 public sealed class NarrationManager : MonoBehaviour
 {
     [Header("FMOD Narration Events")]
@@ -37,12 +38,23 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField] private float subtitleFadeOutSeconds = 0.35f;
     [SerializeField] private CanvasGroup subtitleCanvasGroup;
     [SerializeField] private Text subtitleText;
+    [SerializeField] private Transform sceneSubtitleRoot;
+    [SerializeField] private int sceneSubtitleFontSize = 38;
+    [SerializeField] private FontStyle sceneSubtitleFontStyle = FontStyle.Normal;
+    [SerializeField] private Color sceneSubtitleColor = Color.white;
+    [SerializeField] private Vector2 sceneSubtitleCanvasSize =
+        new Vector2(900f, 180f);
+    [SerializeField] private float sceneSubtitleCanvasScale = 0.002f;
+    [SerializeField] private bool showSubtitlePreviewInEditMode = true;
 
     private EventInstance currentNarration;
     private readonly ConcurrentQueue<string> pendingSubtitleMarkers = new();
     private EVENT_CALLBACK narrationCallback;
     private GCHandle callbackHandle;
-    private Coroutine subtitleFade;
+    private readonly CanvasGroup[] sceneSubtitleCanvasGroups =
+        new CanvasGroup[4];
+    private readonly Text[] sceneSubtitleTexts = new Text[4];
+    private readonly Coroutine[] sceneSubtitleFades = new Coroutine[4];
     private Coroutine gardenVoiceOverCompletion;
 
     public void PlayIntroNarration()
@@ -75,6 +87,8 @@ public sealed class NarrationManager : MonoBehaviour
 
     public void StopNarration()
     {
+        ClearSubtitleImmediate();
+
         if (gardenVoiceOverCompletion != null)
         {
             StopCoroutine(gardenVoiceOverCompletion);
@@ -95,7 +109,6 @@ public sealed class NarrationManager : MonoBehaviour
         currentNarration.release();
         currentNarration.clearHandle();
         ReleaseCallbackHandle();
-        ClearSubtitleImmediate();
     }
 
     private void PlayNarration(EventReference narrationEvent, string label)
@@ -175,7 +188,19 @@ public sealed class NarrationManager : MonoBehaviour
     private void Awake()
     {
         EnsureSubtitleUI();
-        ClearSubtitleImmediate();
+        if (Application.isPlaying)
+            ClearSubtitleImmediate();
+        else
+            RefreshSubtitlePreview();
+    }
+
+    private void OnValidate()
+    {
+        if (!HasAllSubtitleSlots())
+            return;
+
+        ApplySubtitleStyle();
+        RefreshSubtitlePreview();
     }
 
     private void Update()
@@ -216,80 +241,84 @@ public sealed class NarrationManager : MonoBehaviour
         switch (markerName)
         {
             case "SUBTITLE_01":
-                ShowSubtitle(subtitle01);
+                ShowSubtitle(0, subtitle01);
                 break;
             case "SUBTITLE_02":
-                ShowSubtitle(subtitle02);
+                ShowSubtitle(1, subtitle02);
                 break;
             case "SUBTITLE_03":
-                ShowSubtitle(subtitle03);
+                ShowSubtitle(2, subtitle03);
                 break;
             case "SUBTITLE_04":
-                ShowSubtitle(subtitle04);
+                ShowSubtitle(3, subtitle04);
                 break;
             case "SUBTITLE_CLEAR_01":
-                ClearSubtitle(subtitle01);
+                ClearSubtitle(0);
                 break;
             case "SUBTITLE_CLEAR_02":
-                ClearSubtitle(subtitle02);
+                ClearSubtitle(1);
                 break;
             case "SUBTITLE_CLEAR_03":
-                ClearSubtitle(subtitle03);
+                ClearSubtitle(2);
                 break;
             case "SUBTITLE_CLEAR_04":
-                ClearSubtitle(subtitle04);
+                ClearSubtitle(3);
                 break;
         }
     }
 
-    private void ShowSubtitle(string text)
+    private void ShowSubtitle(int index, string text)
     {
         EnsureSubtitleUI();
-        if (subtitleCanvasGroup == null || subtitleText == null)
+        if (!HasSubtitleSlot(index))
             return;
 
-        subtitleText.text = text;
-        StartSubtitleFade(1f, subtitleFadeInSeconds, false);
+        sceneSubtitleTexts[index].text = text;
+        StartSubtitleFade(index, 1f, subtitleFadeInSeconds, false);
     }
 
-    private void ClearSubtitle(string expectedText)
+    private void ClearSubtitle(int index)
     {
-        if (subtitleText == null || subtitleText.text != expectedText)
+        if (!HasSubtitleSlot(index))
             return;
 
-        StartSubtitleFade(0f, subtitleFadeOutSeconds, true);
+        StartSubtitleFade(index, 0f, subtitleFadeOutSeconds, true);
     }
 
     private void StartSubtitleFade(
+        int index,
         float targetAlpha,
         float duration,
         bool clearTextWhenComplete
     )
     {
-        if (subtitleFade != null)
-            StopCoroutine(subtitleFade);
+        if (sceneSubtitleFades[index] != null)
+            StopCoroutine(sceneSubtitleFades[index]);
 
-        subtitleFade = StartCoroutine(
-            FadeSubtitle(targetAlpha, duration, clearTextWhenComplete)
+        sceneSubtitleFades[index] = StartCoroutine(
+            FadeSubtitle(index, targetAlpha, duration, clearTextWhenComplete)
         );
     }
 
     private IEnumerator FadeSubtitle(
+        int index,
         float targetAlpha,
         float duration,
         bool clearTextWhenComplete
     )
     {
-        if (subtitleCanvasGroup == null || subtitleText == null)
+        if (!HasSubtitleSlot(index))
             yield break;
 
-        float startAlpha = subtitleCanvasGroup.alpha;
+        CanvasGroup canvasGroup = sceneSubtitleCanvasGroups[index];
+        Text text = sceneSubtitleTexts[index];
+        float startAlpha = canvasGroup.alpha;
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
-            subtitleCanvasGroup.alpha = Mathf.Lerp(
+            canvasGroup.alpha = Mathf.Lerp(
                 startAlpha,
                 targetAlpha,
                 duration <= 0f ? 1f : elapsed / duration
@@ -297,76 +326,192 @@ public sealed class NarrationManager : MonoBehaviour
             yield return null;
         }
 
-        subtitleCanvasGroup.alpha = targetAlpha;
+        canvasGroup.alpha = targetAlpha;
         if (clearTextWhenComplete)
-            subtitleText.text = string.Empty;
+            text.text = string.Empty;
 
-        subtitleFade = null;
+        sceneSubtitleFades[index] = null;
     }
 
     private void EnsureSubtitleUI()
     {
-        if (subtitleCanvasGroup != null && subtitleText != null)
-            return;
-
-        Camera targetCamera = Camera.main;
-        if (targetCamera == null)
+        if (HasAllSubtitleSlots())
         {
-            Debug.LogWarning(
-                "[NarrationManager] Main Camera not found; subtitle UI was not created.",
-                this
-            );
+            ApplySubtitleStyle();
             return;
         }
 
-        GameObject canvasObject = new(
-            "IntroSubtitleCanvas",
-            typeof(Canvas),
-            typeof(CanvasScaler),
-            typeof(CanvasGroup)
-        );
-        canvasObject.transform.SetParent(targetCamera.transform, false);
-        canvasObject.transform.localPosition = new Vector3(0f, -0.32f, 1.2f);
-        canvasObject.transform.localRotation = Quaternion.identity;
-        canvasObject.transform.localScale = Vector3.one * 0.0015f;
+        if (sceneSubtitleRoot == null)
+        {
+            GameObject rootObject = GameObject.Find("SceneSubtitleRoot");
+            sceneSubtitleRoot = rootObject != null
+                ? rootObject.transform
+                : new GameObject("SceneSubtitleRoot").transform;
+        }
 
-        Canvas canvas = canvasObject.GetComponent<Canvas>();
-        canvas.renderMode = RenderMode.WorldSpace;
-        canvas.worldCamera = targetCamera;
+        for (int i = 0; i < sceneSubtitleCanvasGroups.Length; i++)
+            EnsureSceneSubtitleSlot(i);
 
-        RectTransform canvasRect = canvasObject.GetComponent<RectTransform>();
-        canvasRect.sizeDelta = new Vector2(900f, 180f);
-        subtitleCanvasGroup = canvasObject.GetComponent<CanvasGroup>();
+        ApplySubtitleStyle();
+    }
 
-        GameObject textObject = new(
-            "SubtitleText",
-            typeof(RectTransform),
-            typeof(CanvasRenderer),
-            typeof(Text)
-        );
-        textObject.transform.SetParent(canvasObject.transform, false);
+    private void EnsureSceneSubtitleSlot(int index)
+    {
+        string anchorName = "Subtitle_" + (index + 1).ToString("00") + "_Anchor";
+        Transform anchor = sceneSubtitleRoot.Find(anchorName);
 
-        RectTransform textRect = textObject.GetComponent<RectTransform>();
-        textRect.anchorMin = Vector2.zero;
-        textRect.anchorMax = Vector2.one;
-        textRect.offsetMin = new Vector2(35f, 15f);
-        textRect.offsetMax = new Vector2(-35f, -15f);
+        if (anchor == null)
+        {
+            anchor = new GameObject(anchorName).transform;
+            anchor.SetParent(sceneSubtitleRoot, false);
+            anchor.localPosition = new Vector3(
+                index % 2 == 0 ? -1.2f : 1.2f,
+                1.6f,
+                2.2f + index * 0.35f
+            );
+            anchor.localRotation = Quaternion.identity;
+            anchor.localScale = Vector3.one;
+        }
 
-        subtitleText = textObject.GetComponent<Text>();
-        subtitleText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        subtitleText.fontSize = 38;
-        subtitleText.alignment = TextAnchor.MiddleCenter;
-        subtitleText.color = Color.white;
-        subtitleText.horizontalOverflow = HorizontalWrapMode.Wrap;
-        subtitleText.verticalOverflow = VerticalWrapMode.Truncate;
+        CanvasGroup canvasGroup =
+            anchor.GetComponentInChildren<CanvasGroup>(true);
+        Text text = anchor.GetComponentInChildren<Text>(true);
+
+        if (canvasGroup == null || text == null)
+        {
+            GameObject canvasObject = new(
+                "SubtitleCanvas",
+                typeof(Canvas),
+                typeof(CanvasScaler),
+                typeof(CanvasGroup)
+            );
+            canvasObject.transform.SetParent(anchor, false);
+            canvasObject.transform.localPosition = Vector3.zero;
+            canvasObject.transform.localRotation =
+                Quaternion.Euler(0f, 180f, 0f);
+            canvasObject.transform.localScale =
+                Vector3.one * sceneSubtitleCanvasScale;
+
+            Canvas canvas = canvasObject.GetComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            canvas.worldCamera = Camera.main;
+
+            RectTransform canvasRect =
+                canvasObject.GetComponent<RectTransform>();
+            canvasRect.sizeDelta = sceneSubtitleCanvasSize;
+
+            canvasGroup = canvasObject.GetComponent<CanvasGroup>();
+
+            GameObject textObject = new(
+                "SubtitleText",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Text)
+            );
+            textObject.transform.SetParent(canvasObject.transform, false);
+
+            RectTransform textRect =
+                textObject.GetComponent<RectTransform>();
+            textRect.anchorMin = Vector2.zero;
+            textRect.anchorMax = Vector2.one;
+            textRect.offsetMin = new Vector2(35f, 15f);
+            textRect.offsetMax = new Vector2(-35f, -15f);
+
+            text = textObject.GetComponent<Text>();
+            text.font = Resources.GetBuiltinResource<Font>(
+                "LegacyRuntime.ttf"
+            );
+            text.fontSize = sceneSubtitleFontSize;
+            text.fontStyle = sceneSubtitleFontStyle;
+            text.alignment = TextAnchor.MiddleCenter;
+            text.color = sceneSubtitleColor;
+            text.horizontalOverflow = HorizontalWrapMode.Wrap;
+            text.verticalOverflow = VerticalWrapMode.Truncate;
+        }
+
+        sceneSubtitleCanvasGroups[index] = canvasGroup;
+        sceneSubtitleTexts[index] = text;
+    }
+
+    private bool HasAllSubtitleSlots()
+    {
+        for (int i = 0; i < sceneSubtitleCanvasGroups.Length; i++)
+        {
+            if (!HasSubtitleSlot(i))
+                return false;
+        }
+
+        return true;
+    }
+
+    private bool HasSubtitleSlot(int index)
+    {
+        return index >= 0 &&
+            index < sceneSubtitleCanvasGroups.Length &&
+            sceneSubtitleCanvasGroups[index] != null &&
+            sceneSubtitleTexts[index] != null;
+    }
+
+    private void ApplySubtitleStyle()
+    {
+        for (int i = 0; i < sceneSubtitleTexts.Length; i++)
+        {
+            if (!HasSubtitleSlot(i))
+                continue;
+
+            sceneSubtitleTexts[i].fontSize = sceneSubtitleFontSize;
+            sceneSubtitleTexts[i].fontStyle = sceneSubtitleFontStyle;
+            sceneSubtitleTexts[i].color = sceneSubtitleColor;
+
+            RectTransform canvasRect =
+                sceneSubtitleCanvasGroups[i].GetComponent<RectTransform>();
+            if (canvasRect != null)
+                canvasRect.sizeDelta = sceneSubtitleCanvasSize;
+
+            sceneSubtitleCanvasGroups[i].transform.localScale =
+                Vector3.one * sceneSubtitleCanvasScale;
+            sceneSubtitleCanvasGroups[i].transform.localRotation =
+                Quaternion.Euler(0f, 180f, 0f);
+        }
+    }
+
+    private void RefreshSubtitlePreview()
+    {
+        if (Application.isPlaying || !showSubtitlePreviewInEditMode)
+            return;
+
+        string[] subtitles =
+        {
+            subtitle01,
+            subtitle02,
+            subtitle03,
+            subtitle04
+        };
+
+        for (int i = 0; i < subtitles.Length; i++)
+        {
+            if (!HasSubtitleSlot(i))
+                continue;
+
+            sceneSubtitleTexts[i].text = subtitles[i];
+            sceneSubtitleCanvasGroups[i].alpha = 1f;
+        }
     }
 
     private void ClearSubtitleImmediate()
     {
-        if (subtitleFade != null)
+        for (int i = 0; i < sceneSubtitleFades.Length; i++)
         {
-            StopCoroutine(subtitleFade);
-            subtitleFade = null;
+            if (sceneSubtitleFades[i] != null)
+            {
+                StopCoroutine(sceneSubtitleFades[i]);
+                sceneSubtitleFades[i] = null;
+            }
+
+            if (sceneSubtitleCanvasGroups[i] != null)
+                sceneSubtitleCanvasGroups[i].alpha = 0f;
+            if (sceneSubtitleTexts[i] != null)
+                sceneSubtitleTexts[i].text = string.Empty;
         }
 
         if (subtitleCanvasGroup != null)
@@ -387,6 +532,7 @@ public sealed class NarrationManager : MonoBehaviour
 
     private void OnDisable()
     {
-        StopNarration();
+        if (Application.isPlaying)
+            StopNarration();
     }
 }
