@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -14,12 +13,6 @@ public sealed class TapToggleGlow : MonoBehaviour
         Bottle,
         Domino,
         Whistle
-    }
-
-    private enum InteractionModuleOrder
-    {
-        LayerThenVoiceOver,
-        VoiceOverThenLayer
     }
 
     [SerializeField] private Renderer[] renderers;
@@ -38,16 +31,13 @@ public sealed class TapToggleGlow : MonoBehaviour
     [Header("Interaction Modules")]
     [SerializeField] private NarrationManager narrationManager;
     [SerializeField] private ObjectIntroVoiceOver objectIntroVoiceOver;
-    [SerializeField] private InteractionModuleOrder interactionModuleOrder;
 
-    private readonly HashSet<Collider> touchingColliders = new();
     private MaterialPropertyBlock propertyBlock;
     private bool isGlowing;
     private Coroutine shakeCoroutine;
     private Vector3 restingLocalPosition;
     private XRGrabInteractable grabInteractable;
-    private bool layerInteractionCompleted;
-    private bool voiceOverInteractionCompleted;
+    private bool postMelodyInteractionDisabled;
 
     private void Awake()
     {
@@ -65,33 +55,27 @@ public sealed class TapToggleGlow : MonoBehaviour
     private void OnDestroy()
     {
         if (grabInteractable != null)
+        {
             grabInteractable.selectEntered.RemoveListener(HandleGrabbed);
+            grabInteractable.hoverEntered.RemoveListener(HandleHoverEntered);
+        }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void Update()
     {
-        HandleContactEntered(other);
-    }
+        if (postMelodyInteractionDisabled || hornController == null ||
+            !hornController.HasFinishedFullMelodyRepeats)
+        {
+            return;
+        }
 
-    private void OnTriggerExit(Collider other)
-    {
-        touchingColliders.Remove(other);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        HandleContactEntered(collision.collider);
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        touchingColliders.Remove(collision.collider);
+        postMelodyInteractionDisabled = true;
+        isGlowing = false;
+        ApplyGlow(false);
     }
 
     private void OnDisable()
     {
-        touchingColliders.Clear();
-
         if (shakeCoroutine != null)
         {
             StopCoroutine(shakeCoroutine);
@@ -101,13 +85,14 @@ public sealed class TapToggleGlow : MonoBehaviour
         transform.localPosition = restingLocalPosition;
     }
 
-    private void HandleContactEntered(Collider other)
+    private void HandleHoverEntered(HoverEnterEventArgs args)
     {
-        if (!TryGetPlayerHand(other, out XRBaseInputInteractor inputInteractor))
+        if (hornController != null && hornController.HasFinishedFullMelodyRepeats)
             return;
 
-        bool contactAlreadyActive = touchingColliders.Count > 0;
-        if (!touchingColliders.Add(other) || contactAlreadyActive)
+        XRBaseInputInteractor inputInteractor =
+            args.interactorObject as XRBaseInputInteractor;
+        if (inputInteractor == null)
             return;
 
         isGlowing = !isGlowing;
@@ -199,82 +184,45 @@ public sealed class TapToggleGlow : MonoBehaviour
         if (grabInteractable == null)
             grabInteractable = gameObject.AddComponent<XRGrabInteractable>();
 
+        grabInteractable.hoverEntered.AddListener(HandleHoverEntered);
         grabInteractable.selectEntered.AddListener(HandleGrabbed);
     }
 
     private void HandleGrabbed(SelectEnterEventArgs args)
     {
-        if (voiceOverInteractionCompleted)
-            return;
-
-        bool voiceOverIsNext =
-            interactionModuleOrder == InteractionModuleOrder.VoiceOverThenLayer ||
-            layerInteractionCompleted;
-
-        if (voiceOverIsNext && PlayObjectIntroVoiceOver())
-            voiceOverInteractionCompleted = true;
+        if (hornController != null && hornController.HasFinishedFullMelodyRepeats)
+            PlayObjectIntroVoiceOver();
     }
 
     private void TryRunLayerInteraction()
     {
-        if (layerInteractionCompleted)
-            return;
-
-        bool layerIsNext =
-            interactionModuleOrder == InteractionModuleOrder.LayerThenVoiceOver ||
-            voiceOverInteractionCompleted;
-
-        if (layerIsNext && hornController != null &&
+        if (hornController != null && hornController.IsFullMelodyRepeatPlaying &&
             hornController.SetExtraLayerActive(extraLayerIndex, true))
         {
-            layerInteractionCompleted = true;
+            Debug.Log(
+                "[TapToggleGlow] Layer unlock triggered: " + extraLayerIndex,
+                this
+            );
         }
     }
 
-    private bool PlayObjectIntroVoiceOver()
+    private void PlayObjectIntroVoiceOver()
     {
         if (narrationManager == null)
-            return false;
+            return;
 
         switch (objectIntroVoiceOver)
         {
             case ObjectIntroVoiceOver.Bottle:
                 narrationManager.PlayBottleIntroVoiceOver();
-                return true;
+                break;
             case ObjectIntroVoiceOver.Domino:
                 narrationManager.PlayDominoIntroVoiceOver();
-                return true;
+                break;
             case ObjectIntroVoiceOver.Whistle:
                 narrationManager.PlayWhistleIntroVoiceOver();
-                return true;
+                break;
         }
-
-        return false;
     }
 
-    private static bool TryGetPlayerHand(
-        Collider other,
-        out XRBaseInputInteractor inputInteractor
-    )
-    {
-        inputInteractor = null;
-
-        if (other == null)
-            return false;
-
-        inputInteractor = other.GetComponentInParent<XRBaseInputInteractor>();
-        if (inputInteractor != null)
-            return true;
-
-        Transform current = other.transform;
-        while (current != null)
-        {
-            if (current.CompareTag("Player"))
-                return true;
-
-            current = current.parent;
-        }
-
-        return false;
-    }
 }

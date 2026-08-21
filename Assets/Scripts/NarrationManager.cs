@@ -10,9 +10,15 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public sealed class NarrationManager : MonoBehaviour
 {
+    private enum ObjectIntroVoiceOver
+    {
+        Bottle,
+        Domino,
+        Whistle
+    }
+
     [Header("FMOD Narration Events")]
     [SerializeField] private EventReference introNarrationEvent;
-    [SerializeField] private EventReference restorationNarrationEvent;
     [SerializeField] private EventReference restoreVoiceOverEvent;
     [SerializeField] private EventReference pickupVoiceOverEvent;
     [SerializeField] private EventReference gardenVoiceOverEvent;
@@ -24,6 +30,9 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField] private EventReference bottleIntroVoiceOverEvent;
     [SerializeField] private EventReference dominoIntroVoiceOverEvent;
     [SerializeField] private EventReference whistleIntroVoiceOverEvent;
+    [SerializeField] private EventReference tavernAliveVoiceOverEvent;
+    [SerializeField] private EventReference endingBgmEvent;
+    [SerializeField] private EventReference endVoiceOverEvent;
 
     [Header("Playback")]
     [SerializeField] private bool allowFadeoutWhenInterrupted = true;
@@ -33,6 +42,21 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField] private GameObject objectGroup;
     [SerializeField] private FMOD2DSFXPlayer uiSfxPlayer;
     [SerializeField] private UnityEvent onGardenVoiceOverFinished;
+
+    [Header("Post Show Objects Melody")]
+    [SerializeField] private HornFMODController hornController;
+    [SerializeField, Min(0f)] private float showObjectsToMelodyDelay = 5f;
+    [SerializeField, Min(1)] private int fullMelodyRepeatCount = 2;
+
+    [Header("Standalone Object Interaction Test")]
+    [SerializeField] private bool standaloneObjectInteractionTest;
+    [SerializeField, Min(0f)] private float standaloneTestMelodyDelay = 1f;
+
+    [Header("Tavern Alive Completion")]
+    [SerializeField] private FMODTrigger3DAudio tavernCrowdPlayer;
+    [SerializeField] private FMODTrigger3DAudio streetOutsidePlayer;
+    [SerializeField, Min(0f)] private float tavernAliveToEndingBgmDelay = 10f;
+    [SerializeField, Min(0f)] private float endingBgmToEndVoiceOverDelay = 20f;
 
     [Header("Intro Subtitles")]
     [TextArea(2, 5)]
@@ -71,15 +95,16 @@ public sealed class NarrationManager : MonoBehaviour
     private Coroutine gardenVoiceOverCompletion;
     private Coroutine musicIntroSequence;
     private Coroutine showObjectsSequence;
+    private Coroutine objectIntroCompletion;
+    private Coroutine endingBgmSequence;
+    private bool bottleIntroCompleted;
+    private bool dominoIntroCompleted;
+    private bool whistleIntroCompleted;
+    private bool tavernAliveStarted;
 
     public void PlayIntroNarration()
     {
         PlayNarration(introNarrationEvent, "Intro");
-    }
-
-    public void PlayRestorationNarration()
-    {
-        PlayNarration(restorationNarrationEvent, "Restoration");
     }
 
     public void PlayRestoreVoiceOver()
@@ -112,17 +137,126 @@ public sealed class NarrationManager : MonoBehaviour
 
     public void PlayBottleIntroVoiceOver()
     {
-        PlayNarration(bottleIntroVoiceOverEvent, "Bottle Intro VO");
+        PlayObjectIntroVoiceOver(
+            bottleIntroVoiceOverEvent,
+            "Bottle Intro VO",
+            ObjectIntroVoiceOver.Bottle
+        );
     }
 
     public void PlayDominoIntroVoiceOver()
     {
-        PlayNarration(dominoIntroVoiceOverEvent, "Domino Intro VO");
+        PlayObjectIntroVoiceOver(
+            dominoIntroVoiceOverEvent,
+            "Domino Intro VO",
+            ObjectIntroVoiceOver.Domino
+        );
     }
 
     public void PlayWhistleIntroVoiceOver()
     {
-        PlayNarration(whistleIntroVoiceOverEvent, "Whistle Intro VO");
+        PlayObjectIntroVoiceOver(
+            whistleIntroVoiceOverEvent,
+            "Whistle Intro VO",
+            ObjectIntroVoiceOver.Whistle
+        );
+    }
+
+    private void PlayObjectIntroVoiceOver(
+        EventReference eventReference,
+        string label,
+        ObjectIntroVoiceOver voiceOver
+    )
+    {
+        PlayNarration(eventReference, label);
+
+        if (currentNarration.isValid())
+        {
+            objectIntroCompletion = StartCoroutine(
+                WaitForObjectIntroVoiceOver(voiceOver, label)
+            );
+        }
+    }
+
+    private IEnumerator WaitForObjectIntroVoiceOver(
+        ObjectIntroVoiceOver voiceOver,
+        string label
+    )
+    {
+        while (currentNarration.isValid())
+        {
+            FMOD.RESULT result = currentNarration.getPlaybackState(
+                out PLAYBACK_STATE playbackState
+            );
+
+            if (result != FMOD.RESULT.OK)
+            {
+                Debug.LogWarning(
+                    "[NarrationManager] Failed to read " + label +
+                    " playback state: " + result,
+                    this
+                );
+                objectIntroCompletion = null;
+                yield break;
+            }
+
+            if (playbackState == PLAYBACK_STATE.STOPPED)
+                break;
+
+            yield return null;
+        }
+
+        StopCurrentNarration(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        objectIntroCompletion = null;
+
+        switch (voiceOver)
+        {
+            case ObjectIntroVoiceOver.Bottle:
+                bottleIntroCompleted = true;
+                break;
+            case ObjectIntroVoiceOver.Domino:
+                dominoIntroCompleted = true;
+                break;
+            case ObjectIntroVoiceOver.Whistle:
+                whistleIntroCompleted = true;
+                break;
+        }
+
+        TryStartTavernAliveAudio();
+    }
+
+    private void TryStartTavernAliveAudio()
+    {
+        if (tavernAliveStarted || !bottleIntroCompleted ||
+            !dominoIntroCompleted || !whistleIntroCompleted)
+        {
+            return;
+        }
+
+        tavernAliveStarted = true;
+        tavernCrowdPlayer?.PlayAudio();
+        streetOutsidePlayer?.PlayAudio();
+        PlayNarration(tavernAliveVoiceOverEvent, "Tavern Alive VO");
+        endingBgmSequence = StartCoroutine(PlayEndingBgmAfterDelay());
+    }
+
+    private IEnumerator PlayEndingBgmAfterDelay()
+    {
+        yield return new WaitForSeconds(tavernAliveToEndingBgmDelay);
+        endingBgmSequence = null;
+
+        if (endingBgmEvent.IsNull)
+        {
+            Debug.LogWarning(
+                "[NarrationManager] Ending BGM event is not assigned.",
+                this
+            );
+            yield break;
+        }
+
+        RuntimeManager.PlayOneShot(endingBgmEvent);
+        yield return new WaitForSeconds(endingBgmToEndVoiceOverDelay);
+        PlayNarration(endVoiceOverEvent, "End VO");
     }
 
     public void PlayMusicIntroThenShowObjects()
@@ -157,6 +291,12 @@ public sealed class NarrationManager : MonoBehaviour
         {
             StopCoroutine(showObjectsSequence);
             showObjectsSequence = null;
+        }
+
+        if (objectIntroCompletion != null)
+        {
+            StopCoroutine(objectIntroCompletion);
+            objectIntroCompletion = null;
         }
 
         if (!currentNarration.isValid())
@@ -347,19 +487,37 @@ public sealed class NarrationManager : MonoBehaviour
         }
 
         StopCurrentNarration(FMOD.Studio.STOP_MODE.IMMEDIATE);
+
+        float delay = Mathf.Max(0f, showObjectsToMelodyDelay);
+        if (delay > 0f)
+            yield return new WaitForSeconds(delay);
+
+        hornController?.PlayFullMelodyRepeats(fullMelodyRepeatCount);
         showObjectsSequence = null;
     }
 
     private void Awake()
     {
         if (Application.isPlaying && objectGroup != null)
-            objectGroup.SetActive(false);
+            objectGroup.SetActive(standaloneObjectInteractionTest);
 
         EnsureSubtitleUI();
         if (Application.isPlaying)
             ClearSubtitleImmediate();
         else
             RefreshSubtitlePreview();
+    }
+
+    private IEnumerator Start()
+    {
+        if (!Application.isPlaying || !standaloneObjectInteractionTest)
+            yield break;
+
+        float delay = Mathf.Max(0f, standaloneTestMelodyDelay);
+        if (delay > 0f)
+            yield return new WaitForSeconds(delay);
+
+        hornController?.PlayFullMelodyRepeats(fullMelodyRepeatCount);
     }
 
     private void OnValidate()

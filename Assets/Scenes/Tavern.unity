@@ -539,8 +539,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderers: []
-  glowColor: {r: 1, g: 0.65, b: 0.2, a: 1}
-  glowIntensity: 2
+  glowColor: {r: 0.45694855, g: 1, b: 0.19999999, a: 1}
+  glowIntensity: 3
   hapticAmplitude: 0.55
   hapticDuration: 0.08
   shakeDistance: 0.01
@@ -550,7 +550,6 @@ MonoBehaviour:
   extraLayerIndex: 0
   narrationManager: {fileID: 236943013}
   objectIntroVoiceOver: 1
-  interactionModuleOrder: 0
 --- !u!54 &97837589
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -674,7 +673,7 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1
@@ -1423,13 +1422,6 @@ MonoBehaviour:
       Data3: 1899002004
       Data4: -2069320262
     Path: event:/IntroVO
-  restorationNarrationEvent:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
   restoreVoiceOverEvent:
     Guid:
       Data1: 585834493
@@ -1507,6 +1499,27 @@ MonoBehaviour:
       Data3: 1001688214
       Data4: -1973443389
     Path: event:/WhistleIntroVO
+  tavernAliveVoiceOverEvent:
+    Guid:
+      Data1: -1587308371
+      Data2: 1142407361
+      Data3: -64363590
+      Data4: 564065844
+    Path: event:/TavernAliveVO
+  endingBgmEvent:
+    Guid:
+      Data1: 2049888634
+      Data2: 1337896495
+      Data3: 188553116
+      Data4: 27135909
+    Path: event:/EndingBGM
+  endVoiceOverEvent:
+    Guid:
+      Data1: 1583448605
+      Data2: 1231674068
+      Data3: 74497716
+      Data4: 2086060212
+    Path: event:/EndVO
   allowFadeoutWhenInterrupted: 1
   gardenToMusicianAmbientDelay: 0
   gardenToTavernVoiceOverDelay: 10
@@ -1516,6 +1529,15 @@ MonoBehaviour:
   onGardenVoiceOverFinished:
     m_PersistentCalls:
       m_Calls: []
+  hornController: {fileID: 1225532531}
+  showObjectsToMelodyDelay: 5
+  fullMelodyRepeatCount: 2
+  standaloneObjectInteractionTest: 0
+  standaloneTestMelodyDelay: 1
+  tavernCrowdPlayer: {fileID: 668738088}
+  streetOutsidePlayer: {fileID: 1231185632}
+  tavernAliveToEndingBgmDelay: 10
+  endingBgmToEndVoiceOverDelay: 20
   subtitle01: Can you hear them? The clinking of bottles, the laughter, and the rhythm
     of life... How I miss those sounds.
   subtitle02: This place was once a tavern, where people played the horn and sang
@@ -2986,7 +3008,6 @@ MonoBehaviour:
   extraLayerIndex: 2
   narrationManager: {fileID: 236943013}
   objectIntroVoiceOver: 3
-  interactionModuleOrder: 0
 --- !u!54 &602358610
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3088,7 +3109,7 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1
@@ -3205,7 +3226,7 @@ MonoBehaviour:
   soundSource: {fileID: 99312288}
   playerTag: Player
   playOnce: 0
-  manualStartOnly: 0
+  manualStartOnly: 1
   stopOnExit: 1
   allowFadeout: 1
 --- !u!54 &668738089
@@ -5770,7 +5791,7 @@ MonoBehaviour:
   soundSource: {fileID: 1674516856}
   playerTag: Player
   playOnce: 0
-  manualStartOnly: 0
+  manualStartOnly: 1
   stopOnExit: 1
   allowFadeout: 1
 --- !u!54 &1231185633
@@ -6899,19 +6920,7 @@ MonoBehaviour:
       m_Calls: []
   onPlayRestorationNarration:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 236943013}
-        m_TargetAssemblyTypeName: NarrationManager, Assembly-CSharp
-        m_MethodName: PlayRestorationNarration
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   onPlayRestoreVoiceOver:
     m_PersistentCalls:
       m_Calls:
@@ -9255,8 +9264,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   renderers: []
-  glowColor: {r: 1, g: 0.65, b: 0.2, a: 1}
-  glowIntensity: 2
+  glowColor: {r: 0.19999999, g: 0.6771633, b: 1, a: 1}
+  glowIntensity: 3
   hapticAmplitude: 0.55
   hapticDuration: 0.08
   shakeDistance: 0.01
@@ -9266,7 +9275,6 @@ MonoBehaviour:
   extraLayerIndex: 1
   narrationManager: {fileID: 236943013}
   objectIntroVoiceOver: 2
-  interactionModuleOrder: 0
 --- !u!54 &1989443626
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9368,7 +9376,7 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1

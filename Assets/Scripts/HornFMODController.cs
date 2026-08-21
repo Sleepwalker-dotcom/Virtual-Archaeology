@@ -223,6 +223,10 @@ public class HornFMODController : MonoBehaviour
     private float lastAudio1VolumeDistance = 0f;
     private Vector3 previousShakePosition;
     private float manualTimelinePositionMs;
+
+    public bool IsFullMelodyRepeatPlaying =>
+        eventCreated && isPlaying && isFullMelodyRepeatPlaying;
+    public bool HasFinishedFullMelodyRepeats { get; private set; }
     private RectTransform anglePointer;
     private NarrationManager narrationManager;
     private bool hasShownFirstPickupTutorial;
@@ -230,6 +234,8 @@ public class HornFMODController : MonoBehaviour
     private Coroutine firstPickupTutorialRoutine;
     private bool hasShownShakeSpeedTutorial;
     private Coroutine shakeSpeedTutorialRoutine;
+    private Coroutine fullMelodyRepeatSequence;
+    private bool isFullMelodyRepeatPlaying;
     private Texture2D activeTutorialImage;
     private string activeTutorialInstruction;
 
@@ -886,6 +892,103 @@ public class HornFMODController : MonoBehaviour
         }
     }
 
+    public void PlayFullMelodyRepeats(int repeatCount)
+    {
+        HasFinishedFullMelodyRepeats = false;
+
+        if (fullMelodyRepeatSequence != null)
+        {
+            StopCoroutine(fullMelodyRepeatSequence);
+            fullMelodyRepeatSequence = null;
+            isFullMelodyRepeatPlaying = false;
+            StopAndReleaseEvent();
+        }
+
+        fullMelodyRepeatSequence = StartCoroutine(
+            PlayFullMelodyRepeatsRoutine(Mathf.Max(1, repeatCount))
+        );
+    }
+
+    private IEnumerator PlayFullMelodyRepeatsRoutine(int repeatCount)
+    {
+        StopAndReleaseEvent();
+        CreateAndPrimeFMODEvent();
+
+        if (!eventCreated)
+        {
+            fullMelodyRepeatSequence = null;
+            yield break;
+        }
+
+        isFullMelodyRepeatPlaying = true;
+        int melodyEndMs = GetWholeMusicEndMs();
+        bool failed = false;
+
+        for (int repeatIndex = 0; repeatIndex < repeatCount && !failed; repeatIndex++)
+        {
+            CheckFMODResult(
+                hornInstance.setTimelinePosition(0),
+                "set full melody repeat start"
+            );
+
+            FMOD.RESULT stateResult = hornInstance.getPlaybackState(
+                out PLAYBACK_STATE startState
+            );
+            if (stateResult != FMOD.RESULT.OK)
+            {
+                CheckFMODResult(stateResult, "read full melody repeat start state");
+                break;
+            }
+
+            if (startState == PLAYBACK_STATE.STOPPED)
+                CheckFMODResult(hornInstance.start(), "restart full melody repeat");
+
+            CheckFMODResult(
+                hornInstance.setPaused(false),
+                "play full melody repeat"
+            );
+            isPlaying = true;
+
+            while (hornInstance.isValid())
+            {
+                FMOD.RESULT playbackResult = hornInstance.getPlaybackState(
+                    out PLAYBACK_STATE playbackState
+                );
+                FMOD.RESULT timelineResult = hornInstance.getTimelinePosition(
+                    out int timelinePositionMs
+                );
+
+                if (playbackResult != FMOD.RESULT.OK || timelineResult != FMOD.RESULT.OK)
+                {
+                    CheckFMODResult(playbackResult, "read full melody repeat state");
+                    CheckFMODResult(timelineResult, "read full melody repeat position");
+                    failed = true;
+                    break;
+                }
+
+                if (playbackState == PLAYBACK_STATE.STOPPED ||
+                    timelinePositionMs >= melodyEndMs)
+                {
+                    break;
+                }
+
+                yield return null;
+            }
+
+            if (!hornInstance.isValid())
+                failed = true;
+
+            if (!failed && hornInstance.isValid())
+                hornInstance.setPaused(true);
+        }
+
+        isFullMelodyRepeatPlaying = false;
+        isPlaying = false;
+        StopAndReleaseEvent();
+        HasFinishedFullMelodyRepeats = !failed;
+        fullMelodyRepeatSequence = null;
+    }
+
     public bool ActivateExtraLayer(int layerIndex)
     {
         if (extraLayers == null || layerIndex < 0 || layerIndex >= extraLayers.Length)
@@ -947,17 +1050,10 @@ public class HornFMODController : MonoBehaviour
             return false;
         }
 
-        bool startLayerPlayback = !eventCreated;
-        if (startLayerPlayback)
+        if (!eventCreated)
         {
-            CreateAndPrimeFMODEvent();
-            if (!eventCreated)
-                return false;
-
-            CheckFMODResult(
-                hornInstance.setParameterByName(audio1VolumeParameterName, 0f),
-                "mute Audio1Volume for object layers"
-            );
+            Debug.LogWarning("[HornFMODController] FMOD event not created. Cannot set layer.");
+            return false;
         }
 
         float value = active ? 1f : 0f;
@@ -965,15 +1061,6 @@ public class HornFMODController : MonoBehaviour
             return false;
 
         layer.activated = active;
-
-        if (startLayerPlayback)
-        {
-            CheckFMODResult(
-                hornInstance.setPaused(false),
-                "start object layer playback"
-            );
-            isPlaying = true;
-        }
 
         Log((active ? "Activated " : "Deactivated ") + layer.layerName);
         return true;
