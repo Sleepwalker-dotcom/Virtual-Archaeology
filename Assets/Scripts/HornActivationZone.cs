@@ -3,6 +3,7 @@ using UnityEngine;
 public sealed class HornActivationZone : MonoBehaviour
 {
     private HornFMODController hornController;
+    private NarrationManager narrationManager;
     private Collider areaCollider;
     private CharacterController playerController;
     private bool activated;
@@ -10,6 +11,9 @@ public sealed class HornActivationZone : MonoBehaviour
     public void Initialize(HornFMODController controller)
     {
         hornController = controller;
+        narrationManager = FindFirstObjectByType<NarrationManager>(
+            FindObjectsInactive.Include
+        );
         areaCollider = GetComponent<Collider>();
         activated = false;
         enabled = false;
@@ -59,6 +63,7 @@ public sealed class HornActivationZone : MonoBehaviour
         activated = true;
         hornController.enabled = true;
         hornController.ActivateHornAndShowCanvas();
+        narrationManager?.PlayGrabHornVoiceOver();
 
         Debug.Log(
             "[HornActivationZone] Player entered HornInteractionArea; HornFMODController and interaction Canvas activated.",

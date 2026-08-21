@@ -234,8 +234,6 @@ public sealed class MuseumExperienceController : MonoBehaviour
     {
         CaptureCompleteHornTavernPose();
         PrepareHornRestorationObjects();
-        PrepareGardenInteraction();
-        PrepareGardenAppearanceController();
         PrepareHornActivationArea();
         InitializeExperience();
     }
@@ -273,8 +271,6 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
     private void LateUpdate()
     {
-        CheckGardenHandTouches();
-
         if (!holdDelayedTavernRevealHidden)
         {
             return;
@@ -1167,8 +1163,47 @@ public sealed class MuseumExperienceController : MonoBehaviour
         RestoreCompleteHornTavernPose();
 
         BeginDelayedTavernReveal();
-        BeginGardenInteraction();
         onFreeExplorationStarted?.Invoke();
+    }
+
+    public void RevealHornGuideAfterTransition()
+    {
+        Transform hornPresentationRoot = GetHornPresentationRoot();
+
+        if (hornPresentationRoot != null)
+        {
+            hornPresentationRoot.gameObject.SetActive(true);
+        }
+
+        if (completeHornRoot != null &&
+            (hornPresentationRoot == null ||
+             hornPresentationRoot.gameObject != completeHornRoot))
+        {
+            completeHornRoot.SetActive(true);
+        }
+
+        if (hornPerformanceController != null)
+        {
+            Camera playerCamera = Camera.main;
+
+            if (playerCamera != null)
+            {
+                hornPerformanceController.SetPlayerHead(
+                    playerCamera.transform
+                );
+            }
+
+            hornPerformanceController.enabled = false;
+        }
+
+        SetCompleteHornPhysicsLocked(true);
+        SetEnabled(completeHornGrab, true);
+
+        if (hornActivationZone != null)
+        {
+            hornActivationZone.Initialize(hornPerformanceController);
+            hornActivationZone.EnableActivation();
+        }
     }
 
     private void PrepareGardenInteraction()

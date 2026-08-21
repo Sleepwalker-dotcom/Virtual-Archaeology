@@ -224,7 +224,9 @@ public class HornFMODController : MonoBehaviour
     private Vector3 previousShakePosition;
     private float manualTimelinePositionMs;
     private RectTransform anglePointer;
+    private NarrationManager narrationManager;
     private bool hasShownFirstPickupTutorial;
+    private bool hasPlayedHornIntroVoiceOver;
     private Coroutine firstPickupTutorialRoutine;
     private bool hasShownShakeSpeedTutorial;
     private Coroutine shakeSpeedTutorialRoutine;
@@ -252,6 +254,9 @@ public class HornFMODController : MonoBehaviour
     private void Awake()
     {
         CacheGrabInteractableIfNeeded();
+        narrationManager = FindFirstObjectByType<NarrationManager>(
+            FindObjectsInactive.Include
+        );
     }
 
     private void OnValidate()
@@ -927,6 +932,53 @@ public class HornFMODController : MonoBehaviour
         return true;
     }
 
+    public bool SetExtraLayerActive(int layerIndex, bool active)
+    {
+        if (extraLayers == null || layerIndex < 0 || layerIndex >= extraLayers.Length)
+        {
+            Debug.LogError("[HornFMODController] Invalid extra layer index: " + layerIndex);
+            return false;
+        }
+
+        ExtraLayerUnlock layer = extraLayers[layerIndex];
+        if (layer == null)
+        {
+            Debug.LogError("[HornFMODController] Extra layer is missing at index: " + layerIndex);
+            return false;
+        }
+
+        bool startLayerPlayback = !eventCreated;
+        if (startLayerPlayback)
+        {
+            CreateAndPrimeFMODEvent();
+            if (!eventCreated)
+                return false;
+
+            CheckFMODResult(
+                hornInstance.setParameterByName(audio1VolumeParameterName, 0f),
+                "mute Audio1Volume for object layers"
+            );
+        }
+
+        float value = active ? 1f : 0f;
+        if (!SetExtraLayerParameter(layer, value, "Set " + layer.fmodParameterName))
+            return false;
+
+        layer.activated = active;
+
+        if (startLayerPlayback)
+        {
+            CheckFMODResult(
+                hornInstance.setPaused(false),
+                "start object layer playback"
+            );
+            isPlaying = true;
+        }
+
+        Log((active ? "Activated " : "Deactivated ") + layer.layerName);
+        return true;
+    }
+
     private bool SetExtraLayerParameter(ExtraLayerUnlock layer, float value, string operation)
     {
         if (string.IsNullOrEmpty(layer.fmodParameterName))
@@ -1043,6 +1095,12 @@ public class HornFMODController : MonoBehaviour
 
         isHornHeld = true;
         isMouthpieceSnapped = false;
+
+        if (!hasPlayedHornIntroVoiceOver)
+        {
+            hasPlayedHornIntroVoiceOver = true;
+            narrationManager?.PlayHornIntroVoiceOver();
+        }
 
         if (playFirstPickupTutorial &&
             !hasShownFirstPickupTutorial)
@@ -1205,7 +1263,9 @@ public class HornFMODController : MonoBehaviour
 
         if (currentRoundIndex >= totalRounds)
         {
-            onApplauseRequested?.Invoke();
+            if (currentRoundIndex != 1)
+                onApplauseRequested?.Invoke();
+
             Log(
                 "Final performance completed. FMOD applause requested."
             );

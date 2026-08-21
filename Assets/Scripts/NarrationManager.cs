@@ -16,9 +16,22 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField] private EventReference restoreVoiceOverEvent;
     [SerializeField] private EventReference pickupVoiceOverEvent;
     [SerializeField] private EventReference gardenVoiceOverEvent;
+    [SerializeField] private EventReference tavernVoiceOverEvent;
+    [SerializeField] private EventReference grabHornVoiceOverEvent;
+    [SerializeField] private EventReference hornIntroVoiceOverEvent;
+    [SerializeField] private EventReference musicIntroVoiceOverEvent;
+    [SerializeField] private EventReference showObjectsVoiceOverEvent;
+    [SerializeField] private EventReference bottleIntroVoiceOverEvent;
+    [SerializeField] private EventReference dominoIntroVoiceOverEvent;
+    [SerializeField] private EventReference whistleIntroVoiceOverEvent;
 
     [Header("Playback")]
     [SerializeField] private bool allowFadeoutWhenInterrupted = true;
+    [SerializeField, Min(0f)] private float gardenToMusicianAmbientDelay;
+    [SerializeField, Min(0f)] private float gardenToTavernVoiceOverDelay = 10f;
+    [SerializeField] private FMODTrigger3DAudio musicianAmbientPlayer;
+    [SerializeField] private GameObject objectGroup;
+    [SerializeField] private FMOD2DSFXPlayer uiSfxPlayer;
     [SerializeField] private UnityEvent onGardenVoiceOverFinished;
 
     [Header("Intro Subtitles")]
@@ -56,6 +69,8 @@ public sealed class NarrationManager : MonoBehaviour
     private readonly Text[] sceneSubtitleTexts = new Text[4];
     private readonly Coroutine[] sceneSubtitleFades = new Coroutine[4];
     private Coroutine gardenVoiceOverCompletion;
+    private Coroutine musicIntroSequence;
+    private Coroutine showObjectsSequence;
 
     public void PlayIntroNarration()
     {
@@ -85,6 +100,43 @@ public sealed class NarrationManager : MonoBehaviour
             gardenVoiceOverCompletion = StartCoroutine(WaitForGardenVoiceOver());
     }
 
+    public void PlayGrabHornVoiceOver()
+    {
+        PlayNarration(grabHornVoiceOverEvent, "Grab Horn VO");
+    }
+
+    public void PlayHornIntroVoiceOver()
+    {
+        PlayNarration(hornIntroVoiceOverEvent, "Horn Intro VO");
+    }
+
+    public void PlayBottleIntroVoiceOver()
+    {
+        PlayNarration(bottleIntroVoiceOverEvent, "Bottle Intro VO");
+    }
+
+    public void PlayDominoIntroVoiceOver()
+    {
+        PlayNarration(dominoIntroVoiceOverEvent, "Domino Intro VO");
+    }
+
+    public void PlayWhistleIntroVoiceOver()
+    {
+        PlayNarration(whistleIntroVoiceOverEvent, "Whistle Intro VO");
+    }
+
+    public void PlayMusicIntroThenShowObjects()
+    {
+        PlayNarration(musicIntroVoiceOverEvent, "Music Intro VO");
+
+        if (currentNarration.isValid())
+        {
+            musicIntroSequence = StartCoroutine(
+                WaitForMusicIntroThenShowObjects()
+            );
+        }
+    }
+
     public void StopNarration()
     {
         ClearSubtitleImmediate();
@@ -95,16 +147,35 @@ public sealed class NarrationManager : MonoBehaviour
             gardenVoiceOverCompletion = null;
         }
 
+        if (musicIntroSequence != null)
+        {
+            StopCoroutine(musicIntroSequence);
+            musicIntroSequence = null;
+        }
+
+        if (showObjectsSequence != null)
+        {
+            StopCoroutine(showObjectsSequence);
+            showObjectsSequence = null;
+        }
+
         if (!currentNarration.isValid())
             return;
-
-        currentNarration.setCallback(null, 0);
-        currentNarration.setUserData(System.IntPtr.Zero);
 
         FMOD.Studio.STOP_MODE stopMode = allowFadeoutWhenInterrupted
             ? FMOD.Studio.STOP_MODE.ALLOWFADEOUT
             : FMOD.Studio.STOP_MODE.IMMEDIATE;
 
+        StopCurrentNarration(stopMode);
+    }
+
+    private void StopCurrentNarration(FMOD.Studio.STOP_MODE stopMode)
+    {
+        if (!currentNarration.isValid())
+            return;
+
+        currentNarration.setCallback(null, 0);
+        currentNarration.setUserData(System.IntPtr.Zero);
         currentNarration.stop(stopMode);
         currentNarration.release();
         currentNarration.clearHandle();
@@ -181,12 +252,109 @@ public sealed class NarrationManager : MonoBehaviour
             yield return null;
         }
 
-        gardenVoiceOverCompletion = null;
+        StopCurrentNarration(FMOD.Studio.STOP_MODE.IMMEDIATE);
         onGardenVoiceOverFinished?.Invoke();
+
+        if (gardenToMusicianAmbientDelay > 0f)
+        {
+            yield return new WaitForSeconds(
+                gardenToMusicianAmbientDelay
+            );
+        }
+
+        musicianAmbientPlayer?.PlayAudio();
+
+        yield return new WaitForSeconds(
+            Mathf.Max(0f, gardenToTavernVoiceOverDelay)
+        );
+
+        gardenVoiceOverCompletion = null;
+        PlayNarration(tavernVoiceOverEvent, "Tavern VO");
+    }
+
+    private IEnumerator WaitForMusicIntroThenShowObjects()
+    {
+        while (currentNarration.isValid())
+        {
+            FMOD.RESULT result = currentNarration.getPlaybackState(
+                out PLAYBACK_STATE playbackState
+            );
+
+            if (result != FMOD.RESULT.OK)
+            {
+                Debug.LogWarning(
+                    "[NarrationManager] Failed to read Music Intro VO playback state: " +
+                    result,
+                    this
+                );
+                musicIntroSequence = null;
+                yield break;
+            }
+
+            if (playbackState == PLAYBACK_STATE.STOPPED)
+                break;
+
+            yield return null;
+        }
+
+        StopCurrentNarration(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        musicIntroSequence = null;
+
+        if (objectGroup != null)
+            objectGroup.SetActive(true);
+
+        if (uiSfxPlayer != null)
+            uiSfxPlayer.PlayHarp();
+        else
+            PlayShowObjectsVoiceOver();
+    }
+
+    public void PlayShowObjectsVoiceOver()
+    {
+        PlayNarration(showObjectsVoiceOverEvent, "Show Objects VO");
+
+        if (currentNarration.isValid())
+        {
+            showObjectsSequence = StartCoroutine(
+                WaitForShowObjectsVoiceOver()
+            );
+        }
+    }
+
+    private IEnumerator WaitForShowObjectsVoiceOver()
+    {
+        while (currentNarration.isValid())
+        {
+            FMOD.RESULT result = currentNarration.getPlaybackState(
+                out PLAYBACK_STATE playbackState
+            );
+
+            if (result != FMOD.RESULT.OK)
+            {
+                Debug.LogWarning(
+                    "[NarrationManager] Failed to read Show Objects VO playback state: " +
+                    result,
+                    this
+                );
+                showObjectsSequence = null;
+                yield break;
+            }
+
+            if (playbackState == PLAYBACK_STATE.STOPPED)
+                break;
+
+            yield return null;
+        }
+
+        StopCurrentNarration(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        showObjectsSequence = null;
     }
 
     private void Awake()
     {
+        if (Application.isPlaying && objectGroup != null)
+            objectGroup.SetActive(false);
+
         EnsureSubtitleUI();
         if (Application.isPlaying)
             ClearSubtitleImmediate();

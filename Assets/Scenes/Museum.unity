@@ -249,11 +249,11 @@ MonoBehaviour:
   - sceneName: Museum
     bgmEvent:
       Guid:
-        Data1: 1163090460
-        Data2: 1272713666
-        Data3: 1024834749
-        Data4: 1122043950
-      Path: event:/Museum BGM
+        Data1: -410316644
+        Data2: 1244891558
+        Data3: 63293605
+        Data4: -53347697
+      Path: event:/MuseumBGM
     fadeInTime: 0
   - sceneName: Tavern
     bgmEvent:
@@ -262,16 +262,9 @@ MonoBehaviour:
         Data2: 1115565215
         Data3: -358937208
         Data4: -135144614
-      Path: event:/Taven BGM
+      Path: 
     fadeInTime: 0
-  transitionSfx:
-    Guid:
-      Data1: -782291936
-      Data2: 1239579580
-      Data3: -2117665616
-      Data4: -1942480931
-    Path: event:/Scene Transition
-  transitionMinTime: 2
+  startupMusicSceneName: 
   defaultFadeOutTime: 1
 --- !u!4 &815039613
 Transform:
@@ -1042,9 +1035,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6838612e12539914986e0c5abdd3d3e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSceneName: Tavern
-  loadDelay: 2.5
+  museumRoot: {fileID: 0}
+  tavernRoot: {fileID: 0}
+  hornObject: {fileID: 0}
+  hiddenDuringMuseum: []
   transitionEffect: {fileID: 1086905398}
+  revealDelay: 0
+  museumMusicSceneName: Museum
+  tavernMusicSceneName: Tavern
+  tavernRevealSfx:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  tavernRevealVolumeDb: -18
 --- !u!114 &1904730016
 MonoBehaviour:
   m_ObjectHideFlags: 0

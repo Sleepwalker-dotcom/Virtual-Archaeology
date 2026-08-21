@@ -12,6 +12,7 @@ public class FMODTrigger3DAudio : MonoBehaviour
     [Header("Trigger Settings")]
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private bool playOnce;
+    [SerializeField] private bool manualStartOnly;
     [SerializeField] private bool stopOnExit = true;
     [SerializeField] private bool allowFadeout = true;
 
@@ -36,8 +37,12 @@ public class FMODTrigger3DAudio : MonoBehaviour
         if (!BelongsToPlayer(other) || !playerColliders.Add(other))
             return;
 
-        if (playerColliders.Count == 1 && (!playOnce || !hasPlayed))
+        if (!manualStartOnly &&
+            playerColliders.Count == 1 &&
+            (!playOnce || !hasPlayed))
+        {
             PlayAudio();
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -81,6 +86,10 @@ public class FMODTrigger3DAudio : MonoBehaviour
         }
 
         hasPlayed = true;
+        Debug.Log(
+            "[FMODTrigger3DAudio] Started " + audioEvent.Path,
+            this
+        );
     }
 
     public void StopAudio()

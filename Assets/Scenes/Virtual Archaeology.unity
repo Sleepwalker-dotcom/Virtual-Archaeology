@@ -1324,11 +1324,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hornEvent:
     Guid:
-      Data1: -716770751
-      Data2: 1127344592
-      Data3: -809684067
-      Data4: 2114306701
-    Path: event:/Playing Horn
+      Data1: -1005633575
+      Data2: 1262648763
+      Data3: 367901857
+      Data4: -777714670
+    Path: event:/PlayingHorn
   sendLegacyDistanceToHead: 1
   legacyDistanceToHeadValue: 0.3
   playerHead: {fileID: 2035904336}

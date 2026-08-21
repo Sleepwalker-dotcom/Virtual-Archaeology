@@ -69,7 +69,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639229251783889310
+  lastModified: 639229265655200803
   FileSizes:
   - Name: Desktop
     Value: 1036
@@ -149,6 +149,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 30000
+--- !u!114 &-6138466902912493186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/EndingBGM
+  m_EditorClassIdentifier: 
+  Path: event:/EndingBGM
+  Guid:
+    Data1: 2049888634
+    Data2: 1337896495
+    Data3: 188553116
+    Data4: 27135909
+  Banks:
+  - {fileID: -5670397373579388100}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 182831
 --- !u!114 &-5670397373579388100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,10 +191,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/SceneBGM.bank
   Name: SceneBGM
   StudioPath: bank:/SceneBGM
-  lastModified: 639202722173747901
+  lastModified: 639229265687460086
   FileSizes:
   - Name: Desktop
-    Value: 1233024
+    Value: 3734944
   Exists: 1
 --- !u!114 &-5506557130868732368
 MonoBehaviour:
@@ -432,7 +459,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 20176
+  Length: 16680
 --- !u!114 &-1511085995705232037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,12 +591,13 @@ MonoBehaviour:
   - {fileID: 7911964861217032275}
   - {fileID: 4439783668595331077}
   - {fileID: 1983734440940052525}
+  - {fileID: -6138466902912493186}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8781515992350634487}
   StringsBanks:
   - {fileID: 2642882407560019900}
-  cacheTime: 639229251824745734
+  cacheTime: 639229295557366627
   cacheVersion: 131636
 --- !u!114 &407813035644869156
 MonoBehaviour:
@@ -792,10 +820,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639229251783900477
+  lastModified: 639229265655226099
   FileSizes:
   - Name: Desktop
-    Value: 2434
+    Value: 2484
   Exists: 1
 --- !u!114 &2745255666091697675
 MonoBehaviour:
@@ -987,10 +1015,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Voice.bank
   Name: Voice
   StudioPath: bank:/Voice
-  lastModified: 639229251824745734
+  lastModified: 639229295557366627
   FileSizes:
   - Name: Desktop
-    Value: 1072576
+    Value: 1072352
   Exists: 1
 --- !u!114 &7791222459457887334
 MonoBehaviour:
