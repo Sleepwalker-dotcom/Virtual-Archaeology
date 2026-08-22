@@ -71,6 +71,18 @@ public sealed class NarrationManager : MonoBehaviour
     [TextArea(2, 5)]
     [SerializeField] private string subtitle04 =
         "You came for the horn, didn\u2019t you? Only a fragment of it remains here. Take it and return it to where it belongs. Perhaps the tavern will sing again.";
+
+    [Header("Additional Voiceover Subtitles")]
+    [TextArea(2, 5)]
+    [SerializeField] private string guidanceSubtitle =
+        "You\u2019re lucky, it has accepted you. Now, fit the fragment back into place.";
+    [TextArea(2, 5)]
+    [SerializeField] private string pickupSubtitle =
+        "It\u2019s calling to you. Pick it up, maybe something magic will happen.";
+    [TextArea(2, 5)]
+    [SerializeField] private string gardenTransitionSubtitle =
+        "Listen! The old ghosts of the tavern are waking up.";
+
     [SerializeField] private float subtitleFadeInSeconds = 0.35f;
     [SerializeField] private float subtitleFadeOutSeconds = 0.35f;
     [SerializeField] private CanvasGroup subtitleCanvasGroup;
@@ -89,9 +101,10 @@ public sealed class NarrationManager : MonoBehaviour
     private EVENT_CALLBACK narrationCallback;
     private GCHandle callbackHandle;
     private readonly CanvasGroup[] sceneSubtitleCanvasGroups =
-        new CanvasGroup[4];
-    private readonly Text[] sceneSubtitleTexts = new Text[4];
-    private readonly Coroutine[] sceneSubtitleFades = new Coroutine[4];
+        new CanvasGroup[7];
+    private readonly Text[] sceneSubtitleTexts = new Text[7];
+    private readonly Coroutine[] sceneSubtitleFades = new Coroutine[7];
+    private Coroutine voiceOverSubtitleSequence;
     private Coroutine gardenVoiceOverCompletion;
     private Coroutine musicIntroSequence;
     private Coroutine showObjectsSequence;
@@ -110,16 +123,19 @@ public sealed class NarrationManager : MonoBehaviour
     public void PlayRestoreVoiceOver()
     {
         PlayNarration(restoreVoiceOverEvent, "Restore VO");
+        PlaySingleVoiceOverSubtitle(4, guidanceSubtitle);
     }
 
     public void PlayPickupVoiceOver()
     {
         PlayNarration(pickupVoiceOverEvent, "Pickup VO");
+        PlaySingleVoiceOverSubtitle(5, pickupSubtitle);
     }
 
     public void PlayGardenVoiceOver()
     {
         PlayNarration(gardenVoiceOverEvent, "Garden VO");
+        PlaySingleVoiceOverSubtitle(6, gardenTransitionSubtitle);
 
         if (currentNarration.isValid())
             gardenVoiceOverCompletion = StartCoroutine(WaitForGardenVoiceOver());
@@ -275,6 +291,12 @@ public sealed class NarrationManager : MonoBehaviour
     {
         ClearSubtitleImmediate();
 
+        if (voiceOverSubtitleSequence != null)
+        {
+            StopCoroutine(voiceOverSubtitleSequence);
+            voiceOverSubtitleSequence = null;
+        }
+
         if (gardenVoiceOverCompletion != null)
         {
             StopCoroutine(gardenVoiceOverCompletion);
@@ -410,6 +432,43 @@ public sealed class NarrationManager : MonoBehaviour
 
         gardenVoiceOverCompletion = null;
         PlayNarration(tavernVoiceOverEvent, "Tavern VO");
+    }
+
+    private void PlaySingleVoiceOverSubtitle(int index, string text)
+    {
+        if (!currentNarration.isValid() || string.IsNullOrWhiteSpace(text))
+        {
+            return;
+        }
+
+        if (voiceOverSubtitleSequence != null)
+            StopCoroutine(voiceOverSubtitleSequence);
+
+        ShowSubtitle(index, text);
+        voiceOverSubtitleSequence = StartCoroutine(
+            ClearSubtitleWhenVoiceEnds(index)
+        );
+    }
+
+    private IEnumerator ClearSubtitleWhenVoiceEnds(int index)
+    {
+        while (currentNarration.isValid())
+        {
+            FMOD.RESULT result = currentNarration.getPlaybackState(
+                out PLAYBACK_STATE playbackState
+            );
+
+            if (result != FMOD.RESULT.OK ||
+                playbackState == PLAYBACK_STATE.STOPPED)
+            {
+                break;
+            }
+
+            yield return null;
+        }
+
+        ClearSubtitle(index);
+        voiceOverSubtitleSequence = null;
     }
 
     private IEnumerator WaitForMusicIntroThenShowObjects()
