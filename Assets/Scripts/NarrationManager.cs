@@ -34,6 +34,23 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField] private EventReference endingBgmEvent;
     [SerializeField] private EventReference endVoiceOverEvent;
 
+    [Header("FMOD Event Volumes")]
+    [SerializeField, Range(0f, 1f)] private float introNarrationVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float restoreVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float pickupVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float gardenVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float tavernVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float grabHornVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float hornIntroVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float musicIntroVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float showObjectsVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float bottleIntroVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float dominoIntroVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float whistleIntroVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float tavernAliveVoiceOverVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float endingBgmVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float endVoiceOverVolume = 1f;
+
     [Header("Playback")]
     [SerializeField] private bool allowFadeoutWhenInterrupted = true;
     [SerializeField, Min(0f)] private float gardenToMusicianAmbientDelay;
@@ -55,6 +72,7 @@ public sealed class NarrationManager : MonoBehaviour
     [Header("Tavern Alive Completion")]
     [SerializeField] private FMODTrigger3DAudio tavernCrowdPlayer;
     [SerializeField] private FMODTrigger3DAudio streetOutsidePlayer;
+    [SerializeField, Min(0f)] private float ambienceToTavernAliveDelay = 5f;
     [SerializeField, Min(0f)] private float tavernAliveToEndingBgmDelay = 10f;
     [SerializeField, Min(0f)] private float endingBgmToEndVoiceOverDelay = 20f;
 
@@ -236,6 +254,12 @@ public sealed class NarrationManager : MonoBehaviour
         tavernAliveStarted = true;
         tavernCrowdPlayer?.PlayAudio();
         streetOutsidePlayer?.PlayAudio();
+        StartCoroutine(PlayTavernAliveAfterDelay());
+    }
+
+    private IEnumerator PlayTavernAliveAfterDelay()
+    {
+        yield return new WaitForSeconds(ambienceToTavernAliveDelay);
         PlayNarration(tavernAliveVoiceOverEvent, "Tavern Alive VO");
         endingBgmSequence = StartCoroutine(PlayEndingBgmAfterDelay());
     }
@@ -254,7 +278,10 @@ public sealed class NarrationManager : MonoBehaviour
             yield break;
         }
 
-        RuntimeManager.PlayOneShot(endingBgmEvent);
+        EventInstance endingBgmInstance = RuntimeManager.CreateInstance(endingBgmEvent);
+        endingBgmInstance.setVolume(endingBgmVolume);
+        endingBgmInstance.start();
+        endingBgmInstance.release();
         yield return new WaitForSeconds(endingBgmToEndVoiceOverDelay);
         PlayNarration(endVoiceOverEvent, "End VO");
     }
@@ -335,6 +362,7 @@ public sealed class NarrationManager : MonoBehaviour
 
         StopNarration();
         currentNarration = RuntimeManager.CreateInstance(narrationEvent);
+        currentNarration.setVolume(GetNarrationVolume(narrationEvent.Path));
 
         narrationCallback ??= NarrationEventCallback;
         callbackHandle = GCHandle.Alloc(this);
@@ -410,6 +438,28 @@ public sealed class NarrationManager : MonoBehaviour
 
         gardenVoiceOverCompletion = null;
         PlayNarration(tavernVoiceOverEvent, "Tavern VO");
+    }
+
+    private float GetNarrationVolume(string eventPath)
+    {
+        return eventPath switch
+        {
+            "event:/IntroVO" => introNarrationVolume,
+            "event:/RestoreVO" => restoreVoiceOverVolume,
+            "event:/PickupVO" => pickupVoiceOverVolume,
+            "event:/GardenVO" => gardenVoiceOverVolume,
+            "event:/TavernVO" => tavernVoiceOverVolume,
+            "event:/GrabHornVO" => grabHornVoiceOverVolume,
+            "event:/HornIntroVO" => hornIntroVoiceOverVolume,
+            "event:/MusicIntroVO" => musicIntroVoiceOverVolume,
+            "event:/ShowObjectsVO" => showObjectsVoiceOverVolume,
+            "event:/BottleIntroVO" => bottleIntroVoiceOverVolume,
+            "event:/DominoIntroVO" => dominoIntroVoiceOverVolume,
+            "event:/WhistleIntroVO" => whistleIntroVoiceOverVolume,
+            "event:/TavernAliveVO" => tavernAliveVoiceOverVolume,
+            "event:/EndVO" => endVoiceOverVolume,
+            _ => 1f
+        };
     }
 
     private IEnumerator WaitForMusicIntroThenShowObjects()
