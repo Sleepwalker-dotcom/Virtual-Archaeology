@@ -28,6 +28,8 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
     [Header("FMOD Events")]
     [SerializeField] private EventReference museumBgmEvent;
     [SerializeField] private EventReference sceneTransitionEvent;
+    [SerializeField, Range(0f, 1f)] private float museumBgmVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float sceneTransitionVolume = 1f;
 
     [Header("Timing")]
     [SerializeField] private float museumBgmFadeOutTime = 1f;
@@ -66,7 +68,7 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
             return;
         }
 
-        museumBgmInstance.setVolume(1f);
+        museumBgmInstance.setVolume(museumBgmVolume);
         FMOD.RESULT result = museumBgmInstance.start();
         if (result != FMOD.RESULT.OK)
         {
@@ -158,7 +160,9 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
         while (timer < fadeDuration)
         {
             timer += Time.deltaTime;
-            museumBgmInstance.setVolume(1f - Mathf.Clamp01(timer / fadeDuration));
+            museumBgmInstance.setVolume(
+                museumBgmVolume * (1f - Mathf.Clamp01(timer / fadeDuration))
+            );
             yield return null;
         }
 
@@ -209,6 +213,7 @@ public class SingleSceneAudioEnvironmentManager : MonoBehaviour
 
         sceneTransitionInstance =
             RuntimeManager.CreateInstance(sceneTransitionEvent);
+        sceneTransitionInstance.setVolume(sceneTransitionVolume);
 
         if (!sceneTransitionInstance.isValid())
         {

@@ -27,6 +27,7 @@ public class HornFMODController : MonoBehaviour
 
     [Header("FMOD Event")]
     public EventReference hornEvent;
+    [Range(0f, 1f)] public float eventVolume = 1f;
 
     [Header("Audio 1 Volume - Controlled By Unity")]
     [Tooltip("FMOD parameter that controls only Audio 1 / main horn track volume. Create this parameter in FMOD and automate Audio 1 Volume with it.")]
@@ -506,7 +507,7 @@ public class HornFMODController : MonoBehaviour
 
         // Keep the whole FMOD event at normal volume.
         // Audio 1 is controlled separately through the Audio1Volume FMOD parameter.
-        CheckFMODResult(hornInstance.setVolume(1f), "set event master volume to 1");
+        CheckFMODResult(hornInstance.setVolume(eventVolume), "set event master volume");
         ApplyAudio1VolumeFromUnity(true);
 
         CheckFMODResult(hornInstance.start(), "start");

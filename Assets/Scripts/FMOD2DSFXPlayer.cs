@@ -10,6 +10,10 @@ public class FMOD2DSFXPlayer : MonoBehaviour
     [SerializeField] private EventReference positiveFeedbackSfx;
     [SerializeField] private EventReference applauseSfx;
     [SerializeField] private EventReference harpSfx;
+    [SerializeField, Range(0f, 1f)] private float sceneTransitionVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float positiveFeedbackVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float applauseVolume = 1f;
+    [SerializeField, Range(0f, 1f)] private float harpVolume = 1f;
     [SerializeField] private UnityEvent onApplauseFinished;
     [SerializeField] private UnityEvent onHarpFinished;
 
@@ -39,6 +43,7 @@ public class FMOD2DSFXPlayer : MonoBehaviour
         }
 
         applauseInstance = RuntimeManager.CreateInstance(applauseSfx);
+        applauseInstance.setVolume(applauseVolume);
         FMOD.RESULT result = applauseInstance.start();
 
         if (result != FMOD.RESULT.OK)
@@ -71,6 +76,7 @@ public class FMOD2DSFXPlayer : MonoBehaviour
         }
 
         harpInstance = RuntimeManager.CreateInstance(harpSfx);
+        harpInstance.setVolume(harpVolume);
         FMOD.RESULT result = harpInstance.start();
 
         if (result != FMOD.RESULT.OK)
@@ -215,7 +221,12 @@ public class FMOD2DSFXPlayer : MonoBehaviour
             return;
         }
 
-        RuntimeManager.PlayOneShot(eventReference);
+        EventInstance instance = RuntimeManager.CreateInstance(eventReference);
+        instance.setVolume(label == "Scene Transition"
+            ? sceneTransitionVolume
+            : positiveFeedbackVolume);
+        instance.start();
+        instance.release();
         Debug.Log(
             "[FMOD2DSFXPlayer] Playing " +
             label + ": " + eventReference.Path,

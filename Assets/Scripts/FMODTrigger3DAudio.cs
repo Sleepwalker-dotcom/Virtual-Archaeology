@@ -8,6 +8,7 @@ public class FMODTrigger3DAudio : MonoBehaviour
     [Header("FMOD Event")]
     [SerializeField] private EventReference audioEvent;
     [SerializeField] private Transform soundSource;
+    [SerializeField, Range(0f, 1f)] private float eventVolume = 1f;
 
     [Header("Trigger Settings")]
     [SerializeField] private string playerTag = "Player";
@@ -74,6 +75,7 @@ public class FMODTrigger3DAudio : MonoBehaviour
             return;
 
         instance = RuntimeManager.CreateInstance(audioEvent);
+        instance.setVolume(eventVolume);
         instance.set3DAttributes(RuntimeUtils.To3DAttributes(soundSource));
 
         FMOD.RESULT result = instance.start();
