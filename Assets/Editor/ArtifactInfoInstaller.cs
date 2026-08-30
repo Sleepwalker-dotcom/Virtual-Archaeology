@@ -46,7 +46,7 @@ public static class ArtifactInfoInstaller
         );
         AttachInfo(
             "Half Size Mallet-Type Wine Bottle",
-            "Half-Size Mallet-Type Wine Bottle",
+            "Mallet Bottle",
             "A half-size mallet-type wine bottle, a compact form associated with early 18th-century English glass bottle traditions. Bottles like this were used for storing and serving drink, fitting the broader tavern and drinking assemblages from Whitechapel. Confirm the exact date and material against the finds record before final public text.",
             panel,
             true
