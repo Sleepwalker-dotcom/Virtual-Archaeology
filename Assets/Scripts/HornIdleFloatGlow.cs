@@ -10,7 +10,6 @@ public sealed class HornIdleFloatGlow : MonoBehaviour
     [SerializeField] private Color glowColor = new Color(1f, 0.75f, 0.25f);
     [SerializeField, Min(0f)] private float minGlowIntensity = 0.08f;
     [SerializeField, Min(0f)] private float maxGlowIntensity = 0.35f;
-    [SerializeField, Min(0f)] private float grabbedGlowIntensity = 0.6f;
     [SerializeField] private bool glowOnlyAfterFirstGrab;
     [SerializeField, Min(0f)] private float floatHeight = 0.04f;
     [SerializeField, Min(0.01f)] private float floatSpeed = 0.8f;
@@ -65,13 +64,18 @@ public sealed class HornIdleFloatGlow : MonoBehaviour
 
     private void HandleGrabbed(SelectEnterEventArgs args)
     {
+        DisableAppearanceGuide();
+    }
+
+    public void DisableAppearanceGuide()
+    {
         hasBeenGrabbed = true;
-        enabled = true;
 
         if (target != null)
             target.localPosition = startLocalPosition;
 
-        SetEmission(glowColor * grabbedGlowIntensity);
+        SetEmission(Color.black);
+        enabled = false;
     }
 
     private void CacheMaterials()

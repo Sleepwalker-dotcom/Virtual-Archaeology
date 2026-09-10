@@ -1,5 +1,6 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using FMOD.Studio;
 using FMODUnity;
@@ -75,6 +76,10 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField, Min(0f)] private float ambienceToTavernAliveDelay = 5f;
     [SerializeField, Min(0f)] private float tavernAliveToEndingBgmDelay = 10f;
     [SerializeField, Min(0f)] private float endingBgmToEndVoiceOverDelay = 20f;
+    [SerializeField] private ExperiencePresentation presentation;
+    [SerializeField, Min(0f)] private float endVoiceOverToCreditsDelay = 10f;
+    private bool endingVoiceOverStarted;
+    private Coroutine creditsSequence;
 
     [Header("Intro Subtitles")]
     [TextArea(2, 5)]
@@ -132,6 +137,20 @@ public sealed class NarrationManager : MonoBehaviour
     private bool dominoIntroCompleted;
     private bool whistleIntroCompleted;
     private bool tavernAliveStarted;
+    private readonly HashSet<string> completedObjectKeys = new();
+    [SerializeField, Min(1)] private int requiredObjectCompletionCount = 6;
+
+    public void RegisterObjectCompletion(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key) || tavernAliveStarted) return;
+        completedObjectKeys.Add(key);
+        TryStartTavernAliveAudio();
+    }
+
+    public bool IsObjectInteractionBlocked =>
+        hornController != null && hornController.IsFullMelodyRepeatPlaying;
+
+    public HornFMODController GetHornController() => hornController;
 
     public void PlayIntroNarration()
     {
@@ -202,6 +221,8 @@ public sealed class NarrationManager : MonoBehaviour
         ObjectIntroVoiceOver voiceOver
     )
     {
+        // Re-grabbing an object must not interrupt the final voiceover or credits.
+        if (tavernAliveStarted) return;
         PlayNarration(eventReference, label);
 
         if (currentNarration.isValid())
@@ -261,8 +282,7 @@ public sealed class NarrationManager : MonoBehaviour
 
     private void TryStartTavernAliveAudio()
     {
-        if (tavernAliveStarted || !bottleIntroCompleted ||
-            !dominoIntroCompleted || !whistleIntroCompleted)
+        if (tavernAliveStarted || completedObjectKeys.Count < requiredObjectCompletionCount)
         {
             return;
         }
@@ -283,7 +303,6 @@ public sealed class NarrationManager : MonoBehaviour
     private IEnumerator PlayEndingBgmAfterDelay()
     {
         yield return new WaitForSeconds(tavernAliveToEndingBgmDelay);
-        endingBgmSequence = null;
 
         if (endingBgmEvent.IsNull)
         {
@@ -299,7 +318,31 @@ public sealed class NarrationManager : MonoBehaviour
         endingBgmInstance.start();
         endingBgmInstance.release();
         yield return new WaitForSeconds(endingBgmToEndVoiceOverDelay);
+        endingBgmSequence = null;
+        if (endVoiceOverEvent.IsNull) yield break;
         PlayNarration(endVoiceOverEvent, "End VO");
+        if (currentNarration.isValid())
+        {
+            endingVoiceOverStarted = true;
+            creditsSequence = StartCoroutine(WaitForEndingCredits(currentNarration));
+        }
+    }
+
+    private IEnumerator WaitForEndingCredits(EventInstance endingVoice)
+    {
+        while (endingVoice.isValid())
+        {
+            var result = endingVoice.getPlaybackState(out PLAYBACK_STATE state);
+            if (result != FMOD.RESULT.OK) yield break;
+            if (state == PLAYBACK_STATE.STOPPED)
+            {
+                yield return new WaitForSeconds(endVoiceOverToCreditsDelay);
+                if (presentation != null) yield return presentation.PlayCredits();
+                creditsSequence = null;
+                yield break;
+            }
+            yield return null;
+        }
     }
 
     public void PlayMusicIntroThenShowObjects()
@@ -373,6 +416,7 @@ public sealed class NarrationManager : MonoBehaviour
 
     private void PlayNarration(EventReference narrationEvent, string label)
     {
+        if (endingVoiceOverStarted) return;
         if (narrationEvent.IsNull)
         {
             Debug.LogWarning(
@@ -607,6 +651,8 @@ public sealed class NarrationManager : MonoBehaviour
 
     private void Awake()
     {
+        foreach (var info in FindObjectsByType<ArtifactInfoOnGrab>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            info.ConfigureCompletion(this, info.gameObject.name, info.gameObject.name == "French Natural Horn");
         if (Application.isPlaying && objectGroup != null)
             objectGroup.SetActive(standaloneObjectInteractionTest);
 
@@ -968,6 +1014,10 @@ public sealed class NarrationManager : MonoBehaviour
     private void OnDisable()
     {
         if (Application.isPlaying)
+        {
+            if (creditsSequence != null) StopCoroutine(creditsSequence);
+            if (endingBgmSequence != null) StopCoroutine(endingBgmSequence);
             StopNarration();
+        }
     }
 }

@@ -38,6 +38,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
     [SerializeField]
     private PlayableDirector museumIntroDirector;
 
+    [SerializeField] private ExperiencePresentation presentation;
+
     [SerializeField]
     private PlayableDirector hornRestorationDirector;
 
@@ -257,15 +259,17 @@ public sealed class MuseumExperienceController : MonoBehaviour
         RefreshHornPickupListener();
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
         if (enableTestMode &&
             testStartPoint != TestStartPoint.Normal)
         {
             ApplyTestStartPoint(testStartPoint);
-            return;
+            yield break;
         }
 
+        if (presentation != null)
+            yield return presentation.PlayOpening();
         StartNormalExperience();
     }
 
@@ -278,8 +282,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         if (Time.time >= delayedTavernRevealTime)
         {
-            holdDelayedTavernRevealHidden = false;
-            SetDelayedTavernRevealObjectsActive(true);
+            FinishDelayedTavernReveal();
             return;
         }
 
@@ -1162,12 +1165,20 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         RestoreCompleteHornTavernPose();
 
+        if (hornHoverEffect != null)
+            hornHoverEffect.StopImmediately();
+
         BeginDelayedTavernReveal();
         onFreeExplorationStarted?.Invoke();
     }
 
     public void RevealHornGuideAfterTransition()
     {
+        if (CurrentState != MuseumExperienceState.FreeExploration ||
+            holdDelayedTavernRevealHidden ||
+            Time.time < delayedTavernRevealTime)
+            return;
+
         Transform hornPresentationRoot = GetHornPresentationRoot();
 
         if (hornPresentationRoot != null)
@@ -1891,9 +1902,18 @@ public sealed class MuseumExperienceController : MonoBehaviour
             );
         }
 
+        FinishDelayedTavernReveal();
+        delayedTavernRevealCoroutine = null;
+    }
+
+    private void FinishDelayedTavernReveal()
+    {
+        if (!holdDelayedTavernRevealHidden)
+            return;
+
         SetDelayedTavernRevealObjectsActive(true);
         holdDelayedTavernRevealHidden = false;
-        delayedTavernRevealCoroutine = null;
+        RevealHornGuideAfterTransition();
     }
 
     private void SetDelayedTavernRevealObjectsActive(bool active)
@@ -1905,12 +1925,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
         foreach (Transform root in delayedTavernRevealRoots)
         {
-            if (root != null &&
-                (completeHornRoot == null ||
-                 root.gameObject != completeHornRoot))
-            {
+            if (root != null)
                 root.gameObject.SetActive(active);
-            }
         }
     }
 

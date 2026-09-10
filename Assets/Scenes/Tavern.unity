@@ -254,6 +254,11 @@ MonoBehaviour:
     and a broken pedestal or base. It works well as evidence for the small decorative
     and personal objects that sat alongside the tavern, household and leisure material
     from the site.
+  requireFinishedMelody: 0
+  hornController: {fileID: 0}
+  completionManager: {fileID: 236943013}
+  completionKey: Cockerel
+  countsForEnding: 1
 --- !u!114 &25727846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -809,6 +814,13 @@ MonoBehaviour:
   extraLayerIndex: 0
   narrationManager: {fileID: 236943013}
   objectIntroVoiceOver: 1
+  onPerformanceTouch:
+    m_PersistentCalls:
+      m_Calls: []
+  performanceTouchEffectPrefab: {fileID: 2020661361868494885, guid: 895c6d094b6b213418cddcfb520298e9, type: 3}
+  effectSurfaceOffset: 0.01
+  effectCooldown: 0.15
+  effectScaleRange: {x: 0.008, y: 0.012}
 --- !u!54 &97837589
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -994,11 +1006,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panel: {fileID: 651894516}
   title: Bartmann Bottle
-  description: This Bartmann bottle was made in Frechen, Germany, around 1550-1700.
+  description: "This Bartmann bottle was made in Frechen, Germany, around 1550\u20131700.
     Made from durable brown-glazed stoneware, it has a rounded body, narrow neck
     and sturdy handle for storing and carrying liquids. Its moulded flower medallion
     reflects the decorative style of Frechen stoneware, which was widely traded across
-    Europe and commonly used in domestic and drinking settings.
+    Europe and commonly used in domestic and drinking settings.\n\nThe name Bartmann,
+    meaning \u201Cbearded man\u201D in German, refers to the distinctive bearded
+    face moulded onto the neck of these vessels. In Britain, Bartmann vessels also
+    became known as \u201CBellarmine\u201D jugs, a name associated with the Catholic
+    Cardinal Robert Bellarmine. Beyond their everyday use, some Bartmann bottles
+    were later reused as \u201Cwitch bottles\u201D, filled with materials such as
+    pins, nails or hair and concealed or buried as protective objects against witchcraft.
+    Over time, this widely traded domestic object acquired additional religious,
+    symbolic and ritual meanings within British social life."
+  requireFinishedMelody: 0
+  hornController: {fileID: 0}
+  completionManager: {fileID: 236943013}
+  completionKey: Bartmann bottles
+  countsForEnding: 1
 --- !u!1 &99312287
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,6 +1857,8 @@ MonoBehaviour:
   ambienceToTavernAliveDelay: 5
   tavernAliveToEndingBgmDelay: 10
   endingBgmToEndVoiceOverDelay: 20
+  presentation: {fileID: 1492328566}
+  endVoiceOverToCreditsDelay: 10
   subtitle01: "Can you hear them? The clinking of bottles, the laughter, and the
     rhythm of life... \nHow I miss those sounds."
   subtitle02: "This place was once a tavern, where people played the horn and sang
@@ -1857,6 +1884,7 @@ MonoBehaviour:
   sceneSubtitleCanvasSize: {x: 1428, y: 300}
   sceneSubtitleCanvasScale: 0.002
   showSubtitlePreviewInEditMode: 1
+  requiredObjectCompletionCount: 6
 --- !u!1 &260789616
 GameObject:
   m_ObjectHideFlags: 0
@@ -1934,7 +1962,7 @@ Transform:
   m_GameObject: {fileID: 302714431}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -61.824177, y: 0, z: -24.2}
+  m_LocalPosition: {x: -61.824177, y: 0, z: 3.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2423,7 +2451,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &403406559
 Transform:
   m_ObjectHideFlags: 0
@@ -3490,6 +3518,13 @@ MonoBehaviour:
   extraLayerIndex: 2
   narrationManager: {fileID: 236943013}
   objectIntroVoiceOver: 3
+  onPerformanceTouch:
+    m_PersistentCalls:
+      m_Calls: []
+  performanceTouchEffectPrefab: {fileID: 2020661361868494885, guid: 895c6d094b6b213418cddcfb520298e9, type: 3}
+  effectSurfaceOffset: 0.01
+  effectCooldown: 0.15
+  effectScaleRange: {x: 0.008, y: 0.012}
 --- !u!54 &602358610
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3653,11 +3688,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panel: {fileID: 651894516}
   title: Punch Whistle
-  description: This 19th-century whistle is made from white metal and shaped as Punch,
-    the well-known comic character associated with British Punch and Judy performances.
-    Although small and decorative, it was also designed to produce a clear, piercing
-    whistle. Its combination of sound and playful figurative design reflects the
-    popular entertainment culture of the period.
+  description: "This 19th-century whistle is made from white metal and shaped as
+    Punch, the well-known comic character associated with British Punch and Judy
+    performances. Although small and decorative, it was also designed to produce
+    a clear, piercing whistle. Its combination of sound and playful figurative design
+    reflects the popular entertainment culture of the period.\n\nPunch developed
+    from Pulcinella, a character from the Italian commedia dell\u2019arte tradition,
+    and became established in Britain from the seventeenth century. By the nineteenth
+    century, Punch and Judy had become a familiar form of popular entertainment,
+    with Punch\u2019s humor often centered on disorder and exaggerated violence,
+    including violence towards his wife Judy. Some nineteenth-century versions also
+    included racial stereotypes, such as the character of Jim Crow, drawing on the
+    blackface minstrel traditions of the period. Over time, the Punch has been increasingly
+    criticized for their representations of domestic violence, racial stereotypes
+    and violence in children\u2019s entertainment."
+  requireFinishedMelody: 0
+  hornController: {fileID: 0}
+  completionManager: {fileID: 236943013}
+  completionKey: Punch Whistle
+  countsForEnding: 1
 --- !u!1 &651894514
 GameObject:
   m_ObjectHideFlags: 0
@@ -3720,11 +3769,19 @@ MonoBehaviour:
   fadeSeconds: 0.25
   previewInEditMode: 1
   previewTitle: Bartmann Bottle
-  previewDescription: This Bartmann bottle was made in Frechen, Germany, around 1550-1700.
-    Made from durable brown-glazed stoneware, it has a rounded body, narrow neck
-    and sturdy handle for storing and carrying liquids. Its moulded flower medallion
-    reflects the decorative style of Frechen stoneware, which was widely traded across
-    Europe and commonly used in domestic and drinking settings.
+  previewDescription: "This Bartmann bottle was made in Frechen, Germany, around
+    1550\u20131700. Made from durable brown-glazed stoneware, it has a rounded body,
+    narrow neck and sturdy handle for storing and carrying liquids. Its moulded flower
+    medallion reflects the decorative style of Frechen stoneware, which was widely
+    traded across Europe and commonly used in domestic and drinking settings.\n\nThe
+    name Bartmann, meaning \u201Cbearded man\u201D in German, refers to the distinctive
+    bearded face moulded onto the neck of these vessels. In Britain, Bartmann vessels
+    also became known as \u201CBellarmine\u201D jugs, a name associated with the
+    Catholic Cardinal Robert Bellarmine. Beyond their everyday use, some Bartmann
+    bottles were later reused as \u201Cwitch bottles\u201D, filled with materials
+    such as pins, nails or hair and concealed or buried as protective objects against
+    witchcraft. Over time, this widely traded domestic object acquired additional
+    religious, symbolic and ritual meanings within British social life."
 --- !u!114 &651894517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4177,14 +4234,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912341001}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: -1.6, y: 1.2, z: 2.5}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.12, y: 1.2, z: 2.97}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 27479550}
   m_Father: {fileID: 912340002}
-  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &912342001
 GameObject:
   m_ObjectHideFlags: 0
@@ -4241,14 +4298,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 912343001}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.19, y: 1.55, z: 1.23}
+  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: -1.57, y: 1.55, z: 2.21}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1119305796}
   m_Father: {fileID: 912340002}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!1 &912344001
 GameObject:
   m_ObjectHideFlags: 0
@@ -4274,7 +4331,7 @@ Transform:
   m_GameObject: {fileID: 912344001}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.09, y: 1.77, z: -1.6}
+  m_LocalPosition: {x: 0.09, y: 1.77, z: -1.39}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5342,7 +5399,7 @@ Transform:
   m_GameObject: {fileID: 1113048112}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.31397212, z: -0, w: 0.9494322}
-  m_LocalPosition: {x: -2.18, y: 1.6, z: -1.61}
+  m_LocalPosition: {x: -2.5, y: 1.6, z: -2.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5653,6 +5710,11 @@ MonoBehaviour:
     bottle form used for storing and serving drink in the late 17th to early 18th
     century. The iridescent weathering visible on the glass is typical of archaeological
     burial conditions.
+  requireFinishedMelody: 0
+  hornController: {fileID: 0}
+  completionManager: {fileID: 236943013}
+  completionKey: Half Size Mallet-Type Wine Bottle
+  countsForEnding: 1
 --- !u!114 &1130699948
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5870,7 +5932,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1178589592
 Transform:
   m_ObjectHideFlags: 0
@@ -6231,6 +6293,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c06c95c944f4e3a4f8abddef095ea6e8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1225532535}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c06c95c944f4e3a4f8abddef095ea6e8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1225532536}
   m_SourcePrefab: {fileID: 100100000, guid: c06c95c944f4e3a4f8abddef095ea6e8, type: 3}
 --- !u!1 &1225532528 stripped
 GameObject:
@@ -6366,6 +6431,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  firstPerformanceEffectPrefab: {fileID: 4938095755617958529, guid: 2e79f16be10fbd14f8d5ef191f8db4aa, type: 3}
+  firstPerformanceEffectScale: 0.02
   shakeTrackedObject: {fileID: 1225532529}
   shakeReferenceHead: {fileID: 1848856746}
   minSideShakeSpeed: 0.05
@@ -6642,10 +6709,41 @@ MonoBehaviour:
   glowColor: {r: 1, g: 0.75, b: 0.25, a: 1}
   minGlowIntensity: 0.2
   maxGlowIntensity: 0.75
-  grabbedGlowIntensity: 0.6
   glowOnlyAfterFirstGrab: 0
   floatHeight: 0.04
   floatSpeed: 0.8
+--- !u!114 &1225532536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1225532528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc34c7425ab850c409cce56df5bbb8ad, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  panel: {fileID: 651894516}
+  title: Horn
+  description: "The 18th-century natural horn had no valves and produced notes from
+    the natural harmonic series. Unlike the modern French horn, which has a fully
+    chromatic range of about three and a half octaves, the 18th-century horn could
+    produce only around sixteen natural notes. Its sound was also generally brighter
+    and more open than that of the modern instrument.\n\nThe French horn formed part
+    of the musical lives of Black people in eighteenth-century Britain. King, an
+    enslaved man associated with William Franklin, was later taken in by a woman
+    who arranged for him to receive tuition in both the French horn and violin. Ignatius
+    Sancho (c. 1729\u20131780), one of the best-known Black residents of eighteenth-century
+    London, later became a published composer, and some of his minuets included French
+    horn parts. Although music could offer Black people a degree of independence
+    and greater opportunities for cultural participation, they still lived within
+    an unequal social structure."
+  requireFinishedMelody: 1
+  hornController: {fileID: 1225532531}
+  completionManager: {fileID: 236943013}
+  completionKey: French Natural Horn
+  countsForEnding: 1
 --- !u!1 &1231185630
 GameObject:
   m_ObjectHideFlags: 0
@@ -7631,6 +7729,7 @@ GameObject:
   - component: {fileID: 1492328565}
   - component: {fileID: 1492328564}
   - component: {fileID: 1492328563}
+  - component: {fileID: 1492328566}
   m_Layer: 0
   m_Name: MuseumExperienceSystem
   m_TagString: Untagged
@@ -7861,6 +7960,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   museumIntroDirector: {fileID: 2027643239}
+  presentation: {fileID: 1492328566}
   hornRestorationDirector: {fileID: 1414579880}
   environmentTransitionDirector: {fileID: 260789617}
   pieceGrab: {fileID: 1623698370}
@@ -7981,7 +8081,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   enableTestMode: 1
-  testStartPoint: 0
+  testStartPoint: 5
   logStateChanges: 1
 --- !u!4 &1492328565
 Transform:
@@ -8003,6 +8103,39 @@ Transform:
   - {fileID: 303279481}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1492328566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1492328562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ad4c9892fe40dc4b8bf6ebda7a30076, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  headCamera: {fileID: 1064939056}
+  logo: {fileID: 2800000, guid: 447645d6562b3e2429e1eb20fcb6a7cc, type: 3}
+  overlayMaterial: {fileID: 2100000, guid: 19f8f8d077e3b3347bb590ff35e70f39, type: 2}
+  font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  fontSize: 55
+  fadeSeconds: 1.5
+  logoHoldSeconds: 5
+  creditsPixelsPerSecond: 32
+  credits: "<b>WHITECHAPEL ECHOES</b>\n\nA VR experience by\nMavice\nYixin Zhou (Ella)\n\nmavicexie@gmail.com\nzhouyx0802@outlook.com\n\n\n<b>ACADEMIC
+    SUPERVISION</b>\nMarco Gillies\n\nMA Virtual and Augmented Reality\nGoldsmiths,
+    University of London\n\n\n<b>WITH THANKS TO</b>\nUCL Archaeology South-East\n\nSarah
+    Wolferstan\nElke Raemen\nand the Whitechapel research team\n\n\n<b>MUSIC & SOUND</b>\n\u201CTower
+    Hamlets March\u201D\nPerformed by Anneke Scott\n\nHistorical piece documented
+    in an\neighteenth-century horn tutor book\nSource: Archaeology South-East (ASE)\n\nAdditional
+    music and sound effects\nsourced from Pixabay\nunder the Pixabay Content License\n\n\n<b>VOICE</b>\nAI-generated
+    voice created using MiniMax\n\n\n<b>HISTORICAL & RESEARCH SOURCES</b>\nWhitechapel\nUCL
+    Faculty of Social & Historical Sciences\nucl.ac.uk/social-historical-sciences/\nresearch-projects/whitechapel\n\nKatrina
+    Faulds (2021)\n\u201CIgnatius Sancho: A Black Dance Composer\u201D\nDomestic
+    and Social Dance in Georgian Britain\nEdited by Wiebke Thorm\xE4hlen\nSound Heritage\n\nVictoria
+    and Albert Museum\nA history of Punch & Judy\n\nWikipedia\n\u201CBartmann jug\u201D
+    \xB7 \u201CPunch and Judy\u201D\n\n\nThank you for listening.\n"
 --- !u!1001 &1511792103
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8101,7 +8234,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: dfb02d38fcecb3949b8e916b3a8221c6, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5407782741281028802, guid: dfb02d38fcecb3949b8e916b3a8221c6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8333,11 +8466,12 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: This Bartmann bottle was made in Frechen, Germany, around 1550-1700. Made
-    from durable brown-glazed stoneware, it has a rounded body, narrow neck and sturdy
-    handle for storing and carrying liquids. Its moulded flower medallion reflects
-    the decorative style of Frechen stoneware, which was widely traded across Europe
-    and commonly used in domestic and drinking settings.
+  m_Text: "This Bartmann bottle was made in Frechen, Germany, around 1550\u20131700.
+    Made from durable brown-glazed stoneware, it has a rounded body, narrow neck
+    and sturdy handle for storing and carrying liquids. Its moulded flower medallion
+    reflects the decorative style of Frechen stoneware, which was widely traded across
+    Europe and commonly used in domestic and drinking settings.\n\nThe name Bartmann,
+    meaning \u201Cbearded man\u201D in German, refers to the"
 --- !u!222 &1545898275
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10765,6 +10899,13 @@ MonoBehaviour:
   extraLayerIndex: 1
   narrationManager: {fileID: 236943013}
   objectIntroVoiceOver: 2
+  onPerformanceTouch:
+    m_PersistentCalls:
+      m_Calls: []
+  performanceTouchEffectPrefab: {fileID: 2020661361868494885, guid: 895c6d094b6b213418cddcfb520298e9, type: 3}
+  effectSurfaceOffset: 0.01
+  effectCooldown: 0.15
+  effectScaleRange: {x: 0.008, y: 0.012}
 --- !u!54 &1989443626
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10933,6 +11074,11 @@ MonoBehaviour:
     line. Dominoes were popular pieces for social tabletop games, and their hard
     ivory surfaces produced a distinctive click when placed or moved across a wooden
     table.
+  requireFinishedMelody: 0
+  hornController: {fileID: 0}
+  completionManager: {fileID: 236943013}
+  completionKey: Domino
+  countsForEnding: 1
 --- !u!1 &1994237178
 GameObject:
   m_ObjectHideFlags: 0

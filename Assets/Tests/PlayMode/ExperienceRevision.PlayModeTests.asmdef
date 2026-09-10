@@ -1,0 +1,5 @@
+{
+  "name": "ExperienceRevision.PlayModeTests",
+  "references": ["UnityEngine.UI"],
+  "optionalUnityReferences": ["TestAssemblies"]
+}

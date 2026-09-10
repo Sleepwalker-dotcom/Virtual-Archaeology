@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
@@ -9,8 +9,31 @@ public sealed class ArtifactInfoOnGrab : MonoBehaviour
     [SerializeField] private string title;
     [TextArea(4, 12)]
     [SerializeField] private string description;
+    [SerializeField] private bool requireFinishedMelody;
+    [SerializeField] private HornFMODController hornController;
+    [SerializeField] private NarrationManager completionManager;
+    [SerializeField] private string completionKey;
+    [SerializeField] private bool countsForEnding;
 
     private XRGrabInteractable grab;
+    private bool shown;
+
+    public bool CanShow =>
+        (!requireFinishedMelody ||
+         (hornController != null && hornController.HasFinishedFullMelodyRepeats)) &&
+        (completionManager == null || !completionManager.IsObjectInteractionBlocked);
+
+    public void ConfigureCompletion(NarrationManager manager, string key, bool requireMelody)
+    {
+        completionManager = manager;
+        completionKey = key;
+        countsForEnding = true;
+        if (requireMelody)
+        {
+            requireFinishedMelody = true;
+            hornController = manager != null ? manager.GetHornController() : null;
+        }
+    }
 
     private void Awake()
     {
@@ -27,15 +50,22 @@ public sealed class ArtifactInfoOnGrab : MonoBehaviour
     {
         grab.selectEntered.RemoveListener(Show);
         grab.selectExited.RemoveListener(Hide);
+        if (shown) panel?.Hide(this);
+        shown = false;
     }
 
     private void Show(SelectEnterEventArgs args)
     {
-        panel?.Show(title, description);
+        if (!CanShow) return;
+        shown = true;
+        if (countsForEnding) completionManager?.RegisterObjectCompletion(completionKey);
+        panel?.Show(title, description, this);
     }
 
     private void Hide(SelectExitEventArgs args)
     {
-        panel?.Hide();
+        if (grab.isSelected) return;
+        if (shown) panel?.Hide(this);
+        shown = false;
     }
 }

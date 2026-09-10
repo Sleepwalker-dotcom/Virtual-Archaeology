@@ -108,6 +108,10 @@ public class HornFMODController : MonoBehaviour
     public HornPlaybackMode currentPlaybackMode;
     public UnityEvent onApplauseRequested;
 
+    [Header("First Performance Effect")]
+    public GameObject firstPerformanceEffectPrefab;
+    [Min(0f)] public float firstPerformanceEffectScale = 0.02f;
+
     [Header("Shake Speed Mode - Rounds 2 to 4")]
     public Transform shakeTrackedObject;
     public Transform shakeReferenceHead;
@@ -219,6 +223,7 @@ public class HornFMODController : MonoBehaviour
     private float debugTimer;
     private bool isHornHeld;
     private bool isMouthpieceSnapped;
+    private bool appearanceGuidesDisabled;
     private float currentAudio1Volume = 0f;
     private float lastAppliedAudio1Volume = -1f;
     private float lastAudio1VolumeDistance = 0f;
@@ -1181,6 +1186,7 @@ public class HornFMODController : MonoBehaviour
         if (isComplete)
             return;
 
+        DisableAppearanceGuides();
         isHornHeld = true;
         isMouthpieceSnapped = false;
 
@@ -1343,6 +1349,7 @@ public class HornFMODController : MonoBehaviour
 
         if (currentRoundIndex == 1)
         {
+            PlayFirstPerformanceEffect();
             onApplauseRequested?.Invoke();
             Log(
                 "First performance completed. FMOD applause requested."
@@ -1397,11 +1404,14 @@ public class HornFMODController : MonoBehaviour
     private void CacheHornRenderersIfNeeded()
     {
         if ((hornRenderers == null || hornRenderers.Length == 0) && hornObject != null)
-            hornRenderers = hornObject.GetComponentsInChildren<Renderer>();
+            hornRenderers = hornObject.GetComponentsInChildren<Renderer>(true);
     }
 
     private void TurnOnGlow()
     {
+        if (appearanceGuidesDisabled)
+            return;
+
         if (hornRenderers == null || hornRenderers.Length == 0)
         {
             Debug.LogWarning("[HornFMODController] No horn renderers assigned. Glow skipped.");
@@ -1423,6 +1433,79 @@ public class HornFMODController : MonoBehaviour
         }
 
         Log("Horn glow enabled.");
+    }
+
+    private void DisableAppearanceGuides()
+    {
+        if (appearanceGuidesDisabled)
+            return;
+
+        appearanceGuidesDisabled = true;
+        GetComponent<HornIdleFloatGlow>()?.DisableAppearanceGuide();
+
+        GentleHoverEffect hover = GetComponentInParent<GentleHoverEffect>(true);
+        if (hover != null)
+        {
+            hover.StopImmediately();
+            hover.enabled = false;
+        }
+
+        CacheHornRenderersIfNeeded();
+        if (hornRenderers == null)
+            return;
+
+        foreach (Renderer hornRenderer in hornRenderers)
+        {
+            if (hornRenderer == null)
+                continue;
+
+            foreach (Material material in hornRenderer.materials)
+            {
+                if (material != null && material.HasProperty("_EmissionColor"))
+                    material.SetColor("_EmissionColor", Color.black);
+            }
+        }
+    }
+
+    private void PlayFirstPerformanceEffect()
+    {
+        if (firstPerformanceEffectPrefab == null)
+            return;
+
+        CacheHornRenderersIfNeeded();
+        Vector3 position = hornObject != null ? hornObject.position : transform.position;
+        bool foundBounds = false;
+        Bounds bounds = default;
+
+        if (hornRenderers != null)
+        {
+            foreach (Renderer hornRenderer in hornRenderers)
+            {
+                if (hornRenderer == null || !hornRenderer.enabled ||
+                    !hornRenderer.gameObject.activeInHierarchy)
+                    continue;
+
+                if (!foundBounds)
+                {
+                    bounds = hornRenderer.bounds;
+                    foundBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(hornRenderer.bounds);
+                }
+            }
+        }
+
+        if (foundBounds)
+            position = bounds.center;
+
+        GameObject effect = Instantiate(
+            firstPerformanceEffectPrefab,
+            position,
+            Quaternion.identity);
+        effect.transform.localScale *= firstPerformanceEffectScale;
+        Destroy(effect, 5f);
     }
 
     private void EnsureGuideUI()
