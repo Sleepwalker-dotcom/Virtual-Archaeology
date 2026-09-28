@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Reflection;
 using NUnit.Framework;
@@ -15,6 +15,65 @@ public class ExperienceRevisionTests
         .GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(target);
     private static IEnumerator Play(object target, string method) =>
         (IEnumerator)target.GetType().GetMethod(method).Invoke(target, null);
+
+    [TestCase(0, false)]
+    [TestCase(1, false)]
+    [TestCase(2, false)]
+    [TestCase(3, false)]
+    [TestCase(4, false)]
+    [TestCase(5, true)]
+    public void OnlyFiveDistinctRequiredVoiceoversAdvance(int completed, bool shouldAdvance)
+    {
+        var host = new GameObject("Test Object Intro Completion");
+        try
+        {
+            var manager = host.AddComponent(RuntimeType("NarrationManager"));
+            Set(manager, "ambienceToTavernAliveDelay", 60f);
+            var required = (System.Collections.Generic.HashSet<string>)Get(manager, "requiredObjectKeys");
+            string[] keys = { "Bartmann bottles", "Punch Whistle", "Domino", "Cockerel", "Half Size Mallet-Type Wine Bottle" };
+            foreach (string key in keys) required.Add(key);
+            var register = manager.GetType().GetMethod("RegisterObjectCompletion",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            register.Invoke(manager, new object[] { "French Natural Horn" });
+            for (int i = 0; i < completed; i++)
+            {
+                register.Invoke(manager, new object[] { keys[i] });
+                register.Invoke(manager, new object[] { keys[i] });
+            }
+            Assert.That(Get(manager, "tavernAliveStarted"), Is.EqualTo(shouldAdvance));
+            Assert.That(((System.Collections.Generic.HashSet<string>)Get(manager, "completedObjectKeys")).Count,
+                Is.EqualTo(completed));
+        }
+        finally
+        {
+            UnityEngine.Object.DestroyImmediate(host);
+        }
+    }
+
+    [Test]
+    public void EmptyEventAndInvalidPlaybackDoNotCompleteIntroduction()
+    {
+        var host = new GameObject("Test Empty Object Intro");
+        try
+        {
+            var manager = host.AddComponent(RuntimeType("NarrationManager"));
+            ((System.Collections.Generic.HashSet<string>)Get(manager, "requiredObjectKeys")).Add("Cockerel");
+            var play = manager.GetType().GetMethod("PlayArtifactIntroVoiceOver");
+            var emptyEvent = Activator.CreateInstance(play.GetParameters()[0].ParameterType);
+            play.Invoke(manager, new object[] { emptyEvent, "Cockerel" });
+            Assert.That(Get(manager, "objectIntroCompletion"), Is.Null);
+            var wait = (IEnumerator)manager.GetType().GetMethod("WaitForObjectIntroVoiceOver",
+                BindingFlags.Instance | BindingFlags.NonPublic).Invoke(manager, new object[] { "Cockerel", "Test" });
+            Assert.That(wait.MoveNext(), Is.False);
+            Assert.That(((System.Collections.Generic.HashSet<string>)Get(manager, "completedObjectKeys")).Count,
+                Is.Zero);
+            Assert.That(Get(manager, "tavernAliveStarted"), Is.False);
+        }
+        finally
+        {
+            UnityEngine.Object.DestroyImmediate(host);
+        }
+    }
 
     [UnityTest]
     public IEnumerator HeadLockedPresentationAndHornLock()

@@ -11,13 +11,6 @@ using UnityEngine.UI;
 [ExecuteAlways]
 public sealed class NarrationManager : MonoBehaviour
 {
-    private enum ObjectIntroVoiceOver
-    {
-        Bottle,
-        Domino,
-        Whistle
-    }
-
     [Header("FMOD Narration Events")]
     [SerializeField] private EventReference introNarrationEvent;
     [SerializeField] private EventReference restoreVoiceOverEvent;
@@ -28,6 +21,8 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField] private EventReference hornIntroVoiceOverEvent;
     [SerializeField] private EventReference musicIntroVoiceOverEvent;
     [SerializeField] private EventReference showObjectsVoiceOverEvent;
+    [Tooltip("Optional VO played after the full melody / object tapping interaction finishes.")]
+    [SerializeField] private EventReference postTapInteractionVoiceOverEvent;
     [SerializeField] private EventReference bottleIntroVoiceOverEvent;
     [SerializeField] private EventReference dominoIntroVoiceOverEvent;
     [SerializeField] private EventReference whistleIntroVoiceOverEvent;
@@ -133,16 +128,13 @@ public sealed class NarrationManager : MonoBehaviour
     private Coroutine showObjectsSequence;
     private Coroutine objectIntroCompletion;
     private Coroutine endingBgmSequence;
-    private bool bottleIntroCompleted;
-    private bool dominoIntroCompleted;
-    private bool whistleIntroCompleted;
     private bool tavernAliveStarted;
     private readonly HashSet<string> completedObjectKeys = new();
-    [SerializeField, Min(1)] private int requiredObjectCompletionCount = 6;
+    private readonly HashSet<string> requiredObjectKeys = new();
 
-    public void RegisterObjectCompletion(string key)
+    private void RegisterObjectCompletion(string key)
     {
-        if (string.IsNullOrWhiteSpace(key) || tavernAliveStarted) return;
+        if (string.IsNullOrWhiteSpace(key) || !requiredObjectKeys.Contains(key) || tavernAliveStarted) return;
         completedObjectKeys.Add(key);
         TryStartTavernAliveAudio();
     }
@@ -188,101 +180,80 @@ public sealed class NarrationManager : MonoBehaviour
         PlayNarration(hornIntroVoiceOverEvent, "Horn Intro VO");
     }
 
-    public void PlayBottleIntroVoiceOver()
+    public void PlayBottleIntroVoiceOver(string completionKey)
     {
         PlayObjectIntroVoiceOver(
             bottleIntroVoiceOverEvent,
             "Bottle Intro VO",
-            ObjectIntroVoiceOver.Bottle
+            completionKey
         );
     }
 
-    public void PlayDominoIntroVoiceOver()
+    public void PlayPostTapInteractionVoiceOver()
+    {
+        if (postTapInteractionVoiceOverEvent.IsNull || tavernAliveStarted) return;
+        PlayNarration(postTapInteractionVoiceOverEvent, "Post Tap Interaction VO");
+    }
+
+    public void PlayDominoIntroVoiceOver(string completionKey)
     {
         PlayObjectIntroVoiceOver(
             dominoIntroVoiceOverEvent,
             "Domino Intro VO",
-            ObjectIntroVoiceOver.Domino
+            completionKey
         );
     }
 
-    public void PlayWhistleIntroVoiceOver()
+    public void PlayWhistleIntroVoiceOver(string completionKey)
     {
         PlayObjectIntroVoiceOver(
             whistleIntroVoiceOverEvent,
             "Whistle Intro VO",
-            ObjectIntroVoiceOver.Whistle
+            completionKey
         );
     }
 
-    private void PlayObjectIntroVoiceOver(
-        EventReference eventReference,
-        string label,
-        ObjectIntroVoiceOver voiceOver
-    )
+    public void PlayArtifactIntroVoiceOver(EventReference eventReference, string completionKey)
     {
-        // Re-grabbing an object must not interrupt the final voiceover or credits.
-        if (tavernAliveStarted) return;
-        PlayNarration(eventReference, label);
-
-        if (currentNarration.isValid())
-        {
-            objectIntroCompletion = StartCoroutine(
-                WaitForObjectIntroVoiceOver(voiceOver, label)
-            );
-        }
+        PlayObjectIntroVoiceOver(eventReference, "Artifact Intro VO", completionKey);
     }
 
-    private IEnumerator WaitForObjectIntroVoiceOver(
-        ObjectIntroVoiceOver voiceOver,
-        string label
-    )
+    private void PlayObjectIntroVoiceOver(EventReference eventReference, string label, string completionKey)
+    {
+        // Empty slots and interrupted introductions must not count as completed.
+        if (tavernAliveStarted || endingVoiceOverStarted || IsObjectInteractionBlocked || eventReference.IsNull) return;
+        PlayNarration(eventReference, label);
+        if (currentNarration.isValid())
+            objectIntroCompletion = StartCoroutine(WaitForObjectIntroVoiceOver(completionKey, label));
+    }
+
+    private IEnumerator WaitForObjectIntroVoiceOver(string completionKey, string label)
     {
         while (currentNarration.isValid())
         {
-            FMOD.RESULT result = currentNarration.getPlaybackState(
-                out PLAYBACK_STATE playbackState
-            );
-
+            FMOD.RESULT result = currentNarration.getPlaybackState(out PLAYBACK_STATE state);
             if (result != FMOD.RESULT.OK)
             {
-                Debug.LogWarning(
-                    "[NarrationManager] Failed to read " + label +
-                    " playback state: " + result,
-                    this
-                );
+                Debug.LogWarning("[NarrationManager] Failed to read " + label + " playback state: " + result, this);
                 objectIntroCompletion = null;
                 yield break;
             }
-
-            if (playbackState == PLAYBACK_STATE.STOPPED)
-                break;
-
+            if (state == PLAYBACK_STATE.STOPPED)
+            {
+                StopCurrentNarration(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                objectIntroCompletion = null;
+                RegisterObjectCompletion(completionKey);
+                yield break;
+            }
             yield return null;
         }
-
-        StopCurrentNarration(FMOD.Studio.STOP_MODE.IMMEDIATE);
         objectIntroCompletion = null;
-
-        switch (voiceOver)
-        {
-            case ObjectIntroVoiceOver.Bottle:
-                bottleIntroCompleted = true;
-                break;
-            case ObjectIntroVoiceOver.Domino:
-                dominoIntroCompleted = true;
-                break;
-            case ObjectIntroVoiceOver.Whistle:
-                whistleIntroCompleted = true;
-                break;
-        }
-
-        TryStartTavernAliveAudio();
     }
 
     private void TryStartTavernAliveAudio()
     {
-        if (tavernAliveStarted || completedObjectKeys.Count < requiredObjectCompletionCount)
+        if (tavernAliveStarted || requiredObjectKeys.Count != 5 ||
+            !requiredObjectKeys.IsSubsetOf(completedObjectKeys))
         {
             return;
         }
@@ -651,6 +622,10 @@ public sealed class NarrationManager : MonoBehaviour
 
     private void Awake()
     {
+        requiredObjectKeys.Clear();
+        if (objectGroup != null)
+            foreach (var info in objectGroup.GetComponentsInChildren<ArtifactInfoOnGrab>(true))
+                requiredObjectKeys.Add(info.gameObject.name);
         foreach (var info in FindObjectsByType<ArtifactInfoOnGrab>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             info.ConfigureCompletion(this, info.gameObject.name, info.gameObject.name == "French Natural Horn");
         if (Application.isPlaying && objectGroup != null)

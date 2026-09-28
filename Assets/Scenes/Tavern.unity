@@ -254,6 +254,13 @@ MonoBehaviour:
     and a broken pedestal or base. It works well as evidence for the small decorative
     and personal objects that sat alongside the tavern, household and leisure material
     from the site.
+  introVoiceOverEvent:
+    Guid:
+      Data1: -1105189247
+      Data2: 1226085871
+      Data3: 404093348
+      Data4: 268288691
+    Path: event:/CockerelVO
   requireFinishedMelody: 0
   hornController: {fileID: 0}
   completionManager: {fileID: 236943013}
@@ -805,6 +812,13 @@ MonoBehaviour:
   renderers: []
   glowColor: {r: 0.45694855, g: 1, b: 0.19999999, a: 1}
   glowIntensity: 3
+  tapFeedbackEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   hapticAmplitude: 0.55
   hapticDuration: 0.08
   shakeDistance: 0.01
@@ -1019,6 +1033,13 @@ MonoBehaviour:
     pins, nails or hair and concealed or buried as protective objects against witchcraft.
     Over time, this widely traded domestic object acquired additional religious,
     symbolic and ritual meanings within British social life."
+  introVoiceOverEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   requireFinishedMelody: 0
   hornController: {fileID: 0}
   completionManager: {fileID: 236943013}
@@ -1587,8 +1608,8 @@ Transform:
   m_GameObject: {fileID: 232907752}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.98, y: 7.23, z: -11.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 30.1, y: 7.23, z: -2.4}
+  m_LocalScale: {x: 0.60184884, y: 1, z: 0.2774519}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 563797005}
@@ -1781,6 +1802,13 @@ MonoBehaviour:
       Data3: 1464536742
       Data4: 552523286
     Path: event:/ShowObjectsVO
+  postTapInteractionVoiceOverEvent:
+    Guid:
+      Data1: -2122987204
+      Data2: 1107149747
+      Data3: 494340992
+      Data4: -1326879044
+    Path: event:/ObjectIntroVO
   bottleIntroVoiceOverEvent:
     Guid:
       Data1: 636265856
@@ -1884,7 +1912,6 @@ MonoBehaviour:
   sceneSubtitleCanvasSize: {x: 1428, y: 300}
   sceneSubtitleCanvasScale: 0.002
   showSubtitlePreviewInEditMode: 1
-  requiredObjectCompletionCount: 6
 --- !u!1 &260789616
 GameObject:
   m_ObjectHideFlags: 0
@@ -1962,7 +1989,7 @@ Transform:
   m_GameObject: {fileID: 302714431}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -61.824177, y: 0, z: 3.3}
+  m_LocalPosition: {x: -61.824177, y: 0, z: -16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3509,6 +3536,13 @@ MonoBehaviour:
   renderers: []
   glowColor: {r: 1, g: 0.65, b: 0.2, a: 1}
   glowIntensity: 2
+  tapFeedbackEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   hapticAmplitude: 0.55
   hapticDuration: 0.08
   shakeDistance: 0.01
@@ -3702,6 +3736,13 @@ MonoBehaviour:
     blackface minstrel traditions of the period. Over time, the Punch has been increasingly
     criticized for their representations of domestic violence, racial stereotypes
     and violence in children\u2019s entertainment."
+  introVoiceOverEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   requireFinishedMelody: 0
   hornController: {fileID: 0}
   completionManager: {fileID: 236943013}
@@ -5063,7 +5104,6 @@ GameObject:
   - component: {fileID: 1066126503}
   - component: {fileID: 1066126502}
   - component: {fileID: 1066126501}
-  - component: {fileID: 1066126504}
   m_Layer: 0
   m_Name: Museum_Floor
   m_TagString: Untagged
@@ -5161,87 +5201,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1066126499}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &1066126504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1066126499}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38f6bf3d943ac7945842268c9ef1dca6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_InteractionManager: {fileID: 0}
-  m_Colliders: []
-  m_InteractionLayers:
-    m_Bits: 4294967295
-  m_DistanceCalculationMode: 1
-  m_SelectMode: 1
-  m_FocusMode: 1
-  m_CustomReticle: {fileID: 0}
-  m_AllowGazeInteraction: 0
-  m_AllowGazeSelect: 0
-  m_OverrideGazeTimeToSelect: 0
-  m_GazeTimeToSelect: 0.5
-  m_OverrideTimeToAutoDeselectGaze: 0
-  m_TimeToAutoDeselectGaze: 3
-  m_AllowGazeAssistance: 0
-  m_FirstHoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastHoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_HoverEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_HoverExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FirstSelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastSelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_SelectExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FirstFocusEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_LastFocusExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FocusEntered:
-    m_PersistentCalls:
-      m_Calls: []
-  m_FocusExited:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Activated:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Deactivated:
-    m_PersistentCalls:
-      m_Calls: []
-  m_StartingHoverFilters: []
-  m_StartingSelectFilters: []
-  m_StartingInteractionStrengthFilters: []
-  m_TeleportationProvider: {fileID: 0}
-  m_MatchOrientation: 3
-  m_MatchDirectionalInput: 0
-  m_TeleportTrigger: 0
-  m_FilterSelectionByHitNormal: 0
-  m_UpNormalToleranceDegrees: 30
-  m_Teleporting:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &1081200877
 GameObject:
   m_ObjectHideFlags: 0
@@ -5540,8 +5499,6 @@ Transform:
   - {fileID: 2100000112}
   - {fileID: 2100000122}
   - {fileID: 2100000132}
-  - {fileID: 2100000142}
-  - {fileID: 2100000152}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1123352614
@@ -5710,6 +5667,13 @@ MonoBehaviour:
     bottle form used for storing and serving drink in the late 17th to early 18th
     century. The iridescent weathering visible on the glass is typical of archaeological
     burial conditions.
+  introVoiceOverEvent:
+    Guid:
+      Data1: 1243424312
+      Data2: 1125838407
+      Data3: 1191721859
+      Data4: -1672399152
+    Path: event:/Mallet-Type BottleVO
   requireFinishedMelody: 0
   hornController: {fileID: 0}
   completionManager: {fileID: 236943013}
@@ -5951,6 +5915,7 @@ Transform:
   - {fileID: 1877884918}
   - {fileID: 121653669}
   - {fileID: 1066126500}
+  - {fileID: 1982504765}
   - {fileID: 1623698367}
   - {fileID: 515476656}
   - {fileID: 1590408274}
@@ -6722,8 +6687,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cc34c7425ab850c409cce56df5bbb8ad, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   panel: {fileID: 651894516}
   title: Horn
   description: "The 18th-century natural horn had no valves and produced notes from
@@ -6739,6 +6704,13 @@ MonoBehaviour:
     horn parts. Although music could offer Black people a degree of independence
     and greater opportunities for cultural participation, they still lived within
     an unequal social structure."
+  introVoiceOverEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   requireFinishedMelody: 1
   hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
@@ -7714,8 +7686,6 @@ Transform:
   - {fileID: 2100000212}
   - {fileID: 2100000222}
   - {fileID: 2100000232}
-  - {fileID: 2100000242}
-  - {fileID: 2100000252}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1492328562
@@ -8113,8 +8083,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ad4c9892fe40dc4b8bf6ebda7a30076, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   headCamera: {fileID: 1064939056}
   logo: {fileID: 2800000, guid: 447645d6562b3e2429e1eb20fcb6a7cc, type: 3}
   overlayMaterial: {fileID: 2100000, guid: 19f8f8d077e3b3347bb590ff35e70f39, type: 2}
@@ -9500,7 +9470,6 @@ MonoBehaviour:
   glowColor: {r: 1, g: 0.76082635, b: 0, a: 1}
   minGlowIntensity: 0.12
   maxGlowIntensity: 0.22
-  grabbedGlowIntensity: 0.3
   glowOnlyAfterFirstGrab: 1
   floatHeight: 0
   floatSpeed: 0.8
@@ -10725,6 +10694,197 @@ Transform:
   m_Children: []
   m_Father: {fileID: 515476656}
   m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
+--- !u!1 &1982504764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1982504765}
+  - component: {fileID: 1982504769}
+  - component: {fileID: 1982504768}
+  - component: {fileID: 1982504767}
+  - component: {fileID: 1982504766}
+  m_Layer: 0
+  m_Name: Museum_Teleportation_Floor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1982504765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982504764}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.52, y: -0.88, z: 1.1}
+  m_LocalScale: {x: 2.9263067, y: 1.8289416, z: 2.2435114}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1178589592}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1982504766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982504764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38f6bf3d943ac7945842268c9ef1dca6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_InteractionManager: {fileID: 0}
+  m_Colliders: []
+  m_InteractionLayers:
+    m_Bits: 4294967295
+  m_DistanceCalculationMode: 1
+  m_SelectMode: 1
+  m_FocusMode: 1
+  m_CustomReticle: {fileID: 0}
+  m_AllowGazeInteraction: 0
+  m_AllowGazeSelect: 0
+  m_OverrideGazeTimeToSelect: 0
+  m_GazeTimeToSelect: 0.5
+  m_OverrideTimeToAutoDeselectGaze: 0
+  m_TimeToAutoDeselectGaze: 3
+  m_AllowGazeAssistance: 0
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstFocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastFocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_StartingInteractionStrengthFilters: []
+  m_TeleportationProvider: {fileID: 0}
+  m_MatchOrientation: 3
+  m_MatchDirectionalInput: 0
+  m_TeleportTrigger: 0
+  m_FilterSelectionByHitNormal: 0
+  m_UpNormalToleranceDegrees: 30
+  m_Teleporting:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!23 &1982504767
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982504764}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 7ede6b00d440b114b8b474968b05f53b, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1982504768
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982504764}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!33 &1982504769
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982504764}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1985325733
 GameObject:
   m_ObjectHideFlags: 0
@@ -10890,6 +11050,13 @@ MonoBehaviour:
   renderers: []
   glowColor: {r: 0.19999999, g: 0.6771633, b: 1, a: 1}
   glowIntensity: 3
+  tapFeedbackEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   hapticAmplitude: 0.55
   hapticDuration: 0.08
   shakeDistance: 0.01
@@ -11074,6 +11241,13 @@ MonoBehaviour:
     line. Dominoes were popular pieces for social tabletop games, and their hard
     ivory surfaces produced a distinctive click when placed or moved across a wooden
     table.
+  introVoiceOverEvent:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   requireFinishedMelody: 0
   hornController: {fileID: 0}
   completionManager: {fileID: 236943013}
@@ -11471,7 +11645,7 @@ Transform:
   m_GameObject: {fileID: 2100000111}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 65.28, y: 0.4445238, z: 4.64}
+  m_LocalPosition: {x: 20.5, y: 0.4445238, z: -4.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11502,7 +11676,7 @@ Transform:
   m_GameObject: {fileID: 2100000121}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 55.2, y: 0.9, z: 5.2}
+  m_LocalPosition: {x: 25.8, y: 0.9, z: 5.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11518,7 +11692,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2100000132}
   m_Layer: 0
-  m_Name: Audio_Music
+  m_Name: Audio_Church
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11533,69 +11707,7 @@ Transform:
   m_GameObject: {fileID: 2100000131}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.27, y: 0.4445238, z: 4.64}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1122064266}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2100000141
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2100000142}
-  m_Layer: 0
-  m_Name: Audio_Bird
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2100000142
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000141}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 33, y: 0.4445238, z: -0.3}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1122064266}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2100000151
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2100000152}
-  m_Layer: 0
-  m_Name: Audio_Water3D
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2100000152
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000151}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.27, y: 0.4445238, z: 4.64}
+  m_LocalPosition: {x: 31.9, y: 0.4445238, z: 11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11737,7 +11849,7 @@ Transform:
   m_GameObject: {fileID: 2100000211}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 32.3, y: 7.1, z: -10.8}
+  m_LocalPosition: {x: 8.3, y: 7.1, z: -13.8}
   m_LocalScale: {x: 3.3116863, y: 3.2962, z: 4.2576}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11757,11 +11869,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -1789403966
+      Data2: 1147962907
+      Data3: -1541629268
+      Data4: 199247140
+    Path: event:/HoovesAMB
   soundSource: {fileID: 2100000112}
   eventVolume: 1
   playerTag: Player
@@ -11845,7 +11957,7 @@ Transform:
   m_GameObject: {fileID: 2100000221}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 41.81, y: 7.4, z: 0.4}
+  m_LocalPosition: {x: 34.6, y: 7.4, z: 0.7}
   m_LocalScale: {x: 3.5542185, y: 3.7717, z: 4.2576}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11865,11 +11977,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 1996160766
+      Data2: 1129339810
+      Data3: -834534006
+      Data4: 1584124837
+    Path: event:/WaterAMB
   soundSource: {fileID: 2100000122}
   eventVolume: 1
   playerTag: Player
@@ -11938,7 +12050,7 @@ GameObject:
   - component: {fileID: 2100000234}
   - component: {fileID: 2100000233}
   m_Layer: 0
-  m_Name: Zone_Music_Audio
+  m_Name: Zone_Church_Audio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11953,8 +12065,8 @@ Transform:
   m_GameObject: {fileID: 2100000231}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.2, y: 1.5, z: 7.7}
-  m_LocalScale: {x: 15.565283, y: 1, z: 4.2576}
+  m_LocalPosition: {x: 15.7, y: 1.5, z: 4.8}
+  m_LocalScale: {x: 2.681587, y: 1, z: 2.5579236}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1464137047}
@@ -11973,11 +12085,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 1487907828
+      Data2: 1317644752
+      Data3: -92783685
+      Data4: -1806072619
+    Path: event:/ClockAMB
   soundSource: {fileID: 2100000132}
   eventVolume: 1
   playerTag: Player
@@ -12019,222 +12131,6 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2100000231}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 6.5296497, y: 3, z: 5.467739}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &2100000241
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2100000242}
-  - component: {fileID: 2100000245}
-  - component: {fileID: 2100000244}
-  - component: {fileID: 2100000243}
-  m_Layer: 0
-  m_Name: Zone_Bird_Audio
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2100000242
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000241}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.2, y: 1.5, z: 7.7}
-  m_LocalScale: {x: 15.565283, y: 1, z: 4.2576}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1464137047}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2100000243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84b78fc50a8e4da4bb1ee2f61f6686ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioEvent:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  soundSource: {fileID: 2100000142}
-  eventVolume: 1
-  playerTag: Player
-  playOnce: 0
-  manualStartOnly: 0
-  stopOnExit: 1
-  allowFadeout: 1
---- !u!54 &2100000244
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000241}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!65 &2100000245
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000241}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 6.5296497, y: 3, z: 5.467739}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &2100000251
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2100000252}
-  - component: {fileID: 2100000255}
-  - component: {fileID: 2100000254}
-  - component: {fileID: 2100000253}
-  m_Layer: 0
-  m_Name: Zone_Water3D_Audio
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2100000252
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000251}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 16.2, y: 4.3, z: 7.7}
-  m_LocalScale: {x: 3.372374, y: 2.9677, z: 4.2576}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1464137047}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2100000253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000251}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84b78fc50a8e4da4bb1ee2f61f6686ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioEvent:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  soundSource: {fileID: 2100000152}
-  eventVolume: 1
-  playerTag: Player
-  playOnce: 0
-  manualStartOnly: 0
-  stopOnExit: 1
-  allowFadeout: 1
---- !u!54 &2100000254
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000251}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
---- !u!65 &2100000255
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2100000251}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

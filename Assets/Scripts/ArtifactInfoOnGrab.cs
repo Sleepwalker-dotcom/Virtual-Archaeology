@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using FMODUnity;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 [RequireComponent(typeof(XRGrabInteractable))]
@@ -9,6 +10,8 @@ public sealed class ArtifactInfoOnGrab : MonoBehaviour
     [SerializeField] private string title;
     [TextArea(4, 12)]
     [SerializeField] private string description;
+    [Tooltip("Optional FMOD introduction played when this artefact is picked up.")]
+    [SerializeField] private EventReference introVoiceOverEvent;
     [SerializeField] private bool requireFinishedMelody;
     [SerializeField] private HornFMODController hornController;
     [SerializeField] private NarrationManager completionManager;
@@ -58,7 +61,9 @@ public sealed class ArtifactInfoOnGrab : MonoBehaviour
     {
         if (!CanShow) return;
         shown = true;
-        if (countsForEnding) completionManager?.RegisterObjectCompletion(completionKey);
+        if (!introVoiceOverEvent.IsNull && completionManager != null)
+            completionManager.PlayArtifactIntroVoiceOver(
+                introVoiceOverEvent, countsForEnding ? completionKey : null);
         panel?.Show(title, description, this);
     }
 

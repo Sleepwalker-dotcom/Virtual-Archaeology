@@ -993,6 +993,8 @@ public class HornFMODController : MonoBehaviour
         StopAndReleaseEvent();
         HasFinishedFullMelodyRepeats = !failed;
         fullMelodyRepeatSequence = null;
+        if (!failed)
+            narrationManager?.PlayPostTapInteractionVoiceOver();
     }
 
     public bool ActivateExtraLayer(int layerIndex)

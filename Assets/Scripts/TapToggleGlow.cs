@@ -1,4 +1,5 @@
-using System.Collections;
+﻿using System.Collections;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -22,6 +23,8 @@ public sealed class TapToggleGlow : MonoBehaviour
         new Color(1f, 0.65f, 0.2f, 1f);
     [SerializeField, Min(0f)] private float glowIntensity = 2f;
     [Header("Tap Feedback")]
+    [Tooltip("Optional one-shot feedback for each touch during the full melody interaction.")]
+    [SerializeField] private EventReference tapFeedbackEvent;
     [SerializeField, Range(0f, 1f)] private float hapticAmplitude = 0.55f;
     [SerializeField, Min(0f)] private float hapticDuration = 0.08f;
     [SerializeField, Min(0f)] private float shakeDistance = 0.01f;
@@ -112,6 +115,8 @@ public sealed class TapToggleGlow : MonoBehaviour
 
         if (hornController != null && hornController.IsFullMelodyRepeatPlaying)
         {
+            if (!tapFeedbackEvent.IsNull)
+                RuntimeManager.PlayOneShotAttached(tapFeedbackEvent, gameObject);
             SpawnPerformanceTouchEffect(inputInteractor.transform.position);
             onPerformanceTouch?.Invoke();
             TryRunLayerInteraction();
@@ -291,13 +296,13 @@ public sealed class TapToggleGlow : MonoBehaviour
         switch (objectIntroVoiceOver)
         {
             case ObjectIntroVoiceOver.Bottle:
-                narrationManager.PlayBottleIntroVoiceOver();
+                narrationManager.PlayBottleIntroVoiceOver(gameObject.name);
                 break;
             case ObjectIntroVoiceOver.Domino:
-                narrationManager.PlayDominoIntroVoiceOver();
+                narrationManager.PlayDominoIntroVoiceOver(gameObject.name);
                 break;
             case ObjectIntroVoiceOver.Whistle:
-                narrationManager.PlayWhistleIntroVoiceOver();
+                narrationManager.PlayWhistleIntroVoiceOver(gameObject.name);
                 break;
         }
     }
