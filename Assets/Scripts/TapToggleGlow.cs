@@ -10,14 +10,6 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 [DisallowMultipleComponent]
 public sealed class TapToggleGlow : MonoBehaviour
 {
-    private enum ObjectIntroVoiceOver
-    {
-        None,
-        Bottle,
-        Domino,
-        Whistle
-    }
-
     [SerializeField] private Renderer[] renderers;
     [SerializeField, ColorUsage(true, true)] private Color glowColor =
         new Color(1f, 0.65f, 0.2f, 1f);
@@ -34,8 +26,6 @@ public sealed class TapToggleGlow : MonoBehaviour
     [SerializeField] private HornFMODController hornController;
     [SerializeField, Range(0, 2)] private int extraLayerIndex;
     [Header("Interaction Modules")]
-    [SerializeField] private NarrationManager narrationManager;
-    [SerializeField] private ObjectIntroVoiceOver objectIntroVoiceOver;
     [SerializeField] private UnityEvent onPerformanceTouch;
     [Header("Performance Touch Effect")]
     [SerializeField] private GameObject performanceTouchEffectPrefab;
@@ -72,7 +62,6 @@ public sealed class TapToggleGlow : MonoBehaviour
     {
         if (grabInteractable != null)
         {
-            grabInteractable.selectEntered.RemoveListener(HandleGrabbed);
             grabInteractable.hoverEntered.RemoveListener(HandleHoverEntered);
             if (performanceSelectFilter != null)
                 grabInteractable.selectFilters.Remove(performanceSelectFilter);
@@ -267,13 +256,6 @@ public sealed class TapToggleGlow : MonoBehaviour
             grabInteractable = gameObject.AddComponent<XRGrabInteractable>();
 
         grabInteractable.hoverEntered.AddListener(HandleHoverEntered);
-        grabInteractable.selectEntered.AddListener(HandleGrabbed);
-    }
-
-    private void HandleGrabbed(SelectEnterEventArgs args)
-    {
-        if (hornController != null && hornController.HasFinishedFullMelodyRepeats)
-            PlayObjectIntroVoiceOver();
     }
 
     private void TryRunLayerInteraction()
@@ -285,25 +267,6 @@ public sealed class TapToggleGlow : MonoBehaviour
                 "[TapToggleGlow] Layer unlock triggered: " + extraLayerIndex,
                 this
             );
-        }
-    }
-
-    private void PlayObjectIntroVoiceOver()
-    {
-        if (narrationManager == null)
-            return;
-
-        switch (objectIntroVoiceOver)
-        {
-            case ObjectIntroVoiceOver.Bottle:
-                narrationManager.PlayBottleIntroVoiceOver(gameObject.name);
-                break;
-            case ObjectIntroVoiceOver.Domino:
-                narrationManager.PlayDominoIntroVoiceOver(gameObject.name);
-                break;
-            case ObjectIntroVoiceOver.Whistle:
-                narrationManager.PlayWhistleIntroVoiceOver(gameObject.name);
-                break;
         }
     }
 

@@ -245,10 +245,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/SceneBGM.bank
   Name: SceneBGM
   StudioPath: bank:/SceneBGM
-  lastModified: 639262335887779234
+  lastModified: 639263775522134673
   FileSizes:
   - Name: Desktop
-    Value: 3734944
+    Value: 3735264
   Exists: 1
 --- !u!114 &-5506557130868732368
 MonoBehaviour:
@@ -324,13 +324,13 @@ MonoBehaviour:
     Data4: -860547951
   Banks:
   - {fileID: 6910451372088602963}
-  IsStream: 0
+  IsStream: 1
   Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 9131
+  Length: 14786
 --- !u!114 &-4740074034919474594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -480,13 +480,13 @@ MonoBehaviour:
     Data4: -1625114616
   Banks:
   - {fileID: 6910451372088602963}
-  IsStream: 0
+  IsStream: 1
   Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 10876
+  Length: 15076
 --- !u!114 &-1892331467049134177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,13 +507,13 @@ MonoBehaviour:
     Data4: -858428576
   Banks:
   - {fileID: 6910451372088602963}
-  IsStream: 0
+  IsStream: 1
   Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 8816
+  Length: 33508
 --- !u!114 &-1545433755779145337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -534,13 +534,13 @@ MonoBehaviour:
     Data4: -370051369
   Banks:
   - {fileID: 6910451372088602963}
-  IsStream: 0
+  IsStream: 1
   Is3D: 0
   IsOneShot: 1
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 16680
+  Length: 22704
 --- !u!114 &-1511085995705232037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,7 +567,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 18048
+  Length: 24237
 --- !u!114 &-622482378548960071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -711,7 +711,7 @@ MonoBehaviour:
   - {fileID: -8781515992350634487}
   StringsBanks:
   - {fileID: 2642882407560019900}
-  cacheTime: 639262335897892699
+  cacheTime: 639263917212870350
   cacheVersion: 131636
 --- !u!114 &407813035644869156
 MonoBehaviour:
@@ -806,10 +806,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/UI2D.bank
   Name: UI2D
   StudioPath: bank:/UI2D
-  lastModified: 639262335891798570
+  lastModified: 639263774449331372
   FileSizes:
   - Name: Desktop
-    Value: 394688
+    Value: 421696
   Exists: 1
 --- !u!114 &1256308372251812500
 MonoBehaviour:
@@ -864,7 +864,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 37674
+  Length: 52209
 --- !u!114 &1983734440940052525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -891,7 +891,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 51914
+  Length: 60218
 --- !u!114 &2381570162026892119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -974,10 +974,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Scene3D.bank
   Name: Scene3D
   StudioPath: bank:/Scene3D
-  lastModified: 639231955632335726
+  lastModified: 639263777579965221
   FileSizes:
   - Name: Desktop
-    Value: 6333312
+    Value: 6333600
   Exists: 1
 --- !u!114 &2893229225982323300
 MonoBehaviour:
@@ -1059,7 +1059,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 11106
+  Length: 21724
 --- !u!114 &5438196376251985341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1140,7 +1140,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 10621
+  Length: 18063
 --- !u!114 &6910451372088602963
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1156,10 +1156,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Voice.bank
   Name: Voice
   StudioPath: bank:/Voice
-  lastModified: 639262335897892699
+  lastModified: 639263917212870350
   FileSizes:
   - Name: Desktop
-    Value: 2164672
+    Value: 3146272
   Exists: 1
 --- !u!114 &7791222459457887334
 MonoBehaviour:

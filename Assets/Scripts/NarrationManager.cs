@@ -23,9 +23,6 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField] private EventReference showObjectsVoiceOverEvent;
     [Tooltip("Optional VO played after the full melody / object tapping interaction finishes.")]
     [SerializeField] private EventReference postTapInteractionVoiceOverEvent;
-    [SerializeField] private EventReference bottleIntroVoiceOverEvent;
-    [SerializeField] private EventReference dominoIntroVoiceOverEvent;
-    [SerializeField] private EventReference whistleIntroVoiceOverEvent;
     [SerializeField] private EventReference tavernAliveVoiceOverEvent;
     [SerializeField] private EventReference endingBgmEvent;
     [SerializeField] private EventReference endVoiceOverEvent;
@@ -180,37 +177,10 @@ public sealed class NarrationManager : MonoBehaviour
         PlayNarration(hornIntroVoiceOverEvent, "Horn Intro VO");
     }
 
-    public void PlayBottleIntroVoiceOver(string completionKey)
-    {
-        PlayObjectIntroVoiceOver(
-            bottleIntroVoiceOverEvent,
-            "Bottle Intro VO",
-            completionKey
-        );
-    }
-
     public void PlayPostTapInteractionVoiceOver()
     {
         if (postTapInteractionVoiceOverEvent.IsNull || tavernAliveStarted) return;
         PlayNarration(postTapInteractionVoiceOverEvent, "Post Tap Interaction VO");
-    }
-
-    public void PlayDominoIntroVoiceOver(string completionKey)
-    {
-        PlayObjectIntroVoiceOver(
-            dominoIntroVoiceOverEvent,
-            "Domino Intro VO",
-            completionKey
-        );
-    }
-
-    public void PlayWhistleIntroVoiceOver(string completionKey)
-    {
-        PlayObjectIntroVoiceOver(
-            whistleIntroVoiceOverEvent,
-            "Whistle Intro VO",
-            completionKey
-        );
     }
 
     public void PlayArtifactIntroVoiceOver(EventReference eventReference, string completionKey)

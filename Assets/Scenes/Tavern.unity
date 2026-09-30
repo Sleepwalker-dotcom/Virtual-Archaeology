@@ -814,11 +814,11 @@ MonoBehaviour:
   glowIntensity: 3
   tapFeedbackEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 1234350964
+      Data2: 1279379621
+      Data3: -4757857
+      Data4: 289785260
+    Path: event:/BottleSFX
   hapticAmplitude: 0.55
   hapticDuration: 0.08
   shakeDistance: 0.01
@@ -826,8 +826,6 @@ MonoBehaviour:
   shakeFrequency: 35
   hornController: {fileID: 1225532531}
   extraLayerIndex: 0
-  narrationManager: {fileID: 236943013}
-  objectIntroVoiceOver: 1
   onPerformanceTouch:
     m_PersistentCalls:
       m_Calls: []
@@ -1035,13 +1033,13 @@ MonoBehaviour:
     symbolic and ritual meanings within British social life."
   introVoiceOverEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  requireFinishedMelody: 0
-  hornController: {fileID: 0}
+      Data1: 636265856
+      Data2: 1341980685
+      Data3: 1204132490
+      Data4: -207938040
+    Path: event:/BottleIntroVO
+  requireFinishedMelody: 1
+  hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
   completionKey: Bartmann bottles
   countsForEnding: 1
@@ -1809,27 +1807,6 @@ MonoBehaviour:
       Data3: 494340992
       Data4: -1326879044
     Path: event:/ObjectIntroVO
-  bottleIntroVoiceOverEvent:
-    Guid:
-      Data1: 636265856
-      Data2: 1341980685
-      Data3: 1204132490
-      Data4: -207938040
-    Path: event:/BottleIntroVO
-  dominoIntroVoiceOverEvent:
-    Guid:
-      Data1: 705445224
-      Data2: 1330075346
-      Data3: -205472107
-      Data4: -860547951
-    Path: event:/DominoIntroVO
-  whistleIntroVoiceOverEvent:
-    Guid:
-      Data1: 767084279
-      Data2: 1144063875
-      Data3: 1001688214
-      Data4: -1973443389
-    Path: event:/WhistleIntroVO
   tavernAliveVoiceOverEvent:
     Guid:
       Data1: -1587308371
@@ -3538,11 +3515,11 @@ MonoBehaviour:
   glowIntensity: 2
   tapFeedbackEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 678205065
+      Data2: 1164308474
+      Data3: 798533795
+      Data4: -1893891114
+    Path: event:/WhistleSFX
   hapticAmplitude: 0.55
   hapticDuration: 0.08
   shakeDistance: 0.01
@@ -3550,8 +3527,6 @@ MonoBehaviour:
   shakeFrequency: 35
   hornController: {fileID: 1225532531}
   extraLayerIndex: 2
-  narrationManager: {fileID: 236943013}
-  objectIntroVoiceOver: 3
   onPerformanceTouch:
     m_PersistentCalls:
       m_Calls: []
@@ -3738,13 +3713,13 @@ MonoBehaviour:
     and violence in children\u2019s entertainment."
   introVoiceOverEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  requireFinishedMelody: 0
-  hornController: {fileID: 0}
+      Data1: 767084279
+      Data2: 1144063875
+      Data3: 1001688214
+      Data4: -1973443389
+    Path: event:/WhistleIntroVO
+  requireFinishedMelody: 1
+  hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
   completionKey: Punch Whistle
   countsForEnding: 1
@@ -8051,7 +8026,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   enableTestMode: 1
-  testStartPoint: 5
+  testStartPoint: 0
   logStateChanges: 1
 --- !u!4 &1492328565
 Transform:
@@ -11052,11 +11027,11 @@ MonoBehaviour:
   glowIntensity: 3
   tapFeedbackEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: -1734216217
+      Data2: 1272935490
+      Data3: 377546628
+      Data4: 1695545290
+    Path: event:/DominoSFX
   hapticAmplitude: 0.55
   hapticDuration: 0.08
   shakeDistance: 0.01
@@ -11064,8 +11039,6 @@ MonoBehaviour:
   shakeFrequency: 35
   hornController: {fileID: 1225532531}
   extraLayerIndex: 1
-  narrationManager: {fileID: 236943013}
-  objectIntroVoiceOver: 2
   onPerformanceTouch:
     m_PersistentCalls:
       m_Calls: []
@@ -11243,13 +11216,13 @@ MonoBehaviour:
     table.
   introVoiceOverEvent:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  requireFinishedMelody: 0
-  hornController: {fileID: 0}
+      Data1: 705445224
+      Data2: 1330075346
+      Data3: -205472107
+      Data4: -860547951
+    Path: event:/DominoIntroVO
+  requireFinishedMelody: 1
+  hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
   completionKey: Domino
   countsForEnding: 1
