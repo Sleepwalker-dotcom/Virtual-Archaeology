@@ -261,8 +261,8 @@ MonoBehaviour:
       Data3: 404093348
       Data4: 268288691
     Path: event:/CockerelVO
-  requireFinishedMelody: 0
-  hornController: {fileID: 0}
+  requireFinishedMelody: 1
+  hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
   completionKey: Cockerel
   countsForEnding: 1
@@ -1853,7 +1853,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   hornController: {fileID: 1225532531}
-  showObjectsToMelodyDelay: 5
+  showObjectsToMelodyDelay: 3
   fullMelodyRepeatCount: 2
   standaloneObjectInteractionTest: 0
   standaloneTestMelodyDelay: 1
@@ -5649,8 +5649,8 @@ MonoBehaviour:
       Data3: 1191721859
       Data4: -1672399152
     Path: event:/Mallet-Type BottleVO
-  requireFinishedMelody: 0
-  hornController: {fileID: 0}
+  requireFinishedMelody: 1
+  hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
   completionKey: Half Size Mallet-Type Wine Bottle
   countsForEnding: 1
@@ -5728,7 +5728,7 @@ MonoBehaviour:
   m_StartingInteractionStrengthFilters: []
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
-  m_UseDynamicAttach: 0
+  m_UseDynamicAttach: 1
   m_MatchAttachPosition: 1
   m_MatchAttachRotation: 1
   m_SnapToColliderVolume: 1
