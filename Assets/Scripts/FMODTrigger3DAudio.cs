@@ -81,7 +81,7 @@ public class FMODTrigger3DAudio : MonoBehaviour
         FMOD.RESULT result = instance.start();
         if (result != FMOD.RESULT.OK)
         {
-            Debug.LogError("[FMODTrigger3DAudio] Failed to start " + audioEvent.Path + ": " + result, this);
+            Debug.LogError("[FMODTrigger3DAudio] Failed to start " + audioEvent + ": " + result, this);
             instance.release();
             instance.clearHandle();
             return;
@@ -89,7 +89,7 @@ public class FMODTrigger3DAudio : MonoBehaviour
 
         hasPlayed = true;
         Debug.Log(
-            "[FMODTrigger3DAudio] Started " + audioEvent.Path,
+            "[FMODTrigger3DAudio] Started " + audioEvent,
             this
         );
     }

@@ -29,7 +29,8 @@ public class ExperienceRevisionSceneTests
                     if (data.FindProperty("title").stringValue != item.title) continue;
                     Assert.AreEqual(item.description, data.FindProperty("description").stringValue);
                     Assert.NotNull(data.FindProperty("panel").objectReferenceValue);
-                    if (item.title == "Horn")
+                    StringAssert.DoesNotContain("\n\n", item.description);
+                    if (item.objectName == "French Natural Horn")
                     {
                         Assert.IsTrue(data.FindProperty("requireFinishedMelody").boolValue);
                         Assert.NotNull(data.FindProperty("hornController").objectReferenceValue);
@@ -72,7 +73,7 @@ public class ExperienceRevisionSceneTests
             Assert.IsTrue(huntingHornVisual.gameObject.activeSelf);
             var hornMaterial = AssetDatabase.LoadAssetAtPath<Material>(
                 "Assets/Model/Mavice/Hunting_Horn/Material.001.mat");
-            Assert.AreEqual("Universal Render Pipeline/Unlit", hornMaterial.shader.name);
+            Assert.AreEqual("Universal Render Pipeline/Lit", hornMaterial.shader.name);
 
             var hornType = Type.GetType("HornFMODController, Assembly-CSharp", true);
             var horn = UnityEngine.Object.FindFirstObjectByType(hornType);

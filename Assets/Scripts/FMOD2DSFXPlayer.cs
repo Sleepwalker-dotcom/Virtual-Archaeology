@@ -50,7 +50,7 @@ public class FMOD2DSFXPlayer : MonoBehaviour
         {
             Debug.LogError(
                 "[FMOD2DSFXPlayer] Failed to start " +
-                applauseSfx.Path + ": " + result,
+                applauseSfx + ": " + result,
                 this
             );
             StopTrackedApplause();
@@ -59,7 +59,7 @@ public class FMOD2DSFXPlayer : MonoBehaviour
 
         applauseCompletion = StartCoroutine(WaitForApplauseToFinish());
         Debug.Log(
-            "[FMOD2DSFXPlayer] Playing Applause: " + applauseSfx.Path,
+            "[FMOD2DSFXPlayer] Playing Applause: " + applauseSfx,
             this
         );
     }
@@ -83,7 +83,7 @@ public class FMOD2DSFXPlayer : MonoBehaviour
         {
             Debug.LogError(
                 "[FMOD2DSFXPlayer] Failed to start " +
-                harpSfx.Path + ": " + result,
+                harpSfx + ": " + result,
                 this
             );
             StopTrackedHarp();
@@ -93,7 +93,7 @@ public class FMOD2DSFXPlayer : MonoBehaviour
 
         harpCompletion = StartCoroutine(WaitForHarpToFinish());
         Debug.Log(
-            "[FMOD2DSFXPlayer] Playing Harp: " + harpSfx.Path,
+            "[FMOD2DSFXPlayer] Playing Harp: " + harpSfx,
             this
         );
     }
@@ -229,7 +229,7 @@ public class FMOD2DSFXPlayer : MonoBehaviour
         instance.release();
         Debug.Log(
             "[FMOD2DSFXPlayer] Playing " +
-            label + ": " + eventReference.Path,
+            label + ": " + eventReference,
             this
         );
     }

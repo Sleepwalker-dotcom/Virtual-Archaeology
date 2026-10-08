@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="800" viewBox="0 0 1600 800" role="img" aria-labelledby="title desc">
+  <title id="title">PICO 4 Ultra controller guide</title>
+  <desc id="desc">Left stick moves, right stick turns, and all four triggers grab.</desc>
+
+  <rect width="1600" height="800" fill="#000"/>
+
+  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M80 88H610M990 88H1520" stroke-width="3"/>
+    <path d="M670 88H930" stroke-width="8"/>
+
+    <g font-family="Arial, Helvetica, sans-serif" fill="#fff" stroke="none" text-anchor="middle">
+      <text x="800" y="105" font-size="42" font-weight="700" letter-spacing="7">VR CONTROLS</text>
+    </g>
+
+    <!-- Left controller -->
+    <g>
+      <path d="M450 220C395 220 356 254 354 310C352 349 370 382 398 399L374 594C369 642 398 676 442 681C489 686 524 657 525 608L522 414C551 397 570 365 568 326C565 262 516 220 450 220Z" stroke-width="6"/>
+      <path d="M398 399C428 414 492 418 522 414" stroke-width="3"/>
+      <path d="M389 367C372 375 360 392 358 414L356 459" stroke-width="5"/>
+      <path d="M521 397L553 411L548 455L521 449" stroke-width="6"/>
+      <path d="M520 469L548 474L542 551L522 554" stroke-width="6"/>
+
+      <circle cx="426" cy="300" r="36" stroke-width="7"/>
+      <circle cx="426" cy="300" r="17" stroke-width="4"/>
+      <path d="M426 277V323M403 300H449" stroke-width="3"/>
+
+      <circle cx="506" cy="283" r="13" stroke-width="3"/>
+      <circle cx="531" cy="313" r="13" stroke-width="3"/>
+      <circle cx="473" cy="351" r="9" stroke-width="3"/>
+
+      <circle cx="549" cy="431" r="10" fill="#fff" stroke="none"/>
+      <circle cx="546" cy="512" r="10" fill="#fff" stroke="none"/>
+    </g>
+
+    <!-- Right controller -->
+    <g>
+      <path d="M1150 220C1205 220 1244 254 1246 310C1248 349 1230 382 1202 399L1226 594C1231 642 1202 676 1158 681C1111 686 1076 657 1075 608L1078 414C1049 397 1030 365 1032 326C1035 262 1084 220 1150 220Z" stroke-width="6"/>
+      <path d="M1202 399C1172 414 1108 418 1078 414" stroke-width="3"/>
+      <path d="M1211 367C1228 375 1240 392 1242 414L1244 459" stroke-width="5"/>
+      <path d="M1079 397L1047 411L1052 455L1079 449" stroke-width="6"/>
+      <path d="M1080 469L1052 474L1058 551L1078 554" stroke-width="6"/>
+
+      <circle cx="1174" cy="300" r="36" stroke-width="7"/>
+      <circle cx="1174" cy="300" r="17" stroke-width="4"/>
+      <path d="M1174 277V323M1151 300H1197" stroke-width="3"/>
+
+      <circle cx="1094" cy="283" r="13" stroke-width="3"/>
+      <circle cx="1069" cy="313" r="13" stroke-width="3"/>
+      <circle cx="1127" cy="351" r="9" stroke-width="3"/>
+
+      <circle cx="1051" cy="431" r="10" fill="#fff" stroke="none"/>
+      <circle cx="1054" cy="512" r="10" fill="#fff" stroke="none"/>
+    </g>
+
+    <!-- Stick callouts -->
+    <path d="M426 245V174H234" stroke-width="4"/>
+    <circle cx="426" cy="245" r="7" fill="#fff" stroke="none"/>
+    <path d="M1174 245V174H1366" stroke-width="4"/>
+    <circle cx="1174" cy="245" r="7" fill="#fff" stroke="none"/>
+
+    <!-- Four trigger callouts -->
+    <path d="M549 431C694 432 664 620 748 656" stroke-width="3"/>
+    <path d="M546 512C660 520 670 640 748 674" stroke-width="3"/>
+    <path d="M1051 431C906 432 936 620 852 656" stroke-width="3"/>
+    <path d="M1054 512C940 520 930 640 852 674" stroke-width="3"/>
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif" fill="#fff">
+    <g text-anchor="end">
+      <text x="316" y="166" font-size="23" font-weight="700" letter-spacing="4">LEFT STICK</text>
+      <text x="316" y="207" font-size="48" font-weight="700" letter-spacing="5">MOVE</text>
+    </g>
+    <g text-anchor="start">
+      <text x="1284" y="166" font-size="23" font-weight="700" letter-spacing="4">RIGHT STICK</text>
+      <text x="1284" y="207" font-size="48" font-weight="700" letter-spacing="5">TURN</text>
+    </g>
+    <g text-anchor="middle">
+      <text x="800" y="658" font-size="22" font-weight="700" letter-spacing="4">ALL 4 TRIGGERS</text>
+      <text x="800" y="710" font-size="50" font-weight="700" letter-spacing="7">GRAB</text>
+    </g>
+  </g>
+
+  <g fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round">
+    <path d="M194 238V286M170 262H218"/>
+    <path d="M1382 271A34 34 0 1 1 1415 235"/>
+    <path d="M1400 228L1418 234L1410 252"/>
+  </g>
+</svg>

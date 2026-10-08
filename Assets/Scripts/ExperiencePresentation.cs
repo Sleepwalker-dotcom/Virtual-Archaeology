@@ -7,7 +7,7 @@ using UnityEditor;
 
 public sealed class ExperiencePresentation : MonoBehaviour
 {
-    private const string CompactCredits = "<size=55><b>WHITECHAPEL ECHOES</b></size>\n\nMavice & Yixin Zhou (Ella)\n\nmavicexie@gmail.com\nzhouyx0802@outlook.com\n\n<b>Supervision</b>\nMarco Gillies\nGoldsmiths, University of London\n\n<b>With thanks</b>\nUCL Archaeology South-East\nSarah Wolferstan · Elke Raemen\n\n<b>Music & sound</b>\nTower Hamlets March — Anneke Scott\nAdditional music and sound effects: Pixabay\n\n<b>Voice</b>\nAI-generated voice created using MiniMax\n\n<b>Sources</b>\nUCL Whitechapel · Sound Heritage · V&A\n\nThank you for listening.";
+    private const string CompactCredits = "<size=55><b>WHITECHAPEL ECHOES</b></size>\n\nMingsi Xie (Mavice) & Yixin Zhou (Ella)\n\nmavicexie@gmail.com\nzhouyx0802@outlook.com\n\n<b>Supervision</b>\nMarco Gillies\nGoldsmiths, University of London\n\n<b>With thanks</b>\nUCL Archaeology South-East\nSarah Wolferstan · Elke Raemen\n\n<b>Music & sound</b>\nTower Hamlets March — Anneke Scott\nAdditional music and sound effects: Pixabay\n\n<b>Voice</b>\nAI-generated voice created using MiniMax\n\n<b>Sources</b>\nUCL Whitechapel · Sound Heritage · V&A\n\nThank you for listening.";
     [SerializeField] private Camera headCamera;
     [SerializeField] private Texture logo;
     [SerializeField] private Material overlayMaterial;

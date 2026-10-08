@@ -1,1 +1,1 @@
-{"name":"ExperienceRevision.EditModeTests","includePlatforms":["Editor"],"optionalUnityReferences":["TestAssemblies"]}
+{"name":"ExperienceRevision.EditModeTests","references":["Gsplat"],"includePlatforms":["Editor"],"optionalUnityReferences":["TestAssemblies"]}

@@ -15,7 +15,7 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
     [SerializeField] private string previewTitle = "Bartmann Bottle";
     [TextArea(4, 12)]
     [SerializeField] private string previewDescription =
-        "This Bartmann bottle was made in Frechen, Germany, around 1550-1700. Made from durable brown-glazed stoneware, it has a rounded body, narrow neck and sturdy handle for storing and carrying liquids. Its moulded flower medallion reflects the decorative style of Frechen stoneware, which was widely traded across Europe and commonly used in domestic and drinking settings.";
+        "This Bartmann bottle was made in Frechen, Germany, around 1550–1700. Its durable brown-glazed stoneware body, narrow neck and handle suited storing and carrying liquids. Bartmann means “bearded man”, referring to the face moulded on the neck. In Britain, some bottles were later reused as protective “witch bottles”.";
 
     private Coroutine fade;
     private Coroutine pageSequence;
@@ -94,7 +94,7 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
     {
         for (int index = 0; ; index = (index + 1) % pages.Count)
         {
-            if (titleText != null) titleText.text = title + " (" + (index + 1) + "/" + pages.Count + ")";
+            if (titleText != null) titleText.text = title;
             bodyText.text = pages[index];
             // Allow roughly 160 words per minute, with a minimum twelve-second dwell.
             float seconds = Mathf.Max(12f, Regex.Matches(pages[index], @"\S+").Count / 2.7f);

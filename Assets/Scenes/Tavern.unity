@@ -1030,7 +1030,8 @@ MonoBehaviour:
     were later reused as \u201Cwitch bottles\u201D, filled with materials such as
     pins, nails or hair and concealed or buried as protective objects against witchcraft.
     Over time, this widely traded domestic object acquired additional religious,
-    symbolic and ritual meanings within British social life."
+    symbolic and ritual meanings within British social life.\n\nSource: Wikipedia,
+    \u201CBartmann jug\u201D."
   introVoiceOverEvent:
     Guid:
       Data1: 636265856
@@ -1297,6 +1298,8 @@ MonoBehaviour:
   GsplatAsset: {fileID: 1643680892594921121, guid: 86aec81938f95dc4dad20b27d0d0038f, type: 3}
   SHDegree: 0
   GammaToLinear: 0
+  mobileSplatLimit: 1000000
+  mobileScaleCompensation: 1.15
   effectType: 11
   intensity: 0.257
   waveAmplitude: 0.1
@@ -1848,6 +1851,7 @@ MonoBehaviour:
   gardenToTavernVoiceOverDelay: 10
   musicianAmbientPlayer: {fileID: 2100000203}
   objectGroup: {fileID: 403406558}
+  musicBlackHistoryPanel: {fileID: 0}
   uiSfxPlayer: {fileID: 1994237179}
   onGardenVoiceOverFinished:
     m_PersistentCalls:
@@ -1866,17 +1870,19 @@ MonoBehaviour:
   endVoiceOverToCreditsDelay: 10
   subtitle01: "Can you hear them? The clinking of bottles, the laughter, and the
     rhythm of life... \nHow I miss those sounds."
-  subtitle02: "This place was once a tavern, where people played the horn and sang
-    until the first light of dawn. \nBut those sounds faded long ago."
-  subtitle03: "I\u2019m Martha Dawson, the landlady of this tavern. \nI once kept
-    this place alive; now I guard its last echoes."
+  subtitle02: This place was once a tavern, where people from all over the world
+    met to play music, dance and sing until the first light of dawn. It was also
+    a haven for those seeking freedom or resting along a long journey. But those
+    sounds faded long ago.
+  subtitle03: "I\u2019m Martha Dawson, the landlady of this tavern. I once kept this
+    place; now I guard its last echoes."
   subtitle04: "You came for the horn, didn\u2019t you? Only a fragment of it remains
     here. \nTake it and return it to where it belongs. \nPerhaps the tavern will
     sing again."
-  guidanceSubtitle: "You\u2019re lucky, it has accepted you. \nNow, fit the fragment
+  guidanceSubtitle: "You\u2019re lucky, it has accepted you. Now, fit the fragment
     back into place."
-  pickupSubtitle: "It\u2019s calling to you. \nPick it up, perhaps something magic
-    will happen."
+  pickupSubtitle: "It\u2019s calling to you. Pick it up, maybe something magic will
+    happen."
   gardenTransitionSubtitle: Listen! The old ghosts of the tavern are waking up.
   subtitleFadeInSeconds: 0.35
   subtitleFadeOutSeconds: 0.35
@@ -3002,8 +3008,8 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "I\u2019m Martha Dawson, the landlady of this tavern. \nI once kept this
-    place alive; now I guard its last echoes."
+  m_Text: "I\u2019m Martha Dawson, the landlady of this tavern. I once kept this
+    place; now I guard its last echoes."
 --- !u!222 &547304198
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3049,7 +3055,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1428, y: 300}
+  m_SizeDelta: {x: 1800, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &548440039
 CanvasGroup:
@@ -3085,7 +3091,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &548440041
 Canvas:
   m_ObjectHideFlags: 0
@@ -3157,7 +3163,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &563797005
 Transform:
   m_ObjectHideFlags: 0
@@ -3327,7 +3333,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 548440038}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3369,8 +3375,10 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "This place was once a tavern, where people played the horn and sang until
-    the first light of dawn. \nBut those sounds faded long ago."
+  m_Text: This place was once a tavern, where people from all over the world met
+    to play music, dance and sing until the first light of dawn. It was also a haven
+    for those seeking freedom or resting along a long journey. But those sounds faded
+    long ago.
 --- !u!222 &590973296
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3710,7 +3718,9 @@ MonoBehaviour:
     included racial stereotypes, such as the character of Jim Crow, drawing on the
     blackface minstrel traditions of the period. Over time, the Punch has been increasingly
     criticized for their representations of domestic violence, racial stereotypes
-    and violence in children\u2019s entertainment."
+    and violence in children\u2019s entertainment.\n\nSources: Wikipedia, \u201CPunch
+    and Judy\u201D; Victoria and Albert Museum, \u201CThat\u2019s the way to do it:
+    A history of Punch and Judy\u201D."
   introVoiceOverEvent:
     Guid:
       Data1: 767084279
@@ -6666,19 +6676,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panel: {fileID: 651894516}
   title: Horn
-  description: "The 18th-century natural horn had no valves and produced notes from
+  description: The 18th-century natural horn had no valves and produced notes from
     the natural harmonic series. Unlike the modern French horn, which has a fully
     chromatic range of about three and a half octaves, the 18th-century horn could
     produce only around sixteen natural notes. Its sound was also generally brighter
-    and more open than that of the modern instrument.\n\nThe French horn formed part
-    of the musical lives of Black people in eighteenth-century Britain. King, an
-    enslaved man associated with William Franklin, was later taken in by a woman
-    who arranged for him to receive tuition in both the French horn and violin. Ignatius
-    Sancho (c. 1729\u20131780), one of the best-known Black residents of eighteenth-century
-    London, later became a published composer, and some of his minuets included French
-    horn parts. Although music could offer Black people a degree of independence
-    and greater opportunities for cultural participation, they still lived within
-    an unequal social structure."
+    and more open than that of the modern instrument.
   introVoiceOverEvent:
     Guid:
       Data1: 0

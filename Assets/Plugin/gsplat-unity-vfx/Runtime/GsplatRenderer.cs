@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2025 CocoLinux0101
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 
@@ -40,11 +41,15 @@ namespace Gsplat
         [Range(0, 3)] public int SHDegree = 3;
         public bool GammaToLinear;
 
+        [Header("Mobile Performance")]
+        [Min(0)] public uint mobileSplatLimit = 1000000;
+        [Range(1f, 1.3f)] public float mobileScaleCompensation = 1.15f;
+
         GsplatAsset m_prevAsset;
         GsplatRendererImpl m_renderer;
 
         public bool Valid => GsplatAsset;
-        public uint SplatCount => GsplatAsset ? GsplatAsset.SplatCount : 0;
+        public uint SplatCount => m_renderer?.SplatCount ?? 0;
         public ISorterResource SorterResource => m_renderer.SorterResource;
         public GsplatEffectType effectType = GsplatEffectType.PerlinWave;
         [Range(0f, 1f)] public float intensity = 0.5f;
@@ -74,13 +79,166 @@ namespace Gsplat
 
         void SetBufferData()
         {
-            m_renderer.PositionBuffer.SetData(GsplatAsset.Positions);
-            m_renderer.ScaleBuffer.SetData(GsplatAsset.Scales);
-            m_renderer.RotationBuffer.SetData(GsplatAsset.Rotations);
-            m_renderer.ColorBuffer.SetData(GsplatAsset.Colors);
+            uint splatCount = m_renderer.SplatCount;
+            int[] sampleIndices = CreateSpatialSampleIndices(GsplatAsset.Positions, GsplatAsset.Scales,
+                GsplatAsset.Colors, (int)splatCount, GsplatAsset.Bounds);
+            SetSampledBufferData(m_renderer.PositionBuffer, GsplatAsset.Positions, sampleIndices);
+            SetSampledScaleBufferData(m_renderer.ScaleBuffer, GsplatAsset.Scales, sampleIndices);
+            SetSampledBufferData(m_renderer.RotationBuffer, GsplatAsset.Rotations, sampleIndices);
+            SetSampledBufferData(m_renderer.ColorBuffer, GsplatAsset.Colors, sampleIndices);
 
             if (GsplatAsset.SHBands > 0)
-                m_renderer.SHBuffer.SetData(GsplatAsset.SHs);
+            {
+                int coefficientsPerSplat = GsplatUtils.SHBandsToCoefficientCount(GsplatAsset.SHBands);
+                SetSampledBufferData(m_renderer.SHBuffer, GsplatAsset.SHs, sampleIndices, coefficientsPerSplat);
+            }
+        }
+
+        static void SetSampledBufferData<T>(GraphicsBuffer buffer, T[] source, int[] sampleIndices,
+            int elementsPerSplat = 1) where T : struct
+        {
+            int sourceSplatCount = source.Length / elementsPerSplat;
+            if (sampleIndices == null)
+            {
+                buffer.SetData(source);
+                return;
+            }
+
+            var sampled = new T[sampleIndices.Length * elementsPerSplat];
+            for (int targetIndex = 0; targetIndex < sampleIndices.Length; targetIndex++)
+            {
+                int sourceIndex = sampleIndices[targetIndex];
+                Array.Copy(source, sourceIndex * elementsPerSplat, sampled,
+                    targetIndex * elementsPerSplat, elementsPerSplat);
+            }
+
+            buffer.SetData(sampled);
+        }
+
+        void SetSampledScaleBufferData(GraphicsBuffer buffer, Vector3[] source, int[] sampleIndices)
+        {
+            if (sampleIndices == null)
+            {
+                buffer.SetData(source);
+                return;
+            }
+
+            var sampled = new Vector3[sampleIndices.Length];
+            for (int i = 0; i < sampleIndices.Length; i++)
+                sampled[i] = source[sampleIndices[i]] * mobileScaleCompensation;
+            buffer.SetData(sampled);
+        }
+
+        public static int[] CreateSpatialSampleIndices(Vector3[] positions, Vector3[] scales, Vector4[] colors,
+            int targetCount, Bounds bounds)
+        {
+            if (targetCount >= positions.Length)
+                return null;
+
+            const int gridSize = 64;
+            const int cellCount = gridSize * gridSize * gridSize;
+            var counts = new int[cellCount];
+            for (int i = 0; i < positions.Length; i++)
+                counts[GetCellIndex(positions[i], bounds, gridSize)]++;
+
+            var quotas = new int[cellCount];
+            var occupiedCells = new List<int>();
+            for (int cell = 0; cell < cellCount; cell++)
+            {
+                if (counts[cell] == 0)
+                    continue;
+                occupiedCells.Add(cell);
+            }
+
+            bool canCoverEveryCell = targetCount >= occupiedCells.Count;
+            int quotaTotal = 0;
+            foreach (int cell in occupiedCells)
+            {
+                quotas[cell] = (int)((long)counts[cell] * targetCount / positions.Length);
+                if (canCoverEveryCell)
+                    quotas[cell] = Math.Max(1, quotas[cell]);
+                quotaTotal += quotas[cell];
+            }
+
+            occupiedCells.Sort((a, b) => quotas[b].CompareTo(quotas[a]));
+            for (int i = 0; quotaTotal > targetCount; i++)
+            {
+                int cell = occupiedCells[i % occupiedCells.Count];
+                if (quotas[cell] > (canCoverEveryCell ? 1 : 0))
+                {
+                    quotas[cell]--;
+                    quotaTotal--;
+                }
+            }
+
+            occupiedCells.Sort((a, b) =>
+                ((long)counts[b] * targetCount % positions.Length)
+                .CompareTo((long)counts[a] * targetCount % positions.Length));
+            for (int i = 0; quotaTotal < targetCount; i++)
+            {
+                int cell = occupiedCells[i % occupiedCells.Count];
+                if (quotas[cell] < counts[cell])
+                {
+                    quotas[cell]++;
+                    quotaTotal++;
+                }
+            }
+
+            var accumulators = new int[cellCount];
+            var bestIndices = new int[cellCount];
+            var bestScores = new float[cellCount];
+            Array.Fill(bestIndices, -1);
+            var result = new int[targetCount];
+            int resultIndex = 0;
+            for (int i = 0; i < positions.Length; i++)
+            {
+                int cell = GetCellIndex(positions[i], bounds, gridSize);
+                if (quotas[cell] == 0)
+                    continue;
+
+                Vector3 scale = scales[i];
+                float score = colors[i].w * (scale.x * scale.y + scale.x * scale.z + scale.y * scale.z);
+                if (bestIndices[cell] < 0 || score > bestScores[cell])
+                {
+                    bestIndices[cell] = i;
+                    bestScores[cell] = score;
+                }
+
+                accumulators[cell] += quotas[cell];
+                if (accumulators[cell] < counts[cell])
+                    continue;
+
+                accumulators[cell] -= counts[cell];
+                result[resultIndex++] = bestIndices[cell];
+                bestIndices[cell] = -1;
+                bestScores[cell] = 0f;
+            }
+
+            Array.Sort(result);
+            return result;
+        }
+
+        static int GetCellIndex(Vector3 position, Bounds bounds, int gridSize)
+        {
+            Vector3 size = bounds.size;
+            int x = Mathf.Clamp((int)((position.x - bounds.min.x) / Math.Max(size.x, 0.000001f) * gridSize), 0, gridSize - 1);
+            int y = Mathf.Clamp((int)((position.y - bounds.min.y) / Math.Max(size.y, 0.000001f) * gridSize), 0, gridSize - 1);
+            int z = Mathf.Clamp((int)((position.z - bounds.min.z) / Math.Max(size.z, 0.000001f) * gridSize), 0, gridSize - 1);
+            return x + gridSize * (y + gridSize * z);
+        }
+
+        public static int GetEvenlySampledSourceIndex(int sampleIndex, int sampleCount, int sourceCount)
+        {
+            return (int)((long)sampleIndex * sourceCount / sampleCount);
+        }
+
+        uint GetRenderSplatCount()
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            if (mobileSplatLimit > 0)
+                return Math.Min(GsplatAsset.SplatCount, mobileSplatLimit);
+#endif
+            return GsplatAsset.SplatCount;
         }
 
         void OnEnable()
@@ -88,8 +246,12 @@ namespace Gsplat
             GsplatSorter.Instance.RegisterGsplat(this);
             if (!GsplatAsset)
                 return;
-            m_renderer = new GsplatRendererImpl(GsplatAsset.SplatCount, GsplatAsset.SHBands);
+            uint splatCount = GetRenderSplatCount();
+            m_renderer = new GsplatRendererImpl(splatCount, GsplatAsset.SHBands);
             SetBufferData();
+#if UNITY_ANDROID && !UNITY_EDITOR
+            Debug.Log($"[Gsplat] Mobile splat budget: {splatCount:N0}/{GsplatAsset.SplatCount:N0}", this);
+#endif
         }
 
         void OnDisable()
@@ -108,10 +270,11 @@ namespace Gsplat
                 m_prevAsset = GsplatAsset;
                 if (GsplatAsset)
                 {
+                    uint splatCount = GetRenderSplatCount();
                     if (m_renderer == null)
-                        m_renderer = new GsplatRendererImpl(GsplatAsset.SplatCount, GsplatAsset.SHBands);
+                        m_renderer = new GsplatRendererImpl(splatCount, GsplatAsset.SHBands);
                     else
-                        m_renderer.RecreateResources(GsplatAsset.SplatCount, GsplatAsset.SHBands);
+                        m_renderer.RecreateResources(splatCount, GsplatAsset.SHBands);
                     SetBufferData();
                 }
             }
@@ -148,7 +311,7 @@ namespace Gsplat
                     modelToBox,
                     keepInsideBox);
 
-                m_renderer.Render(GsplatAsset.SplatCount, transform, GsplatAsset.Bounds, gameObject.layer,
+                m_renderer.Render(m_renderer.SplatCount, transform, GsplatAsset.Bounds, gameObject.layer,
                     GammaToLinear, SHDegree);
             }
 

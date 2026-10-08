@@ -22,7 +22,7 @@ public static class ArtifactInfoInstaller
         AttachInfo(
             "Bartmann bottles",
             "Bartmann Bottle",
-            "This Bartmann bottle was made in Frechen, Germany, around 1550-1700. Made from durable brown-glazed stoneware, it has a rounded body, narrow neck and sturdy handle for storing and carrying liquids. Its moulded flower medallion reflects the decorative style of Frechen stoneware, which was widely traded across Europe and commonly used in domestic and drinking settings.",
+            "This Bartmann bottle was made in Frechen, Germany, around 1550–1700. Its durable brown-glazed stoneware body, narrow neck and handle suited storing and carrying liquids. Bartmann means “bearded man”, referring to the face moulded on the neck. In Britain, some bottles were later reused as protective “witch bottles”.",
             panel
         );
         AttachInfo(
@@ -34,20 +34,20 @@ public static class ArtifactInfoInstaller
         AttachInfo(
             "Punch Whistle",
             "Punch Whistle",
-            "This 19th-century whistle is made from white metal and shaped as Punch, the well-known comic character associated with British Punch and Judy performances. Although small and decorative, it was also designed to produce a clear, piercing whistle. Its combination of sound and playful figurative design reflects the popular entertainment culture of the period.",
+            "This 19th-century white-metal whistle depicts Punch from British Punch and Judy performances and produces a clear, piercing sound. Punch developed from Pulcinella in Italian commedia dell’arte and became a familiar figure in British entertainment. The tradition has since been criticised for domestic violence and, in some versions, racial stereotypes.",
             panel
         );
         AttachInfo(
             "Cockerel",
-            "Cockerel-Shaped Object",
-            "A small cockerel-shaped object from the Whitechapel assemblage. Its exact material, date and function should be checked against the finds record, so this label is provisional. It is presented here as a decorative or personal object connected to the wider everyday material culture of the site.",
+            "Cockerel",
+            "A small moulded cockerel-shaped object from the Whitechapel material displayed by UCL. Its surviving form shows a standing bird with textured feathers and a broken pedestal or base. It offers evidence of the small decorative and personal objects found alongside tavern, household and leisure material at the site.",
             panel,
             true
         );
         AttachInfo(
             "Half Size Mallet-Type Wine Bottle",
             "Mallet Bottle",
-            "A half-size mallet-type wine bottle, a compact form associated with early 18th-century English glass bottle traditions. Bottles like this were used for storing and serving drink, fitting the broader tavern and drinking assemblages from Whitechapel. Confirm the exact date and material against the finds record before final public text.",
+            "This half-size mallet-type glass wine bottle comes from the Whitechapel assemblage. Its squat cylindrical body, long narrow neck and applied rim match a form used to store and serve drink in the late 17th and early 18th centuries. The iridescent weathering visible on the glass is typical of archaeological burial conditions.",
             panel,
             true
         );

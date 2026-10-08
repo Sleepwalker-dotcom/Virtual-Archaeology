@@ -96,7 +96,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639262335857663774
+  lastModified: 639203436416937538
   FileSizes:
   - Name: Desktop
     Value: 1036
@@ -245,7 +245,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/SceneBGM.bank
   Name: SceneBGM
   StudioPath: bank:/SceneBGM
-  lastModified: 639263775522134673
+  lastModified: 639269047414094756
   FileSizes:
   - Name: Desktop
     Value: 3735264
@@ -711,7 +711,7 @@ MonoBehaviour:
   - {fileID: -8781515992350634487}
   StringsBanks:
   - {fileID: 2642882407560019900}
-  cacheTime: 639263917212870350
+  cacheTime: 639269047414249829
   cacheVersion: 131636
 --- !u!114 &407813035644869156
 MonoBehaviour:
@@ -806,7 +806,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/UI2D.bank
   Name: UI2D
   StudioPath: bank:/UI2D
-  lastModified: 639263774449331372
+  lastModified: 639269047414169815
   FileSizes:
   - Name: Desktop
     Value: 421696
@@ -934,7 +934,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639262335857678545
+  lastModified: 639269047413834607
   FileSizes:
   - Name: Desktop
     Value: 2790
@@ -954,7 +954,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/InteractionMusic.bank
   Name: InteractionMusic
   StudioPath: bank:/InteractionMusic
-  lastModified: 639229503783775006
+  lastModified: 639203436419300541
   FileSizes:
   - Name: Desktop
     Value: 953760
@@ -974,7 +974,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Scene3D.bank
   Name: Scene3D
   StudioPath: bank:/Scene3D
-  lastModified: 639263777579965221
+  lastModified: 639269047414001287
   FileSizes:
   - Name: Desktop
     Value: 6333600
@@ -1156,7 +1156,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Voice.bank
   Name: Voice
   StudioPath: bank:/Voice
-  lastModified: 639263917212870350
+  lastModified: 639269047414249829
   FileSizes:
   - Name: Desktop
     Value: 3146272

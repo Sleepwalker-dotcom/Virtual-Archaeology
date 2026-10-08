@@ -59,7 +59,7 @@ public class FMODVoiceTrigger : MonoBehaviour
         FMOD.RESULT result = voiceInstance.start();
         if (result != FMOD.RESULT.OK)
         {
-            Debug.LogError("[FMODVoiceTrigger] Failed to start " + voiceEvent.Path + ": " + result, this);
+            Debug.LogError("[FMODVoiceTrigger] Failed to start " + voiceEvent + ": " + result, this);
             voiceInstance.release();
             voiceInstance.clearHandle();
             return;

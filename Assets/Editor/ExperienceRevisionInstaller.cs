@@ -13,7 +13,7 @@ public static class ExperienceRevisionInstaller
 {
     private const string ScenePath = "Assets/Scenes/Tavern.unity";
     private const string LogoPath = "Assets/UI/Presentation/UCL-Archaeology-South-East.png";
-    private const string CompactCredits = "<b>WHITECHAPEL ECHOES</b>\\n\\nMavice & Yixin Zhou (Ella)\\n\\nmavicexie@gmail.com\\nzhouyx0802@outlook.com\\n\\n<b>Supervision</b>\\nMarco Gillies\\nGoldsmiths, University of London\\n\\n<b>With thanks</b>\\nUCL Archaeology South-East\\nSarah Wolferstan · Elke Raemen\\n\\n<b>Music & sound</b>\\nTower Hamlets March — Anneke Scott\\nAdditional music and sound effects: Pixabay\\n\\n<b>Voice</b>\\nAI-generated voice created using MiniMax\\n\\n<b>Sources</b>\\nUCL Whitechapel · Sound Heritage · V&A\\n\\nThank you for listening.";
+    private const string CompactCredits = "<b>WHITECHAPEL ECHOES</b>\\n\\nMingsi Xie (Mavice) & Yixin Zhou (Ella)\\n\\nmavicexie@gmail.com\\nzhouyx0802@outlook.com\\n\\n<b>Supervision</b>\\nMarco Gillies\\nGoldsmiths, University of London\\n\\n<b>With thanks</b>\\nUCL Archaeology South-East\\nSarah Wolferstan · Elke Raemen\\n\\n<b>Music & sound</b>\\nTower Hamlets March — Anneke Scott\\nAdditional music and sound effects: Pixabay\\n\\n<b>Voice</b>\\nAI-generated voice created using MiniMax\\n\\n<b>Sources</b>\\nUCL Whitechapel · Sound Heritage · V&A\\n\\nThank you for listening.";
     [Serializable] private class Item { public string objectName; public string title; public string description; }
     [Serializable] private class Content { public Item[] items; public string credits; }
 
@@ -32,7 +32,7 @@ public static class ExperienceRevisionInstaller
         Require(horn.hornGrabInteractable != null, "Missing tavern horn grab reference");
         foreach (var item in content.items)
         {
-            var target = item.title == "Horn" ? horn.hornGrabInteractable.gameObject :
+            var target = item.objectName == "French Natural Horn" ? horn.hornGrabInteractable.gameObject :
                 transforms.Keys.Select(t => t.gameObject).FirstOrDefault(g => g.name == item.objectName);
             Require(target != null, "Missing object " + item.objectName);
             var info = target.GetComponent<ArtifactInfoOnGrab>() ?? target.AddComponent<ArtifactInfoOnGrab>();
@@ -45,7 +45,7 @@ public static class ExperienceRevisionInstaller
             Set(info, "completionManager", narration);
             Set(info, "completionKey", item.title);
             Set(info, "countsForEnding", true);
-            if (item.title == "Horn")
+            if (item.objectName == "French Natural Horn")
             {
                 Set(info, "requireFinishedMelody", true);
                 Set(info, "hornController", horn);
@@ -82,6 +82,8 @@ public static class ExperienceRevisionInstaller
         {
             var pages = (List<string>)pagesMethod.Invoke(panel, new object[] { item.description });
             Require(pages.Count > 0, "Empty pages");
+            Require(pages.Count >= 1, "Description must produce pages: " + item.title);
+            
             Require(Normalize(string.Join(" ", pages)) == Normalize(item.description), "Pagination lost text");
             foreach (string page in pages)
             {
@@ -163,3 +165,4 @@ public static class ExperienceRevisionInstaller
         serialized.ApplyModifiedPropertiesWithoutUndo();
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -50,6 +50,8 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField, Min(0f)] private float gardenToTavernVoiceOverDelay = 10f;
     [SerializeField] private FMODTrigger3DAudio musicianAmbientPlayer;
     [SerializeField] private GameObject objectGroup;
+    [Header("Music and Black History Panel")]
+    [SerializeField] private ArtifactInfoPanel musicBlackHistoryPanel;
     [SerializeField] private FMOD2DSFXPlayer uiSfxPlayer;
     [SerializeField] private UnityEvent onGardenVoiceOverFinished;
 
@@ -79,10 +81,10 @@ public sealed class NarrationManager : MonoBehaviour
         "Can you hear them? The clinking of bottles, the laughter, and the rhythm of life... How I miss those sounds.";
     [TextArea(2, 5)]
     [SerializeField] private string subtitle02 =
-        "This place was once a tavern, where people played the horn and sang until the first light of dawn. But those sounds faded long ago.";
+        "This place was once a tavern, where people from all over the world met to play music, dance and sing until the first light of dawn. It was also a haven for those seeking freedom or resting along a long journey. But those sounds faded long ago.";
     [TextArea(2, 5)]
     [SerializeField] private string subtitle03 =
-        "I\u2019m Cecilia. I once kept this tavern; now I guard its last echoes.";
+        "I\u2019m Martha Dawson, the landlady of this tavern. I once kept this place; now I guard its last echoes.";
     [TextArea(2, 5)]
     [SerializeField] private string subtitle04 =
         "You came for the horn, didn\u2019t you? Only a fragment of it remains here. Take it and return it to where it belongs. Perhaps the tavern will sing again.";
@@ -137,7 +139,7 @@ public sealed class NarrationManager : MonoBehaviour
     }
 
     public bool IsObjectInteractionBlocked =>
-        hornController != null && hornController.IsFullMelodyRepeatPlaying;
+        hornController != null && !hornController.HasFinishedFullMelodyRepeats;
 
     public HornFMODController GetHornController() => hornController;
 
@@ -288,6 +290,11 @@ public sealed class NarrationManager : MonoBehaviour
 
     public void PlayMusicIntroThenShowObjects()
     {
+        if (musicBlackHistoryPanel == null)
+            musicBlackHistoryPanel = FindFirstObjectByType<ArtifactInfoPanel>(FindObjectsInactive.Include);
+        musicBlackHistoryPanel?.Show(
+            "Music and Black History",
+            "The French horn formed part of the musical lives of Black people in eighteenth-century Britain. King, an enslaved man associated with William Franklin, was later taken in by a woman who arranged for him to receive tuition in both the French horn and violin. Ignatius Sancho (c. 1729–1780), one of the best-known Black residents of eighteenth-century London, later became a published composer, and some of his minuets included French horn parts. Although music could offer Black people a degree of independence and greater opportunities for cultural participation, they still lived within an unequal social structure.\n\n引用：Faulds, Katrina. 2021. “Ignatius Sancho: A Black Dance Composer.” In Domestic and Social Dance in Georgian Britain, ed. Wiebke Thormählen. https://sound-heritage.ac.uk/dance/ignatius-sancho-black-dance-composer");
         PlayNarration(musicIntroVoiceOverEvent, "Music Intro VO");
 
         if (currentNarration.isValid())
@@ -369,7 +376,7 @@ public sealed class NarrationManager : MonoBehaviour
 
         StopNarration();
         currentNarration = RuntimeManager.CreateInstance(narrationEvent);
-        currentNarration.setVolume(GetNarrationVolume(narrationEvent.Path));
+        currentNarration.setVolume(GetNarrationVolume(narrationEvent));
 
         narrationCallback ??= NarrationEventCallback;
         callbackHandle = GCHandle.Alloc(this);
@@ -384,7 +391,7 @@ public sealed class NarrationManager : MonoBehaviour
         {
             Debug.LogError(
                 "[NarrationManager] Failed to start " +
-                narrationEvent.Path + ": " + result,
+                narrationEvent + ": " + result,
                 this
             );
             currentNarration.setCallback(null, 0);
@@ -397,7 +404,7 @@ public sealed class NarrationManager : MonoBehaviour
 
         Debug.Log(
             "[NarrationManager] Playing " + label +
-            " narration: " + narrationEvent.Path,
+            " narration: " + narrationEvent,
             this
         );
     }
@@ -484,26 +491,20 @@ public sealed class NarrationManager : MonoBehaviour
         voiceOverSubtitleSequence = null;
     }
 
-    private float GetNarrationVolume(string eventPath)
+    private float GetNarrationVolume(EventReference eventReference)
     {
-        return eventPath switch
-        {
-            "event:/IntroVO" => introNarrationVolume,
-            "event:/RestoreVO" => restoreVoiceOverVolume,
-            "event:/PickupVO" => pickupVoiceOverVolume,
-            "event:/GardenVO" => gardenVoiceOverVolume,
-            "event:/TavernVO" => tavernVoiceOverVolume,
-            "event:/GrabHornVO" => grabHornVoiceOverVolume,
-            "event:/HornIntroVO" => hornIntroVoiceOverVolume,
-            "event:/MusicIntroVO" => musicIntroVoiceOverVolume,
-            "event:/ShowObjectsVO" => showObjectsVoiceOverVolume,
-            "event:/BottleIntroVO" => bottleIntroVoiceOverVolume,
-            "event:/DominoIntroVO" => dominoIntroVoiceOverVolume,
-            "event:/WhistleIntroVO" => whistleIntroVoiceOverVolume,
-            "event:/TavernAliveVO" => tavernAliveVoiceOverVolume,
-            "event:/EndVO" => endVoiceOverVolume,
-            _ => 1f
-        };
+        if (eventReference.Guid == introNarrationEvent.Guid) return introNarrationVolume;
+        if (eventReference.Guid == restoreVoiceOverEvent.Guid) return restoreVoiceOverVolume;
+        if (eventReference.Guid == pickupVoiceOverEvent.Guid) return pickupVoiceOverVolume;
+        if (eventReference.Guid == gardenVoiceOverEvent.Guid) return gardenVoiceOverVolume;
+        if (eventReference.Guid == tavernVoiceOverEvent.Guid) return tavernVoiceOverVolume;
+        if (eventReference.Guid == grabHornVoiceOverEvent.Guid) return grabHornVoiceOverVolume;
+        if (eventReference.Guid == hornIntroVoiceOverEvent.Guid) return hornIntroVoiceOverVolume;
+        if (eventReference.Guid == musicIntroVoiceOverEvent.Guid) return musicIntroVoiceOverVolume;
+        if (eventReference.Guid == showObjectsVoiceOverEvent.Guid) return showObjectsVoiceOverVolume;
+        if (eventReference.Guid == tavernAliveVoiceOverEvent.Guid) return tavernAliveVoiceOverVolume;
+        if (eventReference.Guid == endVoiceOverEvent.Guid) return endVoiceOverVolume;
+        return 1f;
     }
 
     private IEnumerator WaitForMusicIntroThenShowObjects()
@@ -533,6 +534,7 @@ public sealed class NarrationManager : MonoBehaviour
 
         StopCurrentNarration(FMOD.Studio.STOP_MODE.IMMEDIATE);
         musicIntroSequence = null;
+        musicBlackHistoryPanel?.Hide();
 
         if (objectGroup != null)
             objectGroup.SetActive(true);

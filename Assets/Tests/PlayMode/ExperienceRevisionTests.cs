@@ -82,6 +82,7 @@ public class ExperienceRevisionTests
         var host = new GameObject("Test Presentation");
         var hornObject = new GameObject("Test Horn Controller");
         var grabObject = new GameObject("Test Horn Grab");
+        var narrationObject = new GameObject("Test Narration Manager");
         Material material = null;
         try
         {
@@ -109,13 +110,18 @@ public class ExperienceRevisionTests
 
             var horn = (Behaviour)hornObject.AddComponent(RuntimeType("HornFMODController"));
             horn.enabled = false;
+            var narration = (Behaviour)narrationObject.AddComponent(RuntimeType("NarrationManager"));
+            narration.enabled = false;
+            Set(narration, "hornController", horn);
             var info = grabObject.AddComponent(RuntimeType("ArtifactInfoOnGrab"));
             Set(info, "requireFinishedMelody", true);
             Set(info, "hornController", horn);
             var canShow = info.GetType().GetProperty("CanShow");
             Assert.That(canShow.GetValue(info), Is.False);
+            Assert.That(narration.GetType().GetProperty("IsObjectInteractionBlocked").GetValue(narration), Is.True);
             Set(horn, "<HasFinishedFullMelodyRepeats>k__BackingField", true);
             Assert.That(canShow.GetValue(info), Is.True);
+            Assert.That(narration.GetType().GetProperty("IsObjectInteractionBlocked").GetValue(narration), Is.False);
             Set(info, "hornController", null);
             Assert.That(canShow.GetValue(info), Is.False);
         }
@@ -125,6 +131,7 @@ public class ExperienceRevisionTests
             UnityEngine.Object.Destroy(cameraObject);
             UnityEngine.Object.Destroy(grabObject);
             UnityEngine.Object.Destroy(hornObject);
+            UnityEngine.Object.Destroy(narrationObject);
             if (material != null) UnityEngine.Object.Destroy(material);
         }
         yield return null;
