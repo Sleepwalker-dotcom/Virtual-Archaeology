@@ -488,7 +488,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &27479553
 Canvas:
   m_ObjectHideFlags: 0
@@ -1022,7 +1022,7 @@ MonoBehaviour:
     Made from durable brown-glazed stoneware, it has a rounded body, narrow neck
     and sturdy handle for storing and carrying liquids. Its moulded flower medallion
     reflects the decorative style of Frechen stoneware, which was widely traded across
-    Europe and commonly used in domestic and drinking settings.\n\nThe name Bartmann,
+    Europe and commonly used in domestic and drinking settings.\r\n\r\nThe name Bartmann,
     meaning \u201Cbearded man\u201D in German, refers to the distinctive bearded
     face moulded onto the neck of these vessels. In Britain, Bartmann vessels also
     became known as \u201CBellarmine\u201D jugs, a name associated with the Catholic
@@ -1548,7 +1548,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "You came for the horn, didn\u2019t you? Only a fragment of it remains
     here. \nTake it and return it to where it belongs. \nPerhaps the tavern will
@@ -2927,7 +2927,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "It\u2019s calling to you. Pick it up, maybe something magic will happen."
 --- !u!222 &543067017
@@ -3006,7 +3006,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "I\u2019m Martha Dawson, the landlady of this tavern. I once kept this
     place; now I guard its last echoes."
@@ -3055,7 +3055,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1800, y: 300}
+  m_SizeDelta: {x: 1428, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!225 &548440039
 CanvasGroup:
@@ -3373,7 +3373,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: This place was once a tavern, where people from all over the world met
     to play music, dance and sing until the first light of dawn. It was also a haven
@@ -3709,7 +3709,7 @@ MonoBehaviour:
     Punch, the well-known comic character associated with British Punch and Judy
     performances. Although small and decorative, it was also designed to produce
     a clear, piercing whistle. Its combination of sound and playful figurative design
-    reflects the popular entertainment culture of the period.\n\nPunch developed
+    reflects the popular entertainment culture of the period.\r\n\r\nPunch developed
     from Pulcinella, a character from the Italian commedia dell\u2019arte tradition,
     and became established in Britain from the seventeenth century. By the nineteenth
     century, Punch and Judy had become a familiar form of popular entertainment,
@@ -3718,7 +3718,7 @@ MonoBehaviour:
     included racial stereotypes, such as the character of Jim Crow, drawing on the
     blackface minstrel traditions of the period. Over time, the Punch has been increasingly
     criticized for their representations of domestic violence, racial stereotypes
-    and violence in children\u2019s entertainment.\n\nSources: Wikipedia, \u201CPunch
+    and violence in children\u2019s entertainment.\r\n\n\nSources: Wikipedia, \u201CPunch
     and Judy\u201D; Victoria and Albert Museum, \u201CThat\u2019s the way to do it:
     A history of Punch and Judy\u201D."
   introVoiceOverEvent:
@@ -5254,7 +5254,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Listen! The old ghosts of the tavern are waking up.
 --- !u!222 &1081200880
@@ -7349,7 +7349,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "You\u2019re lucky, it has accepted you. Now, fit the fragment back into
     place."
@@ -8418,7 +8418,7 @@ MonoBehaviour:
     and sturdy handle for storing and carrying liquids. Its moulded flower medallion
     reflects the decorative style of Frechen stoneware, which was widely traded across
     Europe and commonly used in domestic and drinking settings.\n\nThe name Bartmann,
-    meaning \u201Cbearded man\u201D in German, refers to the"
+    meaning \u201Cbearded man\u201D in German, refers to the distinctive"
 --- !u!222 &1545898275
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11211,11 +11211,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   panel: {fileID: 651894516}
   title: Domino
-  description: This small ivory domino dates from the late 18th to early 19th century.
+  description: 'This small ivory domino dates from the late 18th to early 19th century.
     Its value is marked by recessed circular pips on either side of the central dividing
-    line. Dominoes were popular pieces for social tabletop games, and their hard
-    ivory surfaces produced a distinctive click when placed or moved across a wooden
-    table.
+    line. Dominoes were popular pieces for social tabletop games, introduced to Europe
+    in the mid-18th century and reaching England by the end of the century. Their
+    hard ivory surfaces produced a distinctive click when placed or moved across
+    a wooden table.
+
+
+    Source: Empire Dominoes | V&A Explore The Collections'
   introVoiceOverEvent:
     Guid:
       Data1: 705445224
@@ -11510,7 +11514,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "Can you hear them? The clinking of bottles, the laughter, and the rhythm
     of life... \nHow I miss those sounds."

@@ -71,8 +71,18 @@ public class FMODTrigger3DAudio : MonoBehaviour
 
     public void PlayAudio()
     {
-        if (instance.isValid() || audioEvent.IsNull)
+        if (audioEvent.IsNull)
             return;
+
+        if (instance.isValid())
+        {
+            FMOD.RESULT stateResult = instance.getPlaybackState(out PLAYBACK_STATE playbackState);
+            if (stateResult != FMOD.RESULT.OK || playbackState != PLAYBACK_STATE.STOPPED)
+                return;
+
+            instance.release();
+            instance.clearHandle();
+        }
 
         instance = RuntimeManager.CreateInstance(audioEvent);
         instance.setVolume(eventVolume);

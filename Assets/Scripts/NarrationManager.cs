@@ -294,7 +294,7 @@ public sealed class NarrationManager : MonoBehaviour
             musicBlackHistoryPanel = FindFirstObjectByType<ArtifactInfoPanel>(FindObjectsInactive.Include);
         musicBlackHistoryPanel?.Show(
             "Music and Black History",
-            "The French horn formed part of the musical lives of Black people in eighteenth-century Britain. King, an enslaved man associated with William Franklin, was later taken in by a woman who arranged for him to receive tuition in both the French horn and violin. Ignatius Sancho (c. 1729–1780), one of the best-known Black residents of eighteenth-century London, later became a published composer, and some of his minuets included French horn parts. Although music could offer Black people a degree of independence and greater opportunities for cultural participation, they still lived within an unequal social structure.\n\n引用：Faulds, Katrina. 2021. “Ignatius Sancho: A Black Dance Composer.” In Domestic and Social Dance in Georgian Britain, ed. Wiebke Thormählen. https://sound-heritage.ac.uk/dance/ignatius-sancho-black-dance-composer");
+            "The French horn formed part of the musical lives of Black people in eighteenth-century Britain. King, an enslaved man associated with William Franklin, was later taken in by a woman who arranged for him to receive tuition in both the French horn and violin. Ignatius Sancho (c. 1729–1780), one of the best-known Black residents of eighteenth-century London, later became a published composer, and some of his minuets included French horn parts. Although music could offer Black people a degree of independence and greater opportunities for cultural participation, they still lived within an unequal social structure.\n\nSource: Faulds, Katrina. 2021. “Ignatius Sancho: A Black Dance Composer.” In Domestic and Social Dance in Georgian Britain, ed. Wiebke Thormählen. https://sound-heritage.ac.uk/dance/ignatius-sancho-black-dance-composer");
         PlayNarration(musicIntroVoiceOverEvent, "Music Intro VO");
 
         if (currentNarration.isValid())
@@ -854,7 +854,7 @@ public sealed class NarrationManager : MonoBehaviour
             text.alignment = TextAnchor.MiddleCenter;
             text.color = sceneSubtitleColor;
             text.horizontalOverflow = HorizontalWrapMode.Wrap;
-            text.verticalOverflow = VerticalWrapMode.Truncate;
+            text.verticalOverflow = VerticalWrapMode.Overflow;
         }
 
         sceneSubtitleCanvasGroups[index] = canvasGroup;
@@ -890,6 +890,7 @@ public sealed class NarrationManager : MonoBehaviour
             sceneSubtitleTexts[i].fontSize = sceneSubtitleFontSize;
             sceneSubtitleTexts[i].fontStyle = sceneSubtitleFontStyle;
             sceneSubtitleTexts[i].color = sceneSubtitleColor;
+            sceneSubtitleTexts[i].verticalOverflow = VerticalWrapMode.Overflow;
 
             RectTransform canvasRect =
                 sceneSubtitleCanvasGroups[i].GetComponent<RectTransform>();
