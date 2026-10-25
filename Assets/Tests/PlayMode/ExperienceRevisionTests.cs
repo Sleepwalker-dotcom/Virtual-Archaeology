@@ -8,6 +8,106 @@ using UnityEngine.UI;
 
 public class ExperienceRevisionTests
 {
+    [UnityTest]
+    public IEnumerator HornIntroductionBlocksGuideThenLeavesPickupTutorialPending()
+    {
+        var managerObject = new GameObject("Test Grab Horn Introduction");
+        var hornObject = new GameObject("Test Intro Horn");
+        var panelObject = new GameObject("Test Intro Panel", typeof(RectTransform), typeof(Canvas));
+        var guide = new GameObject("Test Angle Guide");
+        float previousTimeScale = Time.timeScale;
+        try
+        {
+            var horn = (Behaviour)hornObject.AddComponent(RuntimeType("HornFMODController"));
+            horn.enabled = false;
+            horn.GetType().GetField("guidePanel").SetValue(horn, guide);
+            var panel = panelObject.AddComponent(RuntimeType("ArtifactInfoPanel"));
+            var manager = managerObject.AddComponent(RuntimeType("NarrationManager"));
+            Set(manager, "hornController", horn);
+            Set(manager, "grabHornInfoPanel", panel);
+            Set(manager, "grabHornInfoDuration", 0.05f);
+            Time.timeScale = 0f;
+            manager.GetType().GetMethod("PlayGrabHornVoiceOver").Invoke(manager, null);
+            Assert.That(Get(horn, "grabHornIntroductionVisible"), Is.False,
+                "GrabHornVO must no longer show the introduction.");
+            manager.GetType().GetMethod("PlayHornIntroVoiceOver").Invoke(manager, null);
+            Assert.That(Get(horn, "grabHornIntroductionVisible"), Is.True);
+            Assert.That(guide.activeSelf, Is.False);
+            horn.GetType().GetMethod("ActivateHornAndShowCanvas").Invoke(horn, null);
+            Assert.That(Get(horn, "isActivated"), Is.False);
+            yield return new WaitForSecondsRealtime(0.1f);
+            Assert.That(Get(horn, "grabHornIntroductionVisible"), Is.False);
+            Assert.That(Get(horn, "hasShownFirstPickupTutorial"), Is.False,
+                "The interaction instructions must still run after the introduction.");
+
+            Set(manager, "grabHornInfoDuration", 10f);
+            manager.GetType().GetMethod("ShowGrabHornIntroduction",
+                BindingFlags.Instance | BindingFlags.NonPublic).Invoke(manager, null);
+            managerObject.SetActive(false);
+            Assert.That(Get(horn, "grabHornIntroductionVisible"), Is.False);
+            Assert.That(Get(manager, "grabHornInfoSequence"), Is.Null);
+        }
+        finally
+        {
+            Time.timeScale = previousTimeScale;
+            UnityEngine.Object.Destroy(managerObject);
+            UnityEngine.Object.Destroy(hornObject);
+            UnityEngine.Object.Destroy(panelObject);
+            UnityEngine.Object.Destroy(guide);
+        }
+    }
+
+    [UnityTest]
+    public IEnumerator ArtifactBodyScrollsWithoutLosingTextAndResetsForNextIntroduction()
+    {
+        var host = new GameObject("Test Scroll Panel", typeof(RectTransform), typeof(Canvas));
+        try
+        {
+            var viewport = new GameObject("Viewport", typeof(RectTransform), typeof(ScrollRect));
+            viewport.transform.SetParent(host.transform, false);
+            var viewportRect = viewport.GetComponent<RectTransform>();
+            viewportRect.sizeDelta = new Vector2(300f, 100f);
+            var bodyObject = new GameObject("Body", typeof(RectTransform), typeof(Text));
+            bodyObject.transform.SetParent(viewport.transform, false);
+            var body = bodyObject.GetComponent<Text>();
+            body.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            body.fontSize = 24;
+            body.verticalOverflow = VerticalWrapMode.Overflow;
+            body.rectTransform.anchorMin = new Vector2(0f, 1f);
+            body.rectTransform.anchorMax = Vector2.one;
+            body.rectTransform.pivot = new Vector2(0.5f, 1f);
+            body.rectTransform.sizeDelta = Vector2.zero;
+            var scroll = viewport.GetComponent<ScrollRect>();
+            scroll.viewport = viewportRect;
+            scroll.content = body.rectTransform;
+            scroll.horizontal = false;
+            scroll.movementType = ScrollRect.MovementType.Clamped;
+            var panel = host.AddComponent(RuntimeType("ArtifactInfoPanel"));
+            Set(panel, "bodyText", body);
+            Set(panel, "bodyScroll", scroll);
+            Set(panel, "graphics", new Graphic[] { body });
+            Set(panel, "fadeSeconds", 0f);
+            string longText = string.Join("\n", new string[40]).Replace("\n", "A line of introduction.\n");
+            var show = panel.GetType().GetMethod("Show");
+            show.Invoke(panel, new object[] { "Long introduction", longText, null });
+            yield return null;
+            Assert.That(body.text, Is.EqualTo(longText));
+            Assert.That(body.rectTransform.rect.height, Is.GreaterThan(viewportRect.rect.height));
+            scroll.verticalNormalizedPosition = 0f;
+            yield return null;
+            Assert.That(body.rectTransform.anchoredPosition.y, Is.GreaterThan(0f));
+            show.Invoke(panel, new object[] { "Next introduction", longText, null });
+            Assert.That(scroll.verticalNormalizedPosition, Is.EqualTo(1f).Within(0.001f));
+            show.Invoke(panel, new object[] { "Short introduction", "Short text.", null });
+            Assert.That(body.text, Is.EqualTo("Short text."));
+            Assert.That(body.rectTransform.rect.height, Is.EqualTo(viewportRect.rect.height).Within(0.001f));
+        }
+        finally
+        {
+            UnityEngine.Object.Destroy(host);
+        }
+    }
+
     private static Type RuntimeType(string name) => Type.GetType(name + ", Assembly-CSharp", true);
     private static void Set(object target, string name, object value) => target.GetType()
         .GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).SetValue(target, value);

@@ -63,7 +63,8 @@ public sealed class HornActivationZone : MonoBehaviour
         activated = true;
         hornController.enabled = true;
         hornController.ActivateHornAndShowCanvas();
-        narrationManager?.PlayGrabHornVoiceOver();
+        if (narrationManager != null)
+            narrationManager.PlayGrabHornVoiceOver();
 
         Debug.Log(
             "[HornActivationZone] Player entered HornInteractionArea; HornFMODController and interaction Canvas activated.",

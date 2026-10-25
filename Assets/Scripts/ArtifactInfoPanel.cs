@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit.UI;
 
 [ExecuteAlways]
 public sealed class ArtifactInfoPanel : MonoBehaviour
@@ -10,6 +9,7 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
     [SerializeField] private Graphic[] graphics;
     [SerializeField] private Text titleText;
     [SerializeField] private Text bodyText;
+    [SerializeField] private ScrollRect bodyScroll;
     [SerializeField, Min(0f)] private float fadeSeconds = 0.25f;
     [SerializeField] private bool previewInEditMode = true;
     [SerializeField] private string previewTitle = "Bartmann Bottle";
@@ -18,7 +18,6 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
         "This Bartmann bottle was made in Frechen, Germany, around 1550–1700. Its durable brown-glazed stoneware body, narrow neck and handle suited storing and carrying liquids. Bartmann means “bearded man”, referring to the face moulded on the neck. In Britain, some bottles were later reused as protective “witch bottles”.";
 
     private Coroutine fade;
-    private Coroutine pageSequence;
     private Component currentOwner;
 
     private void Awake()
@@ -39,19 +38,9 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
         currentOwner = owner;
         gameObject.SetActive(true);
 
-        StopPages();
-        if (bodyText != null)
-        {
-            Canvas.ForceUpdateCanvases();
-            List<string> pages = BuildPages(body);
-            if (pages.Count > 1)
-                pageSequence = StartCoroutine(CyclePages(title, pages));
-            else
-            {
-                if (titleText != null) titleText.text = title;
-                bodyText.text = body;
-            }
-        }
+        if (titleText != null) titleText.text = title;
+        EnsureScrollableBody();
+        SetBody(body);
         FadeTo(1f);
     }
 
@@ -59,58 +48,81 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
     {
         if (owner != null && currentOwner != owner) return;
         currentOwner = null;
-        StopPages();
         FadeTo(0f);
     }
 
     public void HideImmediate()
     {
-        StopPages();
         SetAlpha(0f);
         if (Application.isPlaying)
             gameObject.SetActive(false);
     }
 
-    private List<string> BuildPages(string body)
+    public void EnsureScrollableBody()
     {
-        var pages = new List<string>();
-        string page = "";
-        foreach (Match word in Regex.Matches(body, @"\S+\s*"))
-        {
-            string candidate = page + word.Value;
-            bodyText.text = candidate.TrimEnd();
-            if (page.Length > 0 && bodyText.preferredHeight > bodyText.rectTransform.rect.height)
-            {
-                pages.Add(page.TrimEnd());
-                page = word.Value;
-            }
-            else page = candidate;
-        }
-        if (page.Length > 0) pages.Add(page.TrimEnd());
-        return pages;
+        if (bodyScroll != null || bodyText == null) return;
+        Text body = bodyText;
+
+        RectTransform bodyRect = body.rectTransform;
+        var area = new GameObject("BodyScrollView", typeof(RectTransform),
+            typeof(Image), typeof(RectMask2D), typeof(ScrollRect));
+        area.layer = body.gameObject.layer;
+        var viewport = area.GetComponent<RectTransform>();
+        viewport.SetParent(bodyRect.parent, false);
+        viewport.SetSiblingIndex(bodyRect.GetSiblingIndex());
+        viewport.anchorMin = bodyRect.anchorMin;
+        viewport.anchorMax = bodyRect.anchorMax;
+        viewport.pivot = bodyRect.pivot;
+        viewport.sizeDelta = bodyRect.sizeDelta;
+        viewport.anchoredPosition3D = bodyRect.anchoredPosition3D;
+        viewport.localRotation = bodyRect.localRotation;
+        viewport.localScale = bodyRect.localScale;
+        area.GetComponent<Image>().color = Color.clear;
+
+        bodyRect.SetParent(viewport, false);
+        bodyRect.anchorMin = new Vector2(0f, 1f);
+        bodyRect.anchorMax = Vector2.one;
+        bodyRect.pivot = new Vector2(0.5f, 1f);
+        bodyRect.anchoredPosition3D = Vector3.zero;
+        bodyRect.sizeDelta = Vector2.zero;
+        bodyRect.localScale = Vector3.one;
+        bodyRect.localRotation = Quaternion.identity;
+        body.verticalOverflow = VerticalWrapMode.Overflow;
+        body.raycastTarget = true;
+
+        var scroll = area.GetComponent<ScrollRect>();
+        scroll.viewport = viewport;
+        scroll.content = bodyRect;
+        scroll.horizontal = false;
+        scroll.vertical = true;
+        scroll.movementType = ScrollRect.MovementType.Clamped;
+        scroll.scrollSensitivity = 30f;
+        bodyScroll = scroll;
+
+        var canvas = GetComponentInParent<Canvas>();
+        if (canvas.GetComponent<GraphicRaycaster>() == null)
+            canvas.gameObject.AddComponent<GraphicRaycaster>();
+        if (canvas.GetComponent<TrackedDeviceGraphicRaycaster>() == null)
+            canvas.gameObject.AddComponent<TrackedDeviceGraphicRaycaster>();
     }
 
-    private IEnumerator CyclePages(string title, List<string> pages)
+    private void SetBody(string body)
     {
-        for (int index = 0; ; index = (index + 1) % pages.Count)
-        {
-            if (titleText != null) titleText.text = title;
-            bodyText.text = pages[index];
-            // Allow roughly 160 words per minute, with a minimum twelve-second dwell.
-            float seconds = Mathf.Max(12f, Regex.Matches(pages[index], @"\S+").Count / 2.7f);
-            yield return new WaitForSecondsRealtime(seconds);
-        }
-    }
+        if (bodyText == null) return;
+        bodyText.text = body;
+        if (bodyScroll == null) return;
 
-    private void StopPages()
-    {
-        if (pageSequence != null) StopCoroutine(pageSequence);
-        pageSequence = null;
+        Canvas.ForceUpdateCanvases();
+        bodyText.rectTransform.SetSizeWithCurrentAnchors(
+            RectTransform.Axis.Vertical,
+            Mathf.Max(bodyScroll.viewport.rect.height, bodyText.preferredHeight));
+        Canvas.ForceUpdateCanvases();
+        bodyScroll.StopMovement();
+        bodyScroll.verticalNormalizedPosition = 1f;
     }
 
     private void OnDisable()
     {
-        StopPages();
         fade = null;
     }
 
@@ -121,11 +133,7 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
 
         if (titleText != null)
             titleText.text = previewTitle;
-        if (bodyText != null && bodyText.rectTransform.rect.height > 0f)
-        {
-            List<string> pages = BuildPages(previewDescription);
-            bodyText.text = pages.Count > 0 ? pages[0] : previewDescription;
-        }
+        SetBody(previewDescription);
 
         SetAlpha(1f);
     }

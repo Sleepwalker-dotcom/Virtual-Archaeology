@@ -120,6 +120,7 @@ public static class ArtifactInfoInstaller
         serialized.FindProperty("bodyText").objectReferenceValue = body;
         serialized.FindProperty("previewInEditMode").boolValue = true;
         serialized.ApplyModifiedPropertiesWithoutUndo();
+        ArtifactInfoScrollInstaller.Configure(panel);
         root.SetActive(true);
         panel.RefreshEditModePreview();
         return panel;

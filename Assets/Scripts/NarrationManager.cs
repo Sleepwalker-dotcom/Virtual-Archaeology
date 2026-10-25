@@ -52,6 +52,12 @@ public sealed class NarrationManager : MonoBehaviour
     [SerializeField] private GameObject objectGroup;
     [Header("Music and Black History Panel")]
     [SerializeField] private ArtifactInfoPanel musicBlackHistoryPanel;
+    [Header("Horn Introduction")]
+    [SerializeField] private ArtifactInfoPanel grabHornInfoPanel;
+    [SerializeField] private string grabHornInfoTitle = "The 18th-Century Horn";
+    [SerializeField, TextArea(4, 12)] private string grabHornInfoDescription =
+        "The 18th-century natural horn had no valves and produced notes from the natural harmonic series. Unlike the modern French horn, which has a fully chromatic range of about three and a half octaves, the 18th-century horn could produce only around sixteen natural notes. Its sound was also generally brighter and more open than that of the modern instrument.";
+    [SerializeField, Min(0f)] private float grabHornInfoDuration = 10f;
     [SerializeField] private FMOD2DSFXPlayer uiSfxPlayer;
     [SerializeField] private UnityEvent onGardenVoiceOverFinished;
 
@@ -81,10 +87,10 @@ public sealed class NarrationManager : MonoBehaviour
         "Can you hear them? The clinking of bottles, the laughter, and the rhythm of life... How I miss those sounds.";
     [TextArea(2, 5)]
     [SerializeField] private string subtitle02 =
-        "This place was once a tavern, where people from all over the world met to play music, dance and sing until the first light of dawn. It was also a haven for those seeking freedom or resting along a long journey. But those sounds faded long ago.";
+        "This place was once a tavern, where people from all over the world met to play music, dance and sing until the first light of dawn. It was also a haven for those seeking freedom or resting during a long journey. But those sounds faded long ago.";
     [TextArea(2, 5)]
     [SerializeField] private string subtitle03 =
-        "I\u2019m Martha Dawson, the landlady of this tavern. I once kept this place; now I guard its last echoes.";
+        "I\u2019m Martha Dawson, the landlady of this tavern. I once kept this place allive, now I guard its last echoes.";
     [TextArea(2, 5)]
     [SerializeField] private string subtitle04 =
         "You came for the horn, didn\u2019t you? Only a fragment of it remains here. Take it and return it to where it belongs. Perhaps the tavern will sing again.";
@@ -95,7 +101,7 @@ public sealed class NarrationManager : MonoBehaviour
         "You\u2019re lucky, it has accepted you. Now, fit the fragment back into place.";
     [TextArea(2, 5)]
     [SerializeField] private string pickupSubtitle =
-        "It\u2019s calling to you. Pick it up, maybe something magic will happen.";
+        "It\u2019s calling to you. Pick it up, perhaps something magic will happen.";
     [TextArea(2, 5)]
     [SerializeField] private string gardenTransitionSubtitle =
         "Listen! The old ghosts of the tavern are waking up.";
@@ -124,6 +130,7 @@ public sealed class NarrationManager : MonoBehaviour
     private Coroutine voiceOverSubtitleSequence;
     private Coroutine gardenVoiceOverCompletion;
     private Coroutine musicIntroSequence;
+    private Coroutine grabHornInfoSequence;
     private Coroutine showObjectsSequence;
     private Coroutine objectIntroCompletion;
     private Coroutine endingBgmSequence;
@@ -174,9 +181,28 @@ public sealed class NarrationManager : MonoBehaviour
         PlayNarration(grabHornVoiceOverEvent, "Grab Horn VO");
     }
 
+    private void ShowGrabHornIntroduction()
+    {
+        if (grabHornInfoSequence != null) StopCoroutine(grabHornInfoSequence);
+        if (grabHornInfoPanel == null)
+            grabHornInfoPanel = FindFirstObjectByType<ArtifactInfoPanel>(FindObjectsInactive.Include);
+        hornController?.BeginGrabHornIntroduction();
+        grabHornInfoPanel?.Show(grabHornInfoTitle, grabHornInfoDescription, this);
+        grabHornInfoSequence = StartCoroutine(WaitForGrabHornIntroduction());
+    }
+
+    private IEnumerator WaitForGrabHornIntroduction()
+    {
+        yield return new WaitForSecondsRealtime(Mathf.Max(0f, grabHornInfoDuration));
+        grabHornInfoPanel?.Hide(this);
+        grabHornInfoSequence = null;
+        hornController?.EndGrabHornIntroduction(true);
+    }
+
     public void PlayHornIntroVoiceOver()
     {
         PlayNarration(hornIntroVoiceOverEvent, "Horn Intro VO");
+        ShowGrabHornIntroduction();
     }
 
     public void PlayPostTapInteractionVoiceOver()
@@ -963,6 +989,13 @@ public sealed class NarrationManager : MonoBehaviour
     {
         if (Application.isPlaying)
         {
+            if (grabHornInfoSequence != null)
+            {
+                StopCoroutine(grabHornInfoSequence);
+                grabHornInfoSequence = null;
+                grabHornInfoPanel?.Hide(this);
+                hornController?.EndGrabHornIntroduction(false);
+            }
             if (creditsSequence != null) StopCoroutine(creditsSequence);
             if (endingBgmSequence != null) StopCoroutine(endingBgmSequence);
             StopNarration();

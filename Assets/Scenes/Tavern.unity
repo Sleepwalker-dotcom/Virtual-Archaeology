@@ -1852,6 +1852,14 @@ MonoBehaviour:
   musicianAmbientPlayer: {fileID: 2100000203}
   objectGroup: {fileID: 403406558}
   musicBlackHistoryPanel: {fileID: 0}
+  grabHornInfoPanel: {fileID: 651894516}
+  grabHornInfoTitle: The 18th-Century Horn
+  grabHornInfoDescription: The 18th-century natural horn had no valves and produced
+    notes from the natural harmonic series. Unlike the modern French horn, which
+    has a fully chromatic range of about three and a half octaves, the 18th-century
+    horn could produce only around sixteen natural notes. Its sound was also generally
+    brighter and more open than that of the modern instrument.
+  grabHornInfoDuration: 10
   uiSfxPlayer: {fileID: 1994237179}
   onGardenVoiceOverFinished:
     m_PersistentCalls:
@@ -1872,10 +1880,10 @@ MonoBehaviour:
     rhythm of life... \nHow I miss those sounds."
   subtitle02: This place was once a tavern, where people from all over the world
     met to play music, dance and sing until the first light of dawn. It was also
-    a haven for those seeking freedom or resting along a long journey. But those
+    a haven for those seeking freedom or resting during a long journey. But those
     sounds faded long ago.
   subtitle03: "I\u2019m Martha Dawson, the landlady of this tavern. I once kept this
-    place; now I guard its last echoes."
+    place alive, now I guard its last echoes."
   subtitle04: "You came for the horn, didn\u2019t you? Only a fragment of it remains
     here. \nTake it and return it to where it belongs. \nPerhaps the tavern will
     sing again."
@@ -3009,7 +3017,7 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "I\u2019m Martha Dawson, the landlady of this tavern. I once kept this
-    place; now I guard its last echoes."
+    place alive, now I guard its last echoes."
 --- !u!222 &547304198
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3377,8 +3385,8 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: This place was once a tavern, where people from all over the world met
     to play music, dance and sing until the first light of dawn. It was also a haven
-    for those seeking freedom or resting along a long journey. But those sounds faded
-    long ago.
+    for those seeking freedom or resting during a long journey. But those sounds
+    faded long ago.
 --- !u!222 &590973296
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3792,6 +3800,7 @@ MonoBehaviour:
   - {fileID: 1545898274}
   titleText: {fileID: 97665057}
   bodyText: {fileID: 1545898274}
+  bodyScroll: {fileID: 0}
   fadeSeconds: 0.25
   previewInEditMode: 1
   previewTitle: Bartmann Bottle
@@ -4837,11 +4846,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1883230248363655243, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_EnableFarCasting
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1883230248363655243, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-      propertyPath: m_FarInteractionCaster
-      value: 
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2626757739553014894, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_IsActive
@@ -4861,11 +4866,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8877177980677234388, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_EnableFarCasting
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8877177980677234388, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
-      propertyPath: m_FarInteractionCaster
-      value: 
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9173983156334026967, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_IsActive
@@ -8028,7 +8029,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   enableTestMode: 1
-  testStartPoint: 0
+  testStartPoint: 6
   logStateChanges: 1
 --- !u!4 &1492328565
 Transform:
@@ -8418,7 +8419,14 @@ MonoBehaviour:
     and sturdy handle for storing and carrying liquids. Its moulded flower medallion
     reflects the decorative style of Frechen stoneware, which was widely traded across
     Europe and commonly used in domestic and drinking settings.\n\nThe name Bartmann,
-    meaning \u201Cbearded man\u201D in German, refers to the distinctive"
+    meaning \u201Cbearded man\u201D in German, refers to the distinctive bearded
+    face moulded onto the neck of these vessels. In Britain, Bartmann vessels also
+    became known as \u201CBellarmine\u201D jugs, a name associated with the Catholic
+    Cardinal Robert Bellarmine. Beyond their everyday use, some Bartmann bottles
+    were later reused as \u201Cwitch bottles\u201D, filled with materials such as
+    pins, nails or hair and concealed or buried as protective objects against witchcraft.
+    Over time, this widely traded domestic object acquired additional religious,
+    symbolic and ritual meanings within British social life."
 --- !u!222 &1545898275
 CanvasRenderer:
   m_ObjectHideFlags: 0

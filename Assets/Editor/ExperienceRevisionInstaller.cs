@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -73,27 +72,10 @@ public static class ExperienceRevisionInstaller
             }
         }
         Set(panel, "previewDescription", content.items.First(i => i.title == "Bartmann Bottle").description);
-        // Long descriptions use the existing board and font; show the first fitted page in editor previews too.
+        ArtifactInfoScrollInstaller.Configure(panel);
         var panelData = new SerializedObject(panel);
         var body = (Text)panelData.FindProperty("bodyText").objectReferenceValue;
-        Canvas.ForceUpdateCanvases();
-        var pagesMethod = typeof(ArtifactInfoPanel).GetMethod("BuildPages", BindingFlags.NonPublic | BindingFlags.Instance);
-        foreach (var item in content.items)
-        {
-            var pages = (List<string>)pagesMethod.Invoke(panel, new object[] { item.description });
-            Require(pages.Count > 0, "Empty pages");
-            Require(pages.Count >= 1, "Description must produce pages: " + item.title);
-            
-            Require(Normalize(string.Join(" ", pages)) == Normalize(item.description), "Pagination lost text");
-            foreach (string page in pages)
-            {
-                body.text = page;
-                Require(body.preferredHeight <= body.rectTransform.rect.height + 1f, "Page clips: " + item.title);
-            }
-            Debug.Log("[ExperienceRevision] " + item.title + " fits " + pages.Count + " pages at font " + body.fontSize);
-        }
-        var previewPages = (List<string>)pagesMethod.Invoke(panel, new object[] { content.items[1].description });
-        body.text = previewPages[0];
+        panel.RefreshEditModePreview();
 
         var textureImporter = (TextureImporter)AssetImporter.GetAtPath(LogoPath);
         textureImporter.mipmapEnabled = false;
@@ -119,7 +101,7 @@ public static class ExperienceRevisionInstaller
         Set(museum, "presentation", presentation);
         Set(narration, "presentation", presentation);
 
-        foreach (var pair in transforms)
+        foreach (var pair in transforms.Where(pair => pair.Key != body.rectTransform))
             Require((pair.Key.localPosition, pair.Key.localRotation, pair.Key.localScale) == pair.Value,
                 "Existing transform changed: " + pair.Key.name);
         ValidateHornLock(horn);
@@ -148,7 +130,6 @@ public static class ExperienceRevisionInstaller
         }
     }
 
-    private static string Normalize(string value) => System.Text.RegularExpressions.Regex.Replace(value, @"\s+", " ").Trim();
     private static void Require(bool condition, string message)
     {
         if (!condition) throw new InvalidOperationException("[ExperienceRevision] " + message);

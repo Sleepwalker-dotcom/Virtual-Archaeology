@@ -236,6 +236,7 @@ public class HornFMODController : MonoBehaviour
     private RectTransform anglePointer;
     private NarrationManager narrationManager;
     private bool hasShownFirstPickupTutorial;
+    private bool grabHornIntroductionVisible;
     private bool hasPlayedHornIntroVoiceOver;
     private Coroutine firstPickupTutorialRoutine;
     private bool hasShownShakeSpeedTutorial;
@@ -246,10 +247,10 @@ public class HornFMODController : MonoBehaviour
     private string activeTutorialInstruction;
 
     private bool IsFirstPickupTutorialBlocking =>
-        playFirstPickupTutorial && !hasShownFirstPickupTutorial;
+        grabHornIntroductionVisible || (playFirstPickupTutorial && !hasShownFirstPickupTutorial);
 
     private bool IsTutorialRunning =>
-        firstPickupTutorialRoutine != null ||
+        grabHornIntroductionVisible || firstPickupTutorialRoutine != null ||
         shakeSpeedTutorialRoutine != null;
 
     private HornMusicSegment CurrentSegment
@@ -445,6 +446,7 @@ public class HornFMODController : MonoBehaviour
 
     public void ActivateHornAndShowCanvas()
     {
+        if (grabHornIntroductionVisible) return;
         ActivateHorn();
 
         if (isActivated)
@@ -1192,11 +1194,15 @@ public class HornFMODController : MonoBehaviour
         isHornHeld = true;
         isMouthpieceSnapped = false;
 
+        if (grabHornIntroductionVisible) return;
+
         if (!hasPlayedHornIntroVoiceOver)
         {
             hasPlayedHornIntroVoiceOver = true;
             narrationManager?.PlayHornIntroVoiceOver();
         }
+
+        if (grabHornIntroductionVisible) return;
 
         if (playFirstPickupTutorial &&
             !hasShownFirstPickupTutorial)
@@ -1516,6 +1522,25 @@ public class HornFMODController : MonoBehaviour
             return;
 
         CreateAutoGuideUI();
+    }
+
+    public void BeginGrabHornIntroduction()
+    {
+        grabHornIntroductionVisible = true;
+        StopFirstPickupTutorial();
+        StopShakeSpeedTutorial();
+        SetGuideVisible(false);
+        SetSnapPromptVisible(false);
+    }
+
+    public void EndGrabHornIntroduction(bool showGuide)
+    {
+        grabHornIntroductionVisible = false;
+        if (!showGuide) return;
+        if (!isActiveAndEnabled || isComplete) return;
+        SyncGrabState();
+        if (isHornHeld)
+            OnHornSelectEntered(null);
     }
 
     private void StartFirstPickupTutorial()
