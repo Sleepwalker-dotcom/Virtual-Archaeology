@@ -133,15 +133,22 @@ public sealed class NarrationManager : MonoBehaviour
     private Coroutine grabHornInfoSequence;
     private Coroutine showObjectsSequence;
     private Coroutine objectIntroCompletion;
+    private Coroutine introNarrationCompletion;
     private Coroutine endingBgmSequence;
     private bool tavernAliveStarted;
     private readonly HashSet<string> completedObjectKeys = new();
     private readonly HashSet<string> requiredObjectKeys = new();
 
+    public event System.Action<string> ObjectIntroductionCompleted;
+
+    public bool IsRequiredObject(string key) => key != null && requiredObjectKeys.Contains(key);
+    public bool IsObjectIntroductionComplete(string key) => key != null && completedObjectKeys.Contains(key);
+
     private void RegisterObjectCompletion(string key)
     {
         if (string.IsNullOrWhiteSpace(key) || !requiredObjectKeys.Contains(key) || tavernAliveStarted) return;
-        completedObjectKeys.Add(key);
+        if (completedObjectKeys.Add(key))
+            ObjectIntroductionCompleted?.Invoke(key);
         TryStartTavernAliveAudio();
     }
 
@@ -150,9 +157,33 @@ public sealed class NarrationManager : MonoBehaviour
 
     public HornFMODController GetHornController() => hornController;
 
+    public bool HasFinishedIntroNarration { get; private set; }
+    public event System.Action IntroNarrationCompleted;
+
     public void PlayIntroNarration()
     {
+        HasFinishedIntroNarration = false;
         PlayNarration(introNarrationEvent, "Intro");
+        if (!introNarrationEvent.IsNull && currentNarration.isValid())
+            introNarrationCompletion = StartCoroutine(WaitForIntroNarration(currentNarration));
+    }
+
+    private IEnumerator WaitForIntroNarration(EventInstance intro)
+    {
+        while (intro.isValid())
+        {
+            FMOD.RESULT result = intro.getPlaybackState(out PLAYBACK_STATE state);
+            if (result != FMOD.RESULT.OK) break;
+            if (state == PLAYBACK_STATE.STOPPED)
+            {
+                HasFinishedIntroNarration = true;
+                introNarrationCompletion = null;
+                IntroNarrationCompleted?.Invoke();
+                yield break;
+            }
+            yield return null;
+        }
+        introNarrationCompletion = null;
     }
 
     public void PlayRestoreVoiceOver()
@@ -220,7 +251,8 @@ public sealed class NarrationManager : MonoBehaviour
     private void PlayObjectIntroVoiceOver(EventReference eventReference, string label, string completionKey)
     {
         // Empty slots and interrupted introductions must not count as completed.
-        if (tavernAliveStarted || endingVoiceOverStarted || IsObjectInteractionBlocked || eventReference.IsNull) return;
+        if (tavernAliveStarted || endingVoiceOverStarted || IsObjectInteractionBlocked ||
+            eventReference.IsNull || IsObjectIntroductionComplete(completionKey)) return;
         PlayNarration(eventReference, label);
         if (currentNarration.isValid())
             objectIntroCompletion = StartCoroutine(WaitForObjectIntroVoiceOver(completionKey, label));
@@ -334,6 +366,11 @@ public sealed class NarrationManager : MonoBehaviour
 
     public void StopNarration()
     {
+        if (introNarrationCompletion != null)
+        {
+            StopCoroutine(introNarrationCompletion);
+            introNarrationCompletion = null;
+        }
         ClearSubtitleImmediate();
 
         if (voiceOverSubtitleSequence != null)

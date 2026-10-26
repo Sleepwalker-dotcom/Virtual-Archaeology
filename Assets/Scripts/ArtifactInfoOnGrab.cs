@@ -67,6 +67,8 @@ public sealed class ArtifactInfoOnGrab : MonoBehaviour
 
     private void OnDisable()
     {
+        if (completionManager != null)
+            completionManager.ObjectIntroductionCompleted -= HandleIntroductionCompleted;
         grab.selectEntered.RemoveListener(Show);
         grab.selectExited.RemoveListener(Hide);
         grab.hoverEntered.RemoveListener(PlayTapFeedback);
@@ -94,15 +96,31 @@ public sealed class ArtifactInfoOnGrab : MonoBehaviour
     {
         if (!CanShow) return;
         shown = true;
-        if (!introVoiceOverEvent.IsNull && completionManager != null)
+        if (completionManager != null)
+        {
+            completionManager.ObjectIntroductionCompleted -= HandleIntroductionCompleted;
+            completionManager.ObjectIntroductionCompleted += HandleIntroductionCompleted;
+        }
+        if (!introVoiceOverEvent.IsNull && completionManager != null &&
+            !completionManager.IsObjectIntroductionComplete(completionKey))
             completionManager.PlayArtifactIntroVoiceOver(
                 introVoiceOverEvent, countsForEnding ? completionKey : null);
         panel?.Show(title, description, this);
+        if (countsForEnding && completionManager != null && completionManager.IsRequiredObject(completionKey))
+            panel?.SetCompletionStatus(this, completionManager.IsObjectIntroductionComplete(completionKey));
+    }
+
+    private void HandleIntroductionCompleted(string key)
+    {
+        if (shown && key == completionKey)
+            panel?.SetCompletionStatus(this, true);
     }
 
     private void Hide(SelectExitEventArgs args)
     {
         if (grab.isSelected) return;
+        if (completionManager != null)
+            completionManager.ObjectIntroductionCompleted -= HandleIntroductionCompleted;
         if (shown) panel?.Hide(this);
         shown = false;
     }

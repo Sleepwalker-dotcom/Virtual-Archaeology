@@ -10,6 +10,10 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
     [SerializeField] private Text titleText;
     [SerializeField] private Text bodyText;
     [SerializeField] private ScrollRect bodyScroll;
+    [Header("Introduction Completion Mark")]
+    [SerializeField] private Text completionMark;
+    [SerializeField] private Color pendingMarkColor = new Color(0.55f, 0.55f, 0.55f);
+    [SerializeField] private Color completedMarkColor = new Color(0.15f, 0.65f, 0.25f);
     [SerializeField, Min(0f)] private float fadeSeconds = 0.25f;
     [SerializeField] private bool previewInEditMode = true;
     [SerializeField] private string previewTitle = "Bartmann Bottle";
@@ -36,12 +40,64 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
     public void Show(string title, string body, Component owner = null)
     {
         currentOwner = owner;
+        if (completionMark != null) completionMark.gameObject.SetActive(false);
         gameObject.SetActive(true);
 
         if (titleText != null) titleText.text = title;
         EnsureScrollableBody();
         SetBody(body);
         FadeTo(1f);
+    }
+
+    [ContextMenu("Create Completion Mark Preview")]
+    private void CreateCompletionMarkPreview()
+    {
+        if (Application.isPlaying) return;
+#if UNITY_EDITOR
+        UnityEditor.Undo.RecordObject(this, "Create completion mark preview");
+#endif
+        SetCompletionStatus(currentOwner, false);
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
+#endif
+    }
+
+    public void SetCompletionStatus(Component owner, bool completed)
+    {
+        if (owner != currentOwner || titleText == null) return;
+        if (completionMark == null)
+        {
+            completionMark = new GameObject("IntroductionCompletionMark", typeof(RectTransform), typeof(Text)).GetComponent<Text>();
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+                UnityEditor.Undo.RegisterCreatedObjectUndo(completionMark.gameObject, "Create completion mark");
+#endif
+            completionMark.transform.SetParent(titleText.transform, false);
+            completionMark.gameObject.layer = titleText.gameObject.layer;
+            completionMark.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            completionMark.fontSize = 24;
+            completionMark.alignment = TextAnchor.UpperCenter;
+            completionMark.horizontalOverflow = HorizontalWrapMode.Overflow;
+            completionMark.verticalOverflow = VerticalWrapMode.Overflow;
+            completionMark.raycastTarget = false;
+            completionMark.material = titleText.material;
+            completionMark.text = "\u2713";
+            completionMark.rectTransform.anchorMin = Vector2.zero;
+            completionMark.rectTransform.anchorMax = new Vector2(1f, 0f);
+            completionMark.rectTransform.pivot = new Vector2(0.5f, 1f);
+            completionMark.rectTransform.sizeDelta = new Vector2(0f, 28f);
+            float titleOverflow = Mathf.Max(0f, titleText.preferredHeight - titleText.rectTransform.rect.height);
+            completionMark.rectTransform.anchoredPosition = new Vector2(0f, -6f - titleOverflow * 0.5f);
+            int count = graphics != null ? graphics.Length : 0;
+            System.Array.Resize(ref graphics, count + 1);
+            graphics[count] = completionMark;
+        }
+
+        Color color = completed ? completedMarkColor : pendingMarkColor;
+        color.a = titleText.color.a;
+        completionMark.color = color;
+        completionMark.gameObject.SetActive(true);
     }
 
     public void Hide(Component owner = null)

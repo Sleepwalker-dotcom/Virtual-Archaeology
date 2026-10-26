@@ -228,6 +228,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
         new List<GardenTouchTarget>();
     private int gardenTouchCount;
     private HornActivationZone hornActivationZone;
+    private NarrationManager introNarrationManager;
+    private bool pieceUnlockRequested;
     private bool gardenInteractionActive;
     private readonly Collider[] gardenTouchOverlapResults =
         new Collider[16];
@@ -242,6 +244,9 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
     private void OnEnable()
     {
+        introNarrationManager = FindFirstObjectByType<NarrationManager>(FindObjectsInactive.Include);
+        if (introNarrationManager != null)
+            introNarrationManager.IntroNarrationCompleted += TryUnlockPieceAfterIntro;
         if (pieceGrab != null)
         {
             pieceGrab.selectEntered.AddListener(
@@ -457,6 +462,8 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
     private void OnDisable()
     {
+        if (introNarrationManager != null)
+            introNarrationManager.IntroNarrationCompleted -= TryUnlockPieceAfterIntro;
         if (pieceGrab != null)
         {
             pieceGrab.selectEntered.RemoveListener(
@@ -481,6 +488,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
     private void InitializeExperience()
     {
+        pieceUnlockRequested = false;
         SetState(MuseumExperienceState.Initializing);
 
         piecePickupHandled = false;
@@ -564,7 +572,7 @@ public sealed class MuseumExperienceController : MonoBehaviour
 
     /// <summary>
     /// 由 Museum Intro Timeline 最后的 Signal 调用。
-    /// 解锁 Piece of Horn。
+    /// 请求解锁 Piece of Horn，等 IntroVO 完整播放后才允许拿取。
     /// </summary>
     public void UnlockPiece()
     {
@@ -572,6 +580,16 @@ public sealed class MuseumExperienceController : MonoBehaviour
         {
             return;
         }
+
+        pieceUnlockRequested = true;
+        TryUnlockPieceAfterIntro();
+    }
+
+    private void TryUnlockPieceAfterIntro()
+    {
+        if (!pieceUnlockRequested || CurrentState != MuseumExperienceState.MuseumIntro ||
+            introNarrationManager == null || !introNarrationManager.HasFinishedIntroNarration)
+            return;
 
         SetEnabled(pieceGrab, true);
         SetPieceRenderersVisible(true);
