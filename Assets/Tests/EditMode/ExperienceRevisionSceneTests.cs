@@ -7,6 +7,66 @@ using UnityEngine;
 
 public class ExperienceRevisionSceneTests
 {
+    [Test]
+    public void AdditionalArtefactsHaveIndependentTapFeedbackEvents()
+    {
+        var setup = EditorSceneManager.GetSceneManagerSetup();
+        try
+        {
+            EditorSceneManager.OpenScene("Assets/Scenes/Tavern.unity");
+            var infoType = Type.GetType("ArtifactInfoOnGrab, Assembly-CSharp", true);
+            var infos = UnityEngine.Object.FindObjectsByType(infoType, FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var pair in new[]
+            {
+                ("Cockerel", "event:/CockerelSFX"),
+                ("Half Size Mallet-Type Wine Bottle", "event:/MalletSFX")
+            })
+            {
+                UnityEngine.Object target = null;
+                foreach (Component info in infos)
+                    if (info.gameObject.name == pair.Item1) target = info;
+                Assert.NotNull(target, pair.Item1);
+                var data = new SerializedObject(target);
+                Assert.AreEqual(pair.Item2, data.FindProperty("tapFeedbackEvent").FindPropertyRelative("Path").stringValue);
+                Assert.NotNull(data.FindProperty("hornController").objectReferenceValue);
+                Assert.IsNull(((Component)target).GetComponent(Type.GetType("TapToggleGlow, Assembly-CSharp", true)),
+                    "These feedback sounds must not add an extra music-layer trigger.");
+            }
+        }
+        finally
+        {
+            if (Array.Exists(setup, scene => scene.isLoaded && scene.isActive))
+                EditorSceneManager.RestoreSceneManagerSetup(setup);
+            else
+                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+        }
+    }
+
+    [Test]
+    public void TavernArtefactsAreNearOnlyWhileControllerUIRemainsEnabled()
+    {
+        var setup = EditorSceneManager.GetSceneManagerSetup();
+        try
+        {
+            EditorSceneManager.OpenScene("Assets/Scenes/Tavern.unity");
+            var installer = Type.GetType("NearOnlyGrabInstaller, Assembly-CSharp-Editor", true);
+            installer.GetMethod("Validate").Invoke(null, null);
+            int layer = LayerMask.NameToLayer("NearGrabbable");
+            Assert.That(layer, Is.GreaterThanOrEqualTo(8));
+            for (int other = 0; other < 32; other++)
+                Assert.That(Physics.GetIgnoreLayerCollision(layer, other),
+                    Is.EqualTo(Physics.GetIgnoreLayerCollision(0, other)),
+                    "Near-only objects must retain Default layer collision behavior.");
+        }
+        finally
+        {
+            if (Array.Exists(setup, scene => scene.isLoaded && scene.isActive))
+                EditorSceneManager.RestoreSceneManagerSetup(setup);
+            else
+                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+        }
+    }
+
     [Serializable] private class Item { public string objectName; public string title; public string description; }
     [Serializable] private class Content { public Item[] items; public string credits; }
 

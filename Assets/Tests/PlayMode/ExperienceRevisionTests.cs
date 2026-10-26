@@ -8,6 +8,51 @@ using UnityEngine.UI;
 
 public class ExperienceRevisionTests
 {
+    [TestCase("Cockerel")]
+    [TestCase("Half Size Mallet-Type Wine Bottle")]
+    public void TapAudioArtefactsBlockPerformanceGrabsAndUnlockIntroductionsAfterMelody(string objectName)
+    {
+        var host = new GameObject(objectName);
+        var hornObject = new GameObject("Test Performance Horn");
+        Component horn = null;
+        try
+        {
+            horn = hornObject.AddComponent(RuntimeType("HornFMODController"));
+            ((Behaviour)horn).enabled = false;
+            var info = host.AddComponent(RuntimeType("ArtifactInfoOnGrab"));
+            Set(info, "hornController", horn);
+            Set(info, "requireFinishedMelody", true);
+            var eventField = info.GetType().GetField("tapFeedbackEvent", BindingFlags.Instance | BindingFlags.NonPublic);
+            object audioEvent = Activator.CreateInstance(eventField.FieldType);
+            var guidField = eventField.FieldType.GetField("Guid");
+            object guid = Activator.CreateInstance(guidField.FieldType);
+            guidField.FieldType.GetField("Data1").SetValue(guid, 1);
+            guidField.SetValue(audioEvent, guid);
+            eventField.SetValue(info, audioEvent);
+            object filter = Get(info, "performanceSelectFilter");
+            var process = filter.GetType().GetMethod("Process");
+            var canShow = info.GetType().GetProperty("CanShow");
+            Assert.That(canShow.GetValue(info), Is.False);
+            Set(horn, "eventCreated", true);
+            Set(horn, "isPlaying", true);
+            Set(horn, "isFullMelodyRepeatPlaying", true);
+            Assert.That(process.Invoke(filter, new object[] { null, null }), Is.False,
+                "Performance taps must not grab the artefact.");
+            Assert.That(canShow.GetValue(info), Is.False);
+            Set(horn, "isFullMelodyRepeatPlaying", false);
+            Set(horn, "<HasFinishedFullMelodyRepeats>k__BackingField", true);
+            Assert.That(process.Invoke(filter, new object[] { null, null }), Is.True);
+            Assert.That(canShow.GetValue(info), Is.True,
+                "The next grab must show the introduction, just like Domino.");
+        }
+        finally
+        {
+            if (horn != null) Set(horn, "eventCreated", false);
+            UnityEngine.Object.DestroyImmediate(host);
+            UnityEngine.Object.DestroyImmediate(hornObject);
+        }
+    }
+
     [UnityTest]
     public IEnumerator HornIntroductionBlocksGuideThenLeavesPickupTutorialPending()
     {

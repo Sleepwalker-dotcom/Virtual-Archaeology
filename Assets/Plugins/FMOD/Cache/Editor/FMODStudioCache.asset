@@ -96,7 +96,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639262335857663774
+  lastModified: 639286363453210761
   FileSizes:
   - Name: Desktop
     Value: 1036
@@ -706,12 +706,14 @@ MonoBehaviour:
   - {fileID: -7779339689430115184}
   - {fileID: 5438196376251985341}
   - {fileID: 9130580638052074832}
+  - {fileID: 582346098879370312}
+  - {fileID: 7842939060862142114}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8781515992350634487}
   StringsBanks:
   - {fileID: 2642882407560019900}
-  cacheTime: 639263917212870350
+  cacheTime: 639286363455099208
   cacheVersion: 131636
 --- !u!114 &407813035644869156
 MonoBehaviour:
@@ -737,6 +739,33 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &582346098879370312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/CockerelSFX
+  m_EditorClassIdentifier: 
+  Path: event:/CockerelSFX
+  Guid:
+    Data1: 721770882
+    Data2: 1087345739
+    Data3: -1596262482
+    Data4: 746308410
+  Banks:
+  - {fileID: 1161653169878846475}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &668868369584853990
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,10 +835,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/UI2D.bank
   Name: UI2D
   StudioPath: bank:/UI2D
-  lastModified: 639263774449331372
+  lastModified: 639286363455099208
   FileSizes:
   - Name: Desktop
-    Value: 421696
+    Value: 434112
   Exists: 1
 --- !u!114 &1256308372251812500
 MonoBehaviour:
@@ -934,10 +963,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639262335857678545
+  lastModified: 639286363453241094
   FileSizes:
   - Name: Desktop
-    Value: 2790
+    Value: 2882
   Exists: 1
 --- !u!114 &2745255666091697675
 MonoBehaviour:
@@ -954,10 +983,10 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/InteractionMusic.bank
   Name: InteractionMusic
   StudioPath: bank:/InteractionMusic
-  lastModified: 639229503783775006
+  lastModified: 639286354460888934
   FileSizes:
   - Name: Desktop
-    Value: 953760
+    Value: 938304
   Exists: 1
 --- !u!114 &2863456184758795240
 MonoBehaviour:
@@ -1189,6 +1218,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 61000
+--- !u!114 &7842939060862142114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/MalletSFX
+  m_EditorClassIdentifier: 
+  Path: event:/MalletSFX
+  Guid:
+    Data1: 1811137222
+    Data2: 1209175815
+    Data3: 1445708686
+    Data4: -944949773
+  Banks:
+  - {fileID: 1161653169878846475}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &7911964861217032275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1247,7 +1303,7 @@ MonoBehaviour:
   - {fileID: -7800340219973280094}
   MinDistance: 1
   MaxDistance: 20
-  Length: 41712
+  Length: 44693
 --- !u!114 &8965685518974316734
 MonoBehaviour:
   m_ObjectHideFlags: 0
