@@ -713,7 +713,7 @@ MonoBehaviour:
   - {fileID: -8781515992350634487}
   StringsBanks:
   - {fileID: 2642882407560019900}
-  cacheTime: 639286363455099208
+  cacheTime: 639286470767512980
   cacheVersion: 131636
 --- !u!114 &407813035644869156
 MonoBehaviour:
@@ -1003,7 +1003,7 @@ MonoBehaviour:
   Path: FMODBanks/Desktop/Scene3D.bank
   Name: Scene3D
   StudioPath: bank:/Scene3D
-  lastModified: 639263777579965221
+  lastModified: 639286470767512980
   FileSizes:
   - Name: Desktop
     Value: 6333600

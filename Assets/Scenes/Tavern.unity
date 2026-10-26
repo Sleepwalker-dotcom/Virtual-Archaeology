@@ -272,6 +272,10 @@ MonoBehaviour:
       Data3: -1596262482
       Data4: 746308410
     Path: event:/CockerelSFX
+  performanceTouchEffectPrefab: {fileID: 2020661361868494885, guid: 895c6d094b6b213418cddcfb520298e9, type: 3}
+  effectSurfaceOffset: 0.01
+  effectCooldown: 0.15
+  effectScaleRange: {x: 0.008, y: 0.012}
   requireFinishedMelody: 1
   hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
@@ -699,7 +703,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Bartmann Bottle
 --- !u!222 &97665058
@@ -1061,6 +1065,10 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  performanceTouchEffectPrefab: {fileID: 0}
+  effectSurfaceOffset: 0.01
+  effectCooldown: 0.15
+  effectScaleRange: {x: 0.008, y: 0.012}
   requireFinishedMelody: 1
   hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
@@ -1631,8 +1639,8 @@ Transform:
   m_GameObject: {fileID: 232907752}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 30.1, y: 7.23, z: -2.4}
-  m_LocalScale: {x: 0.60184884, y: 1, z: 0.2774519}
+  m_LocalPosition: {x: 30.1, y: 7.23, z: -2.7}
+  m_LocalScale: {x: 0.48136422, y: 1, z: 0.26652947}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 563797005}
@@ -1881,7 +1889,7 @@ MonoBehaviour:
     has a fully chromatic range of about three and a half octaves, the 18th-century
     horn could produce only around sixteen natural notes. Its sound was also generally
     brighter and more open than that of the modern instrument.
-  grabHornInfoDuration: 10
+  grabHornInfoDuration: 20
   uiSfxPlayer: {fileID: 1994237179}
   onGardenVoiceOverFinished:
     m_PersistentCalls:
@@ -2002,7 +2010,7 @@ Transform:
   m_GameObject: {fileID: 302714431}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -61.824177, y: 0, z: -16}
+  m_LocalPosition: {x: -61.824177, y: 0, z: -19.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2253,7 +2261,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 16.2, y: 1.5, z: 7.7}
-  m_LocalScale: {x: 15.565283, y: 1, z: 4.2576}
+  m_LocalScale: {x: 15.565283, y: 1, z: 4.612258}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1464137047}
@@ -2491,7 +2499,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &403406559
 Transform:
   m_ObjectHideFlags: 0
@@ -3769,6 +3777,10 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  performanceTouchEffectPrefab: {fileID: 0}
+  effectSurfaceOffset: 0.01
+  effectCooldown: 0.15
+  effectScaleRange: {x: 0.008, y: 0.012}
   requireFinishedMelody: 1
   hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
@@ -4216,7 +4228,7 @@ Transform:
   m_GameObject: {fileID: 831112162}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 10.27, y: 0.4445238, z: 4.64}
+  m_LocalPosition: {x: 7.9, y: 0.4445238, z: 4.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4817,6 +4829,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1680501587, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.54
+      objectReference: {fileID: 0}
+    - target: {fileID: 1178791450436251564, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_CameraYOffset
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1178791450436251564, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
+      propertyPath: m_RequestedTrackingOriginMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1470279098769358944, guid: f6336ac4ac8b4d34bc5072418cdc62a0, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -5712,6 +5736,10 @@ MonoBehaviour:
       Data3: 1445708686
       Data4: -944949773
     Path: event:/MalletSFX
+  performanceTouchEffectPrefab: {fileID: 2020661361868494885, guid: 895c6d094b6b213418cddcfb520298e9, type: 3}
+  effectSurfaceOffset: 0.01
+  effectCooldown: 0.15
+  effectScaleRange: {x: 0.008, y: 0.012}
   requireFinishedMelody: 1
   hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
@@ -6752,6 +6780,10 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  performanceTouchEffectPrefab: {fileID: 0}
+  effectSurfaceOffset: 0.01
+  effectCooldown: 0.15
+  effectScaleRange: {x: 0.008, y: 0.012}
   requireFinishedMelody: 1
   hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
@@ -11325,6 +11357,10 @@ MonoBehaviour:
       Data3: 0
       Data4: 0
     Path: 
+  performanceTouchEffectPrefab: {fileID: 0}
+  effectSurfaceOffset: 0.01
+  effectCooldown: 0.15
+  effectScaleRange: {x: 0.008, y: 0.012}
   requireFinishedMelody: 1
   hornController: {fileID: 1225532531}
   completionManager: {fileID: 236943013}
@@ -11722,7 +11758,7 @@ Transform:
   m_GameObject: {fileID: 2100000111}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 20.5, y: 0.4445238, z: -4.3}
+  m_LocalPosition: {x: 18.8, y: 0.4445238, z: 0.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11753,7 +11789,7 @@ Transform:
   m_GameObject: {fileID: 2100000121}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 25.8, y: 0.9, z: 5.8}
+  m_LocalPosition: {x: 20, y: 0.9, z: 11.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11784,7 +11820,7 @@ Transform:
   m_GameObject: {fileID: 2100000131}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 31.9, y: 0.4445238, z: 11}
+  m_LocalPosition: {x: 28.6, y: 0.4445238, z: 11}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11926,7 +11962,7 @@ Transform:
   m_GameObject: {fileID: 2100000211}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.3, y: 7.1, z: -13.8}
+  m_LocalPosition: {x: 8.3, y: 1.5, z: -10.2}
   m_LocalScale: {x: 3.3116863, y: 3.2962, z: 4.2576}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12034,7 +12070,7 @@ Transform:
   m_GameObject: {fileID: 2100000221}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 34.6, y: 7.4, z: 0.7}
+  m_LocalPosition: {x: 11.4, y: 1.5, z: 14.4}
   m_LocalScale: {x: 3.5542185, y: 3.7717, z: 4.2576}
   m_ConstrainProportionsScale: 0
   m_Children: []

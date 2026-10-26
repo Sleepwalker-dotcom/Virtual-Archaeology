@@ -132,9 +132,16 @@ public sealed class TapToggleGlow : MonoBehaviour
             return;
 
         lastEffectTime = Time.unscaledTime;
-        Vector3 point = transform.position;
+        SpawnPerformanceTouchEffect(performanceTouchEffectPrefab, transform, handPosition,
+            effectSurfaceOffset, effectScaleRange);
+    }
+
+    public static void SpawnPerformanceTouchEffect(GameObject prefab, Transform target,
+        Vector3 handPosition, float surfaceOffset, Vector2 scaleRange)
+    {
+        Vector3 point = target.position;
         float closestDistance = float.PositiveInfinity;
-        foreach (Collider targetCollider in GetComponentsInChildren<Collider>())
+        foreach (Collider targetCollider in target.GetComponentsInChildren<Collider>())
         {
             Vector3 candidate = targetCollider.ClosestPoint(handPosition);
             float distance = (candidate - handPosition).sqrMagnitude;
@@ -151,8 +158,8 @@ public sealed class TapToggleGlow : MonoBehaviour
             Random.Range(0f, 360f),
             Random.Range(0f, 360f));
         GameObject effect = Instantiate(
-            performanceTouchEffectPrefab,
-            point + outward * effectSurfaceOffset,
+            prefab,
+            point + outward * surfaceOffset,
             rotation);
         foreach (ParticleSystem particles in effect.GetComponentsInChildren<ParticleSystem>(true))
         {
@@ -160,8 +167,8 @@ public sealed class TapToggleGlow : MonoBehaviour
             main.startRotation = Random.Range(0f, Mathf.PI * 2f);
         }
         float scale = Random.Range(
-            Mathf.Min(effectScaleRange.x, effectScaleRange.y),
-            Mathf.Max(effectScaleRange.x, effectScaleRange.y));
+            Mathf.Min(scaleRange.x, scaleRange.y),
+            Mathf.Max(scaleRange.x, scaleRange.y));
         effect.transform.localScale *= scale;
         Destroy(effect, GetEffectLifetime(effect));
     }

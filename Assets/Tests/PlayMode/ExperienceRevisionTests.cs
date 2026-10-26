@@ -67,6 +67,10 @@ public class ExperienceRevisionTests
             horn.enabled = false;
             horn.GetType().GetField("guidePanel").SetValue(horn, guide);
             var panel = panelObject.AddComponent(RuntimeType("ArtifactInfoPanel"));
+            var graphicObject = new GameObject("Test Intro Background", typeof(RectTransform), typeof(Image));
+            graphicObject.transform.SetParent(panelObject.transform, false);
+            Set(panel, "graphics", new Graphic[] { graphicObject.GetComponent<Image>() });
+            Set(panel, "fadeSeconds", 0.15f);
             var manager = managerObject.AddComponent(RuntimeType("NarrationManager"));
             Set(manager, "hornController", horn);
             Set(manager, "grabHornInfoPanel", panel);
@@ -81,6 +85,9 @@ public class ExperienceRevisionTests
             horn.GetType().GetMethod("ActivateHornAndShowCanvas").Invoke(horn, null);
             Assert.That(Get(horn, "isActivated"), Is.False);
             yield return new WaitForSecondsRealtime(0.1f);
+            Assert.That(Get(horn, "grabHornIntroductionVisible"), Is.True,
+                "The next UI must wait until the introduction fade-out finishes.");
+            yield return new WaitForSecondsRealtime(0.2f);
             Assert.That(Get(horn, "grabHornIntroductionVisible"), Is.False);
             Assert.That(Get(horn, "hasShownFirstPickupTutorial"), Is.False,
                 "The interaction instructions must still run after the introduction.");

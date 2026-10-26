@@ -58,6 +58,14 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
             gameObject.SetActive(false);
     }
 
+    public IEnumerator HideAndWait(Component owner = null)
+    {
+        if (owner != null && currentOwner != owner) yield break;
+        Hide(owner);
+        while (currentOwner == null && gameObject.activeSelf && fade != null)
+            yield return null;
+    }
+
     public void EnsureScrollableBody()
     {
         if (bodyScroll != null || bodyText == null) return;

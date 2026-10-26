@@ -16,6 +16,11 @@ public sealed class ArtifactInfoOnGrab : MonoBehaviour
     [SerializeField] private EventReference introVoiceOverEvent;
     [Tooltip("Optional one-shot feedback when touched during the full melody interaction.")]
     [SerializeField] private EventReference tapFeedbackEvent;
+    [Header("Performance Touch Effect")]
+    [SerializeField] private GameObject performanceTouchEffectPrefab;
+    [SerializeField, Min(0f)] private float effectSurfaceOffset = 0.01f;
+    [SerializeField, Min(0f)] private float effectCooldown = 0.15f;
+    [SerializeField] private Vector2 effectScaleRange = new Vector2(0.008f, 0.012f);
     [SerializeField] private bool requireFinishedMelody;
     [SerializeField] private HornFMODController hornController;
     [SerializeField] private NarrationManager completionManager;
@@ -25,6 +30,7 @@ public sealed class ArtifactInfoOnGrab : MonoBehaviour
     private XRGrabInteractable grab;
     private bool shown;
     private IXRSelectFilter performanceSelectFilter;
+    private float lastEffectTime = float.NegativeInfinity;
 
     public bool CanShow =>
         (!requireFinishedMelody ||
@@ -72,10 +78,16 @@ public sealed class ArtifactInfoOnGrab : MonoBehaviour
     private void PlayTapFeedback(HoverEnterEventArgs args)
     {
         if (hornController == null || !hornController.IsFullMelodyRepeatPlaying ||
-            tapFeedbackEvent.IsNull || !(args.interactorObject is XRBaseInputInteractor))
+            tapFeedbackEvent.IsNull || !(args.interactorObject is XRBaseInputInteractor inputInteractor))
             return;
 
         RuntimeManager.PlayOneShotAttached(tapFeedbackEvent, gameObject);
+        if (performanceTouchEffectPrefab != null && Time.unscaledTime - lastEffectTime >= effectCooldown)
+        {
+            lastEffectTime = Time.unscaledTime;
+            TapToggleGlow.SpawnPerformanceTouchEffect(performanceTouchEffectPrefab, transform,
+                inputInteractor.transform.position, effectSurfaceOffset, effectScaleRange);
+        }
     }
 
     private void Show(SelectEnterEventArgs args)

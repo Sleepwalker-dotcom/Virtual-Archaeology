@@ -194,7 +194,8 @@ public sealed class NarrationManager : MonoBehaviour
     private IEnumerator WaitForGrabHornIntroduction()
     {
         yield return new WaitForSecondsRealtime(Mathf.Max(0f, grabHornInfoDuration));
-        grabHornInfoPanel?.Hide(this);
+        if (grabHornInfoPanel != null)
+            yield return grabHornInfoPanel.HideAndWait(this);
         grabHornInfoSequence = null;
         hornController?.EndGrabHornIntroduction(true);
     }

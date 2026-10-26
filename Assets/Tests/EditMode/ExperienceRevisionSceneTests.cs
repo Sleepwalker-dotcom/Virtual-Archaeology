@@ -29,6 +29,13 @@ public class ExperienceRevisionSceneTests
                 var data = new SerializedObject(target);
                 Assert.AreEqual(pair.Item2, data.FindProperty("tapFeedbackEvent").FindPropertyRelative("Path").stringValue);
                 Assert.NotNull(data.FindProperty("hornController").objectReferenceValue);
+                var effect = data.FindProperty("performanceTouchEffectPrefab").objectReferenceValue;
+                Assert.NotNull(effect);
+                Assert.AreEqual("Assets/Lana Studio/Hyper Casual FX/Prefabs/Flash/Flash_magic_ellow_blue.prefab",
+                    AssetDatabase.GetAssetPath(effect));
+                Assert.AreEqual(0.01f, data.FindProperty("effectSurfaceOffset").floatValue);
+                Assert.AreEqual(0.15f, data.FindProperty("effectCooldown").floatValue);
+                Assert.AreEqual(new Vector2(0.008f, 0.012f), data.FindProperty("effectScaleRange").vector2Value);
                 Assert.IsNull(((Component)target).GetComponent(Type.GetType("TapToggleGlow, Assembly-CSharp", true)),
                     "These feedback sounds must not add an extra music-layer trigger.");
             }
