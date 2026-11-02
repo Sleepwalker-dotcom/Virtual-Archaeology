@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Whitechapel Echoes Viva Preview</title>
+  <style>
+    :root {
+      --ink: #111211;
+      --paper: #eee8dd;
+      --chalk: #f4f0e8;
+      --gold: #c5a46a;
+      --muted: #9a958c;
+      --line: rgba(197, 164, 106, .38);
+      --serif: "Bodoni Bk BT", Georgia, serif;
+      --sans: "Futura Bk BT", "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-snap-type: y mandatory;
+      background: #080908;
+    }
+
+    body {
+      margin: 0;
+      color: var(--chalk);
+      background: #080908;
+      font-family: var(--sans);
+    }
+
+    .stage {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      scroll-snap-align: start;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: relative;
+      width: min(100vw, 177.778vh);
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      isolation: isolate;
+      container-type: inline-size;
+    }
+
+    .slide-number {
+      position: absolute;
+      right: 4.8cqw;
+      bottom: 3.8cqw;
+      z-index: 5;
+      color: var(--muted);
+      font: 400 1.05cqw/1 var(--sans);
+      letter-spacing: .18em;
+    }
+
+    .eyebrow {
+      margin: 0 0 1.3cqw;
+      color: var(--gold);
+      font: 500 1.05cqw/1.2 var(--sans);
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1, h2 {
+      font-family: var(--serif);
+      font-weight: 400;
+      letter-spacing: -.035em;
+    }
+
+    /* Slide 1 */
+    .cover {
+      display: flex;
+      align-items: flex-end;
+      padding: 0 5.5cqw 5.2cqw;
+      background: #10110f url("assets/tavern-interior.png") center / cover no-repeat;
+    }
+
+    .cover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(90deg, rgba(7, 8, 7, .94) 0%, rgba(7, 8, 7, .66) 40%, rgba(7, 8, 7, .08) 76%),
+        linear-gradient(0deg, rgba(7, 8, 7, .8) 0%, transparent 46%);
+    }
+
+    .cover-copy { width: 59cqw; }
+
+    .cover h1 {
+      margin-bottom: 1.4cqw;
+      font-size: 7.8cqw;
+      line-height: .85;
+    }
+
+    .cover h1 span {
+      display: block;
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .cover .subtitle {
+      max-width: 43cqw;
+      margin-bottom: 2.2cqw;
+      color: rgba(244, 240, 232, .86);
+      font-size: 1.45cqw;
+      line-height: 1.4;
+    }
+
+    .identity {
+      display: flex;
+      gap: 1.1cqw;
+      align-items: center;
+      color: rgba(244, 240, 232, .68);
+      font-size: 1cqw;
+      letter-spacing: .06em;
+    }
+
+    .identity i {
+      width: 2.8cqw;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    /* Slide 2 */
+    .foundation {
+      display: grid;
+      grid-template-columns: 1.12fr .88fr;
+      gap: 6.2cqw;
+      padding: 5cqw 5.5cqw;
+      color: var(--ink);
+      background: var(--paper);
+    }
+
+    .foundation h2,
+    .flow h2 {
+      margin-bottom: 3.1cqw;
+      font-size: 4.2cqw;
+      line-height: .95;
+    }
+
+    .question {
+      max-width: 48cqw;
+      margin-bottom: 3cqw;
+      font-family: var(--serif);
+      font-size: 2.05cqw;
+      line-height: 1.25;
+    }
+
+    .question em {
+      color: #806331;
+      font-weight: 400;
+    }
+
+    .facts {
+      display: grid;
+      gap: 1.2cqw;
+      max-width: 50cqw;
+    }
+
+    .fact {
+      display: grid;
+      grid-template-columns: 7.6cqw 1fr;
+      align-items: baseline;
+      padding-top: 1cqw;
+      border-top: 1px solid rgba(17, 18, 17, .18);
+    }
+
+    .fact strong {
+      color: #806331;
+      font-size: 1cqw;
+      font-weight: 500;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .fact span {
+      font-size: 1.28cqw;
+      line-height: 1.45;
+    }
+
+    .placeholder {
+      position: relative;
+      display: grid;
+      align-content: end;
+      min-height: 44cqw;
+      padding: 2.2cqw;
+      color: var(--chalk);
+      background:
+        linear-gradient(180deg, rgba(16, 17, 15, .12), rgba(16, 17, 15, .94)),
+        #6f716b;
+      border: 1px solid rgba(17, 18, 17, .22);
+    }
+
+    .placeholder::after {
+      content: "IMAGE PLACEHOLDER";
+      position: absolute;
+      top: 2cqw;
+      left: 2cqw;
+      color: rgba(244, 240, 232, .72);
+      font-size: .76cqw;
+      letter-spacing: .2em;
+    }
+
+    .placeholder strong {
+      display: block;
+      margin-bottom: .7cqw;
+      font: 400 2cqw/1.1 var(--serif);
+    }
+
+    .placeholder span {
+      max-width: 25cqw;
+      color: rgba(244, 240, 232, .7);
+      font-size: 1.02cqw;
+      line-height: 1.5;
+    }
+
+    /* Slide 3 */
+    .flow {
+      display: grid;
+      grid-template-columns: 1.28fr .72fr;
+      grid-template-rows: auto 1fr;
+      column-gap: 5cqw;
+      padding: 4.5cqw 5.5cqw;
+      background: #10110f;
+    }
+
+    .flow h2 {
+      grid-column: 1 / -1;
+      margin-bottom: 2.5cqw;
+    }
+
+    .video-poster {
+      position: relative;
+      min-height: 36cqw;
+      overflow: hidden;
+      background: #090a09 url("assets/horn.png") center / cover no-repeat;
+    }
+
+    .video-poster::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, rgba(5, 6, 5, .74), transparent 56%);
+    }
+
+    .video-label {
+      position: absolute;
+      left: 2cqw;
+      bottom: 1.7cqw;
+      z-index: 2;
+    }
+
+    .video-label strong {
+      display: block;
+      margin-bottom: .45cqw;
+      font: 400 1.65cqw/1 var(--serif);
+    }
+
+    .video-label span {
+      color: rgba(244, 240, 232, .68);
+      font-size: .95cqw;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 5.2cqw;
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      color: var(--ink);
+      background: rgba(238, 232, 221, .9);
+      border-radius: 50%;
+      font-size: 1.45cqw;
+      padding-left: .25cqw;
+    }
+
+    .steps {
+      display: grid;
+      align-content: center;
+      gap: 1.65cqw;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      display: grid;
+      grid-template-columns: 3.2cqw 1fr;
+      gap: .9cqw;
+      align-items: start;
+      padding-bottom: 1.35cqw;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .steps li:last-child { border-bottom: 0; }
+
+    .steps b {
+      color: var(--gold);
+      font: 400 1.8cqw/1 var(--serif);
+    }
+
+    .steps strong {
+      display: block;
+      margin-bottom: .35cqw;
+      font: 400 1.55cqw/1.1 var(--serif);
+    }
+
+    .steps span {
+      color: rgba(244, 240, 232, .58);
+      font-size: 1cqw;
+      line-height: 1.35;
+    }
+
+    @media print {
+      @page { size: 16in 9in; margin: 0; }
+      html { scroll-snap-type: none; }
+      .stage { min-height: 0; break-after: page; }
+      .slide { width: 16in; height: 9in; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <article class="stage" id="slide-1">
+      <section class="slide cover" aria-label="Title slide">
+        <div class="cover-copy">
+          <p class="eyebrow">VR Archaeology Experience</p>
+          <h1>Whitechapel <span>Echoes</span></h1>
+          <p class="subtitle">Object-led and sound-led interaction in a virtual reconstruction of eighteenth-century Whitechapel</p>
+          <div class="identity"><i></i><span>Yixin Zhou (Ella) · MA Virtual and Augmented Reality · Goldsmiths</span></div>
+        </div>
+        <span class="slide-number">01 / 03</span>
+      </section>
+    </article>
+
+    <article class="stage" id="slide-2">
+      <section class="slide foundation" aria-label="Project foundation slide">
+        <div>
+          <p class="eyebrow">Project foundation</p>
+          <h2>Archaeological evidence<br>as an experience</h2>
+          <p class="question">How can a small fragment become <em>more than a museum object?</em></p>
+          <div class="facts">
+            <div class="fact"><strong>Context</strong><span>UCL Archaeology South-East excavations in Whitechapel, 2015 to 2019</span></div>
+            <div class="fact"><strong>Focus</strong><span>A copper-alloy French horn mouthpiece from the second half of the eighteenth century</span></div>
+            <div class="fact"><strong>Position</strong><span>Historical connections remain informed possibilities rather than complete proof</span></div>
+          </div>
+        </div>
+        <div class="placeholder" role="img" aria-label="Placeholder for an archaeological excavation or French horn mouthpiece photograph">
+          <strong>Archaeological context</strong>
+          <span>Replace with a source-cleared excavation or original mouthpiece photograph from UCL or ASE.</span>
+        </div>
+        <span class="slide-number">02 / 03</span>
+      </section>
+    </article>
+
+    <article class="stage" id="slide-3">
+      <section class="slide flow" aria-label="Experience flow and video slide">
+        <p class="eyebrow">Playable sequence</p>
+        <h2>Experience flow</h2>
+        <div class="video-poster" role="img" aria-label="Video placeholder showing the French horn interaction">
+          <span class="play">▶</span>
+          <div class="video-label"><strong>Project video</strong><span>Replace poster with final video · approximately 3 minutes</span></div>
+        </div>
+        <ol class="steps">
+          <li><b>01</b><div><strong>Museum frame</strong><span>Narration introduces the archaeological fragment</span></div></li>
+          <li><b>02</b><div><strong>Horn restoration</strong><span>The mouthpiece completes the instrument</span></div></li>
+          <li><b>03</b><div><strong>Tavern reveal</strong><span>Sound and space reconstruct a possible past</span></div></li>
+          <li><b>04</b><div><strong>Artefact layers</strong><span>Objects reveal information and additional sounds</span></div></li>
+        </ol>
+        <span class="slide-number">03 / 03</span>
+      </section>
+    </article>
+  </main>
+</body>
+</html>

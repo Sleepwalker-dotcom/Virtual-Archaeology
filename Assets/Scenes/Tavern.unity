@@ -1920,7 +1920,7 @@ MonoBehaviour:
     sing again."
   guidanceSubtitle: "You\u2019re lucky, it has accepted you. Now, fit the fragment
     back into place."
-  pickupSubtitle: "It\u2019s calling to you. Pick it up, maybe something magic will
+  pickupSubtitle: "It\u2019s calling to you. Pick it up, perhaps something magic will
     happen."
   gardenTransitionSubtitle: Listen! The old ghosts of the tavern are waking up.
   subtitleFadeInSeconds: 0.35
@@ -2968,7 +2968,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "It\u2019s calling to you. Pick it up, maybe something magic will happen."
+  m_Text: "It\u2019s calling to you. Pick it up, perhaps something magic will happen."
 --- !u!222 &543067017
 CanvasRenderer:
   m_ObjectHideFlags: 0

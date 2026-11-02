@@ -10,6 +10,11 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
     [SerializeField] private Text titleText;
     [SerializeField] private Text bodyText;
     [SerializeField] private ScrollRect bodyScroll;
+    [Header("Body Layout")]
+    [SerializeField] private bool hideSourceNotes = true;
+    [SerializeField, Min(1)] private int minimumBodyFontSize = 14;
+    [SerializeField, Min(1)] private int maximumBodyFontSize = 23;
+    [SerializeField, Range(0.8f, 1.5f)] private float bodyLineSpacing = 1f;
     [Header("Introduction Completion Mark")]
     [SerializeField] private Text completionMark;
     [SerializeField] private Color pendingMarkColor = new Color(0.55f, 0.55f, 0.55f);
@@ -173,7 +178,21 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
     private void SetBody(string body)
     {
         if (bodyText == null) return;
-        bodyText.text = body;
+        bodyText.text = FormatBody(body);
+        bodyText.resizeTextForBestFit = false;
+        bodyText.alignment = TextAnchor.UpperLeft;
+        bodyText.horizontalOverflow = HorizontalWrapMode.Wrap;
+        bodyText.lineSpacing = bodyLineSpacing;
+
+        // Measure against the visible board, not the expanding scroll content.
+        RectTransform area = bodyScroll != null ? bodyScroll.viewport : bodyText.rectTransform;
+        area.ForceUpdateRectTransforms();
+        bodyText.rectTransform.ForceUpdateRectTransforms();
+        int minimum = Mathf.Max(1, minimumBodyFontSize);
+        bodyText.fontSize = Mathf.Max(minimum, maximumBodyFontSize);
+        while (bodyText.fontSize > minimum && bodyText.preferredHeight > area.rect.height)
+            bodyText.fontSize--;
+
         if (bodyScroll == null) return;
 
         Canvas.ForceUpdateCanvases();
@@ -183,6 +202,24 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         bodyScroll.StopMovement();
         bodyScroll.verticalNormalizedPosition = 1f;
+    }
+
+    private string FormatBody(string body)
+    {
+        if (string.IsNullOrEmpty(body)) return string.Empty;
+        string normalized = body.Replace("\r\n", "\n").Replace('\r', '\n');
+        if (!hideSourceNotes) return normalized.Trim();
+
+        // Citations remain in the serialized research text; only omit their display.
+        string[] lines = normalized.Split('\n');
+        for (int i = 0; i < lines.Length; i++)
+        {
+            string line = lines[i].TrimStart();
+            if (line.StartsWith("Source:", System.StringComparison.OrdinalIgnoreCase) ||
+                line.StartsWith("Sources:", System.StringComparison.OrdinalIgnoreCase))
+                return string.Join("\n", lines, 0, i).TrimEnd();
+        }
+        return normalized.Trim();
     }
 
     private void OnDisable()

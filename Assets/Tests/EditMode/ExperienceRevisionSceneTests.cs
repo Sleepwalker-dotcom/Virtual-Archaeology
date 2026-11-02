@@ -8,6 +8,50 @@ using UnityEngine;
 public class ExperienceRevisionSceneTests
 {
     [Test]
+    public void ArtifactDescriptionsFitBoardAndHideOnlyTrailingSources()
+    {
+        var setup = EditorSceneManager.GetSceneManagerSetup();
+        try
+        {
+            EditorSceneManager.OpenScene("Assets/Scenes/Tavern.unity");
+            var infoType = Type.GetType("ArtifactInfoOnGrab, Assembly-CSharp", true);
+            var infos = UnityEngine.Object.FindObjectsByType(infoType, FindObjectsInactive.Include, FindObjectsSortMode.None);
+            Assert.That(infos.Length, Is.EqualTo(6)); // Five objects and the horn.
+            foreach (var info in infos)
+            {
+                var data = new SerializedObject(info);
+                var panel = data.FindProperty("panel").objectReferenceValue;
+                var panelData = new SerializedObject(panel);
+                var body = (UnityEngine.UI.Text)panelData.FindProperty("bodyText").objectReferenceValue;
+                string original = data.FindProperty("description").stringValue;
+                var setBody = panel.GetType().GetMethod("SetBody",
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                foreach (bool scrolling in new[] { false, true })
+                {
+                    if (scrolling) panel.GetType().GetMethod("EnsureScrollableBody").Invoke(panel, null);
+                    setBody.Invoke(panel, new object[] { original });
+                    string expected = original.Replace("\r\n", "\n").Replace('\r', '\n');
+                    int citation = expected.IndexOf("\nSource", StringComparison.Ordinal);
+                    if (citation >= 0) expected = expected.Substring(0, citation);
+                    Assert.AreEqual(expected.Trim(), body.text, info.name);
+                    var scroll = body.GetComponentInParent<UnityEngine.UI.ScrollRect>();
+                    var area = scroll != null ? scroll.viewport : body.rectTransform;
+                    Assert.That(body.preferredHeight, Is.LessThanOrEqualTo(area.rect.height + 0.1f), info.name);
+                    Assert.That(body.fontSize, Is.InRange(14, 23));
+                    Debug.Log($"Board text: {data.FindProperty("title").stringValue}, font {body.fontSize}, height {body.preferredHeight}/{area.rect.height}");
+                }
+            }
+        }
+        finally
+        {
+            if (Array.Exists(setup, scene => scene.isLoaded && scene.isActive))
+                EditorSceneManager.RestoreSceneManagerSetup(setup);
+            else
+                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+        }
+    }
+
+    [Test]
     public void AdditionalArtefactsHaveIndependentTapFeedbackEvents()
     {
         var setup = EditorSceneManager.GetSceneManagerSetup();
