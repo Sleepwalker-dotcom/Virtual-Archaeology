@@ -8,6 +8,31 @@ using UnityEngine.UI;
 
 public class ExperienceRevisionTests
 {
+    [Test]
+    public void ArtifactPanelCreatesAndReusesXRUIEventSystem()
+    {
+        var host = new GameObject("Test UI Events", typeof(UnityEngine.EventSystems.EventSystem),
+            typeof(UnityEngine.EventSystems.StandaloneInputModule));
+        try
+        {
+            var ensure = RuntimeType("ArtifactInfoPanel").GetMethod("EnsureUIEventSystem",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            ensure.Invoke(null, null);
+            ensure.Invoke(null, null);
+            var modules = host.GetComponents<UnityEngine.EventSystems.BaseInputModule>();
+            Assert.That(modules.Length, Is.EqualTo(2));
+            Assert.That(host.GetComponent<UnityEngine.EventSystems.StandaloneInputModule>().enabled, Is.False);
+            var xrModule = System.Array.Find(modules, module => module.GetType().Name == "XRUIInputModule");
+            Assert.That(xrModule, Is.Not.Null);
+            Assert.That(xrModule.enabled, Is.True);
+            Assert.That(xrModule.GetType().GetProperty("enableXRInput").GetValue(xrModule), Is.EqualTo(true));
+        }
+        finally
+        {
+            UnityEngine.Object.DestroyImmediate(host);
+        }
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void HornPieceRequiresBothTimelineRequestAndCompletedIntro(bool voiceFinishesFirst)

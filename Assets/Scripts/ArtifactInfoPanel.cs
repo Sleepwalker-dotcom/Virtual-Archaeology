@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 
@@ -47,6 +48,7 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
         currentOwner = owner;
         if (completionMark != null) completionMark.gameObject.SetActive(false);
         gameObject.SetActive(true);
+        EnsureUIEventSystem();
 
         if (titleText != null) titleText.text = title;
         EnsureScrollableBody();
@@ -129,7 +131,13 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
 
     public void EnsureScrollableBody()
     {
-        if (bodyScroll != null || bodyText == null) return;
+        if (bodyText == null) return;
+        var canvas = GetComponentInParent<Canvas>();
+        if (canvas.GetComponent<GraphicRaycaster>() == null)
+            canvas.gameObject.AddComponent<GraphicRaycaster>();
+        if (canvas.GetComponent<TrackedDeviceGraphicRaycaster>() == null)
+            canvas.gameObject.AddComponent<TrackedDeviceGraphicRaycaster>();
+        if (bodyScroll != null) return;
         Text body = bodyText;
 
         RectTransform bodyRect = body.rectTransform;
@@ -168,11 +176,27 @@ public sealed class ArtifactInfoPanel : MonoBehaviour
         scroll.scrollSensitivity = 30f;
         bodyScroll = scroll;
 
-        var canvas = GetComponentInParent<Canvas>();
-        if (canvas.GetComponent<GraphicRaycaster>() == null)
-            canvas.gameObject.AddComponent<GraphicRaycaster>();
-        if (canvas.GetComponent<TrackedDeviceGraphicRaycaster>() == null)
-            canvas.gameObject.AddComponent<TrackedDeviceGraphicRaycaster>();
+    }
+
+    private static void EnsureUIEventSystem()
+    {
+        var eventSystem = EventSystem.current;
+        if (eventSystem == null)
+            eventSystem = FindFirstObjectByType<EventSystem>();
+        if (eventSystem == null)
+            eventSystem = new GameObject("EventSystem", typeof(EventSystem)).GetComponent<EventSystem>();
+
+        foreach (var module in eventSystem.GetComponents<BaseInputModule>())
+        {
+            if (!(module is XRUIInputModule))
+                module.enabled = false;
+        }
+
+        var xrModule = eventSystem.GetComponent<XRUIInputModule>();
+        if (xrModule == null)
+            xrModule = eventSystem.gameObject.AddComponent<XRUIInputModule>();
+        xrModule.enabled = true;
+        xrModule.enableXRInput = true;
     }
 
     private void SetBody(string body)
